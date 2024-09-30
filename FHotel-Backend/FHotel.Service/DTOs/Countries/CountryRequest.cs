@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FHotel.Services.DTOs.Countries
+{
+    public class CountryRequest
+    {
+        public string? CountryName { get; set; }
+    }
+}

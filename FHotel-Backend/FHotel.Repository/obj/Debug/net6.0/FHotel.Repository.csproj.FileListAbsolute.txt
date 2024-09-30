@@ -1,0 +1,15 @@
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\bin\Debug\net6.0\FHotel.Repository.deps.json
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\bin\Debug\net6.0\FHotel.Repository.runtimeconfig.json
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\bin\Debug\net6.0\FHotel.Repository.dll
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\bin\Debug\net6.0\FHotel.Repository.pdb
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.csproj.AssemblyReference.cache
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.AssemblyInfoInputs.cache
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.AssemblyInfo.cs
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.csproj.CoreCompileInputs.cache
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.sourcelink.json
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.dll
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\refint\FHotel.Repository.dll
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.pdb
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\FHotel.Repository.genruntimeconfig.cache
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.Repository\obj\Debug\net6.0\ref\FHotel.Repository.dll

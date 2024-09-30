@@ -1,0 +1,633 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FHotel.API</name>
+    </assembly>
+    <members>
+        <member name="M:FHotel.API.Controllers.CitiesController.GetAll">
+            <summary>
+            Get a list of all citys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CitiesController.Get(System.Guid)">
+            <summary>
+            Get city by city id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CitiesController.Create(FHotel.Services.DTOs.Cities.CityRequest)">
+            <summary>
+            Create new city.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CitiesController.Delete(System.Guid)">
+            <summary>
+            Delete city by city id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CitiesController.Update(System.Guid,FHotel.Services.DTOs.Cities.CityRequest)">
+            <summary>
+            Update city by city id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CountriesController.GetAll">
+            <summary>
+            Get a list of all countrys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CountriesController.Get(System.Guid)">
+            <summary>
+            Get country by country id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CountriesController.Create(FHotel.Services.DTOs.Countries.CountryRequest)">
+            <summary>
+            Create new country.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CountriesController.Delete(System.Guid)">
+            <summary>
+            Delete country by country id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.CountriesController.Update(System.Guid,FHotel.Services.DTOs.Countries.CountryRequest)">
+            <summary>
+            Update country by country id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.GetAll">
+            <summary>
+            Get a list of all damagedFacilitys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Get(System.Guid)">
+            <summary>
+            Get damagedFacility by damagedFacility id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Create(FHotel.Services.DTOs.DamagedFactilities.DamagedFacilityRequest)">
+            <summary>
+            Create new damagedFacility.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Delete(System.Guid)">
+            <summary>
+            Delete damagedFacility by damagedFacility id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Update(System.Guid,FHotel.Services.DTOs.DamagedFactilities.DamagedFacilityRequest)">
+            <summary>
+            Update damagedFacility by damagedFacility id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DocumentsController.GetAll">
+            <summary>
+            Get a list of all documents.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DocumentsController.Get(System.Guid)">
+            <summary>
+            Get document by document id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DocumentsController.Create(FHotel.Services.DTOs.Documents.DocumentRequest)">
+            <summary>
+            Create new document.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DocumentsController.Delete(System.Guid)">
+            <summary>
+            Delete document by document id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.DocumentsController.Update(System.Guid,FHotel.Services.DTOs.Documents.DocumentRequest)">
+            <summary>
+            Update document by document id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.FeedbacksController.GetAll">
+            <summary>
+            Get a list of all feedbacks.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.FeedbacksController.Get(System.Guid)">
+            <summary>
+            Get feedback by feedback id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.FeedbacksController.Create(FHotel.Services.DTOs.Feedbacks.FeedbackRequest)">
+            <summary>
+            Create new feedback.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.FeedbacksController.Delete(System.Guid)">
+            <summary>
+            Delete feedback by feedback id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.FeedbacksController.Update(System.Guid,FHotel.Services.DTOs.Feedbacks.FeedbackRequest)">
+            <summary>
+            Update feedback by feedback id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelAmenitiesController.GetAll">
+            <summary>
+            Get a list of all hotelAmenitys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelAmenitiesController.Get(System.Guid)">
+            <summary>
+            Get hotelAmenity by hotelAmenity id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelAmenitiesController.Create(FHotel.Services.DTOs.HotelAmenities.HotelAmenityRequest)">
+            <summary>
+            Create new hotelAmenity.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelAmenitiesController.Delete(System.Guid)">
+            <summary>
+            Delete hotelAmenity by hotelAmenity id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelAmenitiesController.Update(System.Guid,FHotel.Services.DTOs.HotelAmenities.HotelAmenityRequest)">
+            <summary>
+            Update hotelAmenity by hotelAmenity id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.GetAll">
+            <summary>
+            Get a list of all hotelRegistrations.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Get(System.Guid)">
+            <summary>
+            Get hotelRegistration by hotelRegistration id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Create(FHotel.Services.DTOs.HotelRegistations.HotelRegistrationRequest)">
+            <summary>
+            Create new hotelRegistration.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Delete(System.Guid)">
+            <summary>
+            Delete hotelRegistration by hotelRegistration id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Update(System.Guid,FHotel.Services.DTOs.HotelRegistations.HotelRegistrationRequest)">
+            <summary>
+            Update hotelRegistration by hotelRegistration id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelsController.GetAll">
+            <summary>
+            Get a list of all hotels.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelsController.Get(System.Guid)">
+            <summary>
+            Get hotel by hotel id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelsController.Create(FHotel.Services.DTOs.Hotels.HotelRequest)">
+            <summary>
+            Create new hotel.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelsController.Delete(System.Guid)">
+            <summary>
+            Delete hotel by hotel id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.HotelsController.Update(System.Guid,FHotel.Services.DTOs.Hotels.HotelRequest)">
+            <summary>
+            Update hotel by hotel id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrderDetailsController.GetAll">
+            <summary>
+            Get a list of all orderDetails.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrderDetailsController.Get(System.Guid)">
+            <summary>
+            Get orderDetail by orderDetail id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrderDetailsController.Create(FHotel.Services.DTOs.OrderDetails.OrderDetailRequest)">
+            <summary>
+            Create new orderDetail.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrderDetailsController.Delete(System.Guid)">
+            <summary>
+            Delete orderDetail by orderDetail id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrderDetailsController.Update(System.Guid,FHotel.Services.DTOs.OrderDetails.OrderDetailRequest)">
+            <summary>
+            Update orderDetail by orderDetail id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrdersController.GetAll">
+            <summary>
+            Get a list of all orders.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrdersController.Get(System.Guid)">
+            <summary>
+            Get order by order id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrdersController.Create(FHotel.Services.DTOs.Orders.OrderRequest)">
+            <summary>
+            Create new order.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrdersController.Delete(System.Guid)">
+            <summary>
+            Delete order by order id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.OrdersController.Update(System.Guid,FHotel.Services.DTOs.Orders.OrderRequest)">
+            <summary>
+            Update order by order id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentMethodsController.GetAll">
+            <summary>
+            Get a list of all paymentMethods.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentMethodsController.Get(System.Guid)">
+            <summary>
+            Get paymentMethod by paymentMethod id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentMethodsController.Create(FHotel.Services.DTOs.PaymentMethods.PaymentMethodRequest)">
+            <summary>
+            Create new paymentMethod.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentMethodsController.Delete(System.Guid)">
+            <summary>
+            Delete paymentMethod by paymentMethod id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentMethodsController.Update(System.Guid,FHotel.Services.DTOs.PaymentMethods.PaymentMethodRequest)">
+            <summary>
+            Update paymentMethod by paymentMethod id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentsController.GetAll">
+            <summary>
+            Get a list of all payments.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentsController.Get(System.Guid)">
+            <summary>
+            Get payment by payment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentsController.Create(FHotel.Services.DTOs.Payments.PaymentRequest)">
+            <summary>
+            Create new payment.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentsController.Delete(System.Guid)">
+            <summary>
+            Delete payment by payment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PaymentsController.Update(System.Guid,FHotel.Services.DTOs.Payments.PaymentRequest)">
+            <summary>
+            Update payment by payment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PricesController.GetAll">
+            <summary>
+            Get a list of all prices.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PricesController.Get(System.Guid)">
+            <summary>
+            Get price by price id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PricesController.Create(FHotel.Services.DTOs.Prices.PriceRequest)">
+            <summary>
+            Create new price.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PricesController.Delete(System.Guid)">
+            <summary>
+            Delete price by price id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.PricesController.Update(System.Guid,FHotel.Services.DTOs.Prices.PriceRequest)">
+            <summary>
+            Update price by price id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationDetailsController.GetAll">
+            <summary>
+            Get a list of all reservationDetails.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationDetailsController.Get(System.Guid)">
+            <summary>
+            Get reservationDetail by reservationDetail id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationDetailsController.Create(FHotel.Services.DTOs.ReservationDetails.ReservationDetailRequest)">
+            <summary>
+            Create new reservationDetail.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationDetailsController.Delete(System.Guid)">
+            <summary>
+            Delete reservationDetail by reservationDetail id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationDetailsController.Update(System.Guid,FHotel.Services.DTOs.ReservationDetails.ReservationDetailRequest)">
+            <summary>
+            Update reservationDetail by reservationDetail id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationsController.GetAll">
+            <summary>
+            Get a list of all reservations.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationsController.Get(System.Guid)">
+            <summary>
+            Get reservation by reservation id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationsController.Create(FHotel.Services.DTOs.Reservations.ReservationRequest)">
+            <summary>
+            Create new reservation.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationsController.Delete(System.Guid)">
+            <summary>
+            Delete reservation by reservation id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ReservationsController.Update(System.Guid,FHotel.Services.DTOs.Reservations.ReservationRequest)">
+            <summary>
+            Update reservation by reservation id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RolesController.GetAll">
+            <summary>
+            Get a list of all roles.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RolesController.Get(System.Guid)">
+            <summary>
+            Get role by role id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RolesController.Create(FHotel.Services.DTOs.Roles.RoleRequest)">
+            <summary>
+            Create new role.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RolesController.Delete(System.Guid)">
+            <summary>
+            Delete role by role id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RolesController.Update(System.Guid,FHotel.Services.DTOs.Roles.RoleRequest)">
+            <summary>
+            Update role by role id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomFacilitiesController.GetAll">
+            <summary>
+            Get a list of all roomFacilitys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomFacilitiesController.Get(System.Guid)">
+            <summary>
+            Get roomFacility by roomFacility id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomFacilitiesController.Create(FHotel.Services.DTOs.RoomFacilities.RoomFacilityRequest)">
+            <summary>
+            Create new roomFacility.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomFacilitiesController.Delete(System.Guid)">
+            <summary>
+            Delete roomFacility by roomFacility id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomFacilitiesController.Update(System.Guid,FHotel.Services.DTOs.RoomFacilities.RoomFacilityRequest)">
+            <summary>
+            Update roomFacility by roomFacility id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomImagesController.GetAll">
+            <summary>
+            Get a list of all roomImages.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomImagesController.Get(System.Guid)">
+            <summary>
+            Get roomImage by roomImage id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomImagesController.Create(FHotel.Services.DTOs.RoomImages.RoomImageRequest)">
+            <summary>
+            Create new roomImage.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomImagesController.Delete(System.Guid)">
+            <summary>
+            Delete roomImage by roomImage id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomImagesController.Update(System.Guid,FHotel.Services.DTOs.RoomImages.RoomImageRequest)">
+            <summary>
+            Update roomImage by roomImage id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomsController.GetAll">
+            <summary>
+            Get a list of all rooms.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomsController.Get(System.Guid)">
+            <summary>
+            Get room by room id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomsController.Create(FHotel.Services.DTOs.Rooms.RoomRequest)">
+            <summary>
+            Create new room.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomsController.Delete(System.Guid)">
+            <summary>
+            Delete room by room id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomsController.Update(System.Guid,FHotel.Services.DTOs.Rooms.RoomRequest)">
+            <summary>
+            Update room by room id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypePricesController.GetAll">
+            <summary>
+            Get a list of all roomTypePrices.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypePricesController.Get(System.Guid)">
+            <summary>
+            Get roomTypePrice by roomTypePrice id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypePricesController.Create(FHotel.Services.DTOs.RoomTypePrices.RoomTypePriceRequest)">
+            <summary>
+            Create new roomTypePrice.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypePricesController.Delete(System.Guid)">
+            <summary>
+            Delete roomTypePrice by roomTypePrice id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypePricesController.Update(System.Guid,FHotel.Services.DTOs.RoomTypePrices.RoomTypePriceRequest)">
+            <summary>
+            Update roomTypePrice by roomTypePrice id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypesController.GetAll">
+            <summary>
+            Get a list of all roomTypes.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypesController.Get(System.Guid)">
+            <summary>
+            Get roomType by roomType id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypesController.Create(FHotel.Services.DTOs.RoomTypes.RoomTypeRequest)">
+            <summary>
+            Create new roomType.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypesController.Delete(System.Guid)">
+            <summary>
+            Delete roomType by roomType id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomTypesController.Update(System.Guid,FHotel.Services.DTOs.RoomTypes.RoomTypeRequest)">
+            <summary>
+            Update roomType by roomType id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServicesController.GetAll">
+            <summary>
+            Get a list of all services.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServicesController.Get(System.Guid)">
+            <summary>
+            Get service by service id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServicesController.Create(FHotel.Services.DTOs.Services.ServiceRequest)">
+            <summary>
+            Create new service.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServicesController.Delete(System.Guid)">
+            <summary>
+            Delete service by service id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServicesController.Update(System.Guid,FHotel.Services.DTOs.Services.ServiceRequest)">
+            <summary>
+            Update service by service id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServiceTypesController.GetAll">
+            <summary>
+            Get a list of all serviceTypes.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServiceTypesController.Get(System.Guid)">
+            <summary>
+            Get serviceType by serviceType id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServiceTypesController.Create(FHotel.Services.DTOs.ServiceTypes.ServiceTypeRequest)">
+            <summary>
+            Create new serviceType.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServiceTypesController.Delete(System.Guid)">
+            <summary>
+            Delete serviceType by serviceType id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.ServiceTypesController.Update(System.Guid,FHotel.Services.DTOs.ServiceTypes.ServiceTypeRequest)">
+            <summary>
+            Update serviceType by serviceType id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.TimetablesController.GetAll">
+            <summary>
+            Get a list of all timetables.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.TimetablesController.Get(System.Guid)">
+            <summary>
+            Get timetable by timetable id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.TimetablesController.Create(FHotel.Services.DTOs.Timetable.TimetableRequest)">
+            <summary>
+            Create new timetable.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.TimetablesController.Delete(System.Guid)">
+            <summary>
+            Delete timetable by timetable id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.TimetablesController.Update(System.Guid,FHotel.Services.DTOs.Timetable.TimetableRequest)">
+            <summary>
+            Update timetable by timetable id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.UsersController.GetAll">
+            <summary>
+            Get a list of all users.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.UsersController.Get(System.Guid)">
+            <summary>
+            Get user by user id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.UsersController.Create(FHotel.Services.DTOs.Users.UserRequest)">
+            <summary>
+            Create new user.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.UsersController.Delete(System.Guid)">
+            <summary>
+            Delete user by user id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.UsersController.Update(System.Guid,FHotel.Services.DTOs.Users.UserRequest)">
+            <summary>
+            Update user by user id.
+            </summary>
+        </member>
+    </members>
+</doc>
