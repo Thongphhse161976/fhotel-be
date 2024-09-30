@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "kqVZW96F6yu3yx6PVIfqS5IJdRam7BrGqYMSpqFpy4BON5mYBEC5bS2+5oi0r5jZEZULOMDEK9kR+W9cdzu3Cw==",
+  "success": true,
+  "projectFilePath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.API\\FHotel.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\haph1\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\haph1\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\haph1\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\haph1\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\haph1\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\haph1\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
