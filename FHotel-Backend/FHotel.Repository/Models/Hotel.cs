@@ -8,7 +8,6 @@ namespace FHotel.Repository.Models
         public Hotel()
         {
             HotelAmenities = new HashSet<HotelAmenity>();
-            Prices = new HashSet<Price>();
             RoomTypes = new HashSet<RoomType>();
         }
 
@@ -29,7 +28,6 @@ namespace FHotel.Repository.Models
         public virtual City? City { get; set; }
         public virtual User? Owner { get; set; }
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
-        public virtual ICollection<Price> Prices { get; set; }
         public virtual ICollection<RoomType> RoomTypes { get; set; }
     }
 }

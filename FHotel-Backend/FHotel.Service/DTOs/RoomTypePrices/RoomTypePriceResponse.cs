@@ -11,12 +11,10 @@ namespace FHotel.Services.DTOs.RoomTypePrices
     public class RoomTypePriceResponse
     {
         public Guid RoomTypePriceId { get; set; }
-        public Guid? PriceId { get; set; }
         public Guid? RoomTypeId { get; set; }
         public string? DayOfWeek { get; set; }
         public decimal? Price { get; set; }
 
-        public virtual Price? PriceNavigation { get; set; }
         public virtual RoomTypeResponse? RoomType { get; set; }
     }
 }

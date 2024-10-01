@@ -304,31 +304,6 @@
             Update payment by payment id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.PricesController.GetAll">
-            <summary>
-            Get a list of all prices.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.PricesController.Get(System.Guid)">
-            <summary>
-            Get price by price id.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.PricesController.Create(FHotel.Services.DTOs.Prices.PriceRequest)">
-            <summary>
-            Create new price.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.PricesController.Delete(System.Guid)">
-            <summary>
-            Delete price by price id.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.PricesController.Update(System.Guid,FHotel.Services.DTOs.Prices.PriceRequest)">
-            <summary>
-            Update price by price id.
-            </summary>
-        </member>
         <member name="M:FHotel.API.Controllers.ReservationDetailsController.GetAll">
             <summary>
             Get a list of all reservationDetails.

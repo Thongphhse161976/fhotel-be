@@ -10,7 +10,6 @@ namespace FHotel.Services.DTOs.RoomTypePrices
     public class RoomTypePriceRequest
     {
       
-        public Guid? PriceId { get; set; }
         public Guid? RoomTypeId { get; set; }
         public string? DayOfWeek { get; set; }
         public decimal? Price { get; set; }

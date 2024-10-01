@@ -12,7 +12,6 @@ using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.PaymentMethods;
 using FHotel.Services.DTOs.Payments;
-using FHotel.Services.DTOs.Prices;
 using FHotel.Services.DTOs.ReservationDetails;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.Roles;
@@ -63,8 +62,6 @@ namespace FHotel.Service.Profiles
             CreateMap<Payment, PaymentResponse>().ReverseMap();
             CreateMap<PaymentMethod, PaymentMethodRequest>().ReverseMap();
             CreateMap<PaymentMethod, PaymentMethodResponse>().ReverseMap();
-            CreateMap<Price, PriceRequest>().ReverseMap();
-            CreateMap<Price, PriceResponse>().ReverseMap();
             CreateMap<Reservation, ReservationRequest>().ReverseMap();
             CreateMap<Reservation, ReservationResponse>().ReverseMap();
             CreateMap<ReservationDetail, ReservationDetailRequest>().ReverseMap();
