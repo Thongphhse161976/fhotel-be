@@ -7,6 +7,10 @@
 	  <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+	
+	<PropertyGroup>
+	<EnvironmentName>Development</EnvironmentName>
+</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />

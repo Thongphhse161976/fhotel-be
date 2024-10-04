@@ -31,6 +31,7 @@ namespace FHotel.Repository.Models
         public bool? IsActive { get; set; }
 
         public virtual Role? Role { get; set; }
+        public virtual Wallet? Wallet { get; set; }
         public virtual ICollection<Document> Documents { get; set; }
         public virtual ICollection<HotelRegistration> HotelRegistrations { get; set; }
         public virtual ICollection<Hotel> Hotels { get; set; }

@@ -1,34 +1,34 @@
-﻿using FHotel.Services.DTOs.Cities;
-using FHotel.Services.DTOs.DamagedFactilities;
+﻿using FHotel.Service.DTOs.BillPayments;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
-    [Route("api/damagedFacilities")]
+    [Route("api/billPayments")]
     [ApiController]
-    public class DamagedFacilitiesController : ControllerBase
+    public class BillPaymentsController : ControllerBase
     {
-        private readonly IDamagedFacilityService _damagedFacilityService;
+        private readonly IBillPaymentService _billPaymentService;
 
-        public DamagedFacilitiesController(IDamagedFacilityService damagedFacilityService)
+        public BillPaymentsController(IBillPaymentService billPaymentService)
         {
-            _damagedFacilityService = damagedFacilityService;
+            _billPaymentService = billPaymentService;
         }
 
         /// <summary>
-        /// Get a list of all damagedFacilitys.
+        /// Get a list of all billPayments.
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DamagedFacilityResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BillPaymentResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<DamagedFacilityResponse>>> GetAll()
+        public async Task<ActionResult<List<BillPaymentResponse>>> GetAll()
         {
             try
             {
-                var rs = await _damagedFacilityService.GetAll();
+                var rs = await _billPaymentService.GetAll();
                 return Ok(rs);
             }
             catch (Exception ex)
@@ -38,17 +38,17 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get damagedFacility by damagedFacility id.
+        /// Get billPayment by billPayment id.
         /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DamagedFacilityResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillPaymentResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<DamagedFacilityResponse>> Get(Guid id)
+        public async Task<ActionResult<BillPaymentResponse>> Get(Guid id)
         {
             try
             {
-                var rs = await _damagedFacilityService.Get(id);
+                var rs = await _billPaymentService.Get(id);
                 return Ok(rs);
             }
             catch
@@ -58,16 +58,16 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new damagedFacility.
+        /// Create new billPayment.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<DamagedFacilityResponse>> Create([FromBody] DamagedFacilityRequest request)
+        public async Task<ActionResult<BillPaymentResponse>> Create([FromBody] BillPaymentRequest request)
         {
             try
             {
-                var result = await _damagedFacilityService.Create(request);
+                var result = await _billPaymentService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
             catch (Exception ex)
@@ -77,24 +77,24 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete damagedFacility by damagedFacility id.
+        /// Delete billPayment by billPayment id.
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<DamagedFacilityResponse>> Delete(Guid id)
+        public async Task<ActionResult<BillPaymentResponse>> Delete(Guid id)
         {
-            var rs = await _damagedFacilityService.Delete(id);
+            var rs = await _billPaymentService.Delete(id);
             return Ok(rs);
         }
 
         /// <summary>
-        /// Update damagedFacility by damagedFacility id.
+        /// Update billPayment by billPayment id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<DamagedFacilityResponse>> Update(Guid id, [FromBody] DamagedFacilityRequest request)
+        public async Task<ActionResult<BillPaymentResponse>> Update(Guid id, [FromBody] BillPaymentRequest request)
         {
             try
             {
-                var rs = await _damagedFacilityService.Update(id, request);
+                var rs = await _billPaymentService.Update(id, request);
                 return Ok(rs);
             }
             catch (Exception ex)

@@ -19,6 +19,7 @@ namespace FHotel.Repository.Models
         public string? Description { get; set; }
         public decimal? RoomSize { get; set; }
         public string? Image { get; set; }
+        public decimal? BasePrice { get; set; }
         public int? MaxOccupancy { get; set; }
         public int? TotalRooms { get; set; }
         public int? AvailableRooms { get; set; }

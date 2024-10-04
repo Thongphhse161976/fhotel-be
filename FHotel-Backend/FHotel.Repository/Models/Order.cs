@@ -7,6 +7,7 @@ namespace FHotel.Repository.Models
     {
         public Order()
         {
+            BillOrders = new HashSet<BillOrder>();
             OrderDetails = new HashSet<OrderDetail>();
         }
 
@@ -18,6 +19,7 @@ namespace FHotel.Repository.Models
 
         public virtual PaymentMethod? PaymentMethod { get; set; }
         public virtual Reservation? Reservation { get; set; }
+        public virtual ICollection<BillOrder> BillOrders { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.Profiles;
+using FHotel.Service.Services.Implementations;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +27,6 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
-builder.Services.AddScoped<IDamagedFacilityService, DamagedFacilityService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
@@ -45,6 +46,18 @@ builder.Services.AddScoped<IRoomTypePriceService, RoomTypePriceService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
 builder.Services.AddScoped<ITimetableService, TimetableService>();
+builder.Services.AddScoped<IBillService, BillService>();
+builder.Services.AddScoped<IBillOrderService, BillOrderService>();
+builder.Services.AddScoped<IBillLateCheckOutChargeService, BillLateCheckOutChargeService>();
+builder.Services.AddScoped<IBillPaymentService, BillPaymentService>();
+builder.Services.AddScoped<ILateCheckOutChargeService, LateCheckOutChargeService>();
+builder.Services.AddScoped<ILateCheckOutPolicyService, LateCheckOutPolicyService>();
+builder.Services.AddScoped<IRefundService, RefundService>();
+builder.Services.AddScoped<IRefundPolicyService, RefundPolicyService>();
+builder.Services.AddScoped<IRoomStayHistoryService, RoomStayHistoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IWalletHistoryService, WalletHistoryService>();
 
 
 

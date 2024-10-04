@@ -4,6 +4,7 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Services.DTOs.Roles;
 using FHotel.Services.DTOs.Users;
+using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FHotel.Services.Services.Implementations
 {
-    public class UserService
+    public class UserService: IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;

@@ -12,7 +12,6 @@ namespace FHotel.Repository.Models
         public int? Quantity { get; set; }
 
         public virtual Order? Order { get; set; }
-        public virtual RoomFacility? RoomFacility { get; set; }
         public virtual Service? Service { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace FHotel.Repository.Models
         {
             HotelAmenities = new HashSet<HotelAmenity>();
             RoomTypes = new HashSet<RoomType>();
+            Timetables = new HashSet<Timetable>();
         }
 
         public Guid HotelId { get; set; }
@@ -29,5 +30,6 @@ namespace FHotel.Repository.Models
         public virtual User? Owner { get; set; }
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
         public virtual ICollection<RoomType> RoomTypes { get; set; }
+        public virtual ICollection<Timetable> Timetables { get; set; }
     }
 }

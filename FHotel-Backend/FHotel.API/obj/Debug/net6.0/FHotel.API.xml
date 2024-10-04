@@ -4,6 +4,106 @@
         <name>FHotel.API</name>
     </assembly>
     <members>
+        <member name="M:FHotel.API.Controllers.BillLateCheckOutChargesController.GetAll">
+            <summary>
+            Get a list of all billLateCheckOutCharges.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillLateCheckOutChargesController.Get(System.Guid)">
+            <summary>
+            Get billLateCheckOutCharge by billLateCheckOutCharge id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillLateCheckOutChargesController.Create(FHotel.Service.DTOs.BillLateCheckOutCharges.BillLateCheckOutChargeRequest)">
+            <summary>
+            Create new billLateCheckOutCharge.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillLateCheckOutChargesController.Delete(System.Guid)">
+            <summary>
+            Delete BillLateCheckOutCharge by BillLateCheckOutCharge id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillLateCheckOutChargesController.Update(System.Guid,FHotel.Service.DTOs.BillLateCheckOutCharges.BillLateCheckOutChargeRequest)">
+            <summary>
+            Update BillLateCheckOutCharge by BillLateCheckOutCharge id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillOrdersController.GetAll">
+            <summary>
+            Get a list of all billOrders.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillOrdersController.Get(System.Guid)">
+            <summary>
+            Get billOrder by billOrder id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillOrdersController.Create(FHotel.Service.DTOs.BillOrders.BillOrderRequest)">
+            <summary>
+            Create new billOrder.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillOrdersController.Delete(System.Guid)">
+            <summary>
+            Delete billOrder by billOrder id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillOrdersController.Update(System.Guid,FHotel.Service.DTOs.BillOrders.BillOrderRequest)">
+            <summary>
+            Update billOrder by billOrder id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillPaymentsController.GetAll">
+            <summary>
+            Get a list of all billPayments.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillPaymentsController.Get(System.Guid)">
+            <summary>
+            Get billPayment by billPayment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillPaymentsController.Create(FHotel.Service.DTOs.BillPayments.BillPaymentRequest)">
+            <summary>
+            Create new billPayment.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillPaymentsController.Delete(System.Guid)">
+            <summary>
+            Delete billPayment by billPayment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillPaymentsController.Update(System.Guid,FHotel.Service.DTOs.BillPayments.BillPaymentRequest)">
+            <summary>
+            Update billPayment by billPayment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillsController.GetAll">
+            <summary>
+            Get a list of all bills.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillsController.Get(System.Guid)">
+            <summary>
+            Get bill by bill id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillsController.Create(FHotel.Service.DTOs.Bills.BillRequest)">
+            <summary>
+            Create new bill.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillsController.Delete(System.Guid)">
+            <summary>
+            Delete bill by bill id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.BillsController.Update(System.Guid,FHotel.Service.DTOs.Bills.BillRequest)">
+            <summary>
+            Update bill by bill id.
+            </summary>
+        </member>
         <member name="M:FHotel.API.Controllers.CitiesController.GetAll">
             <summary>
             Get a list of all citys.
@@ -52,31 +152,6 @@
         <member name="M:FHotel.API.Controllers.CountriesController.Update(System.Guid,FHotel.Services.DTOs.Countries.CountryRequest)">
             <summary>
             Update country by country id.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.GetAll">
-            <summary>
-            Get a list of all damagedFacilitys.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Get(System.Guid)">
-            <summary>
-            Get damagedFacility by damagedFacility id.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Create(FHotel.Services.DTOs.DamagedFactilities.DamagedFacilityRequest)">
-            <summary>
-            Create new damagedFacility.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Delete(System.Guid)">
-            <summary>
-            Delete damagedFacility by damagedFacility id.
-            </summary>
-        </member>
-        <member name="M:FHotel.API.Controllers.DamagedFacilitiesController.Update(System.Guid,FHotel.Services.DTOs.DamagedFactilities.DamagedFacilityRequest)">
-            <summary>
-            Update damagedFacility by damagedFacility id.
             </summary>
         </member>
         <member name="M:FHotel.API.Controllers.DocumentsController.GetAll">
@@ -204,6 +279,56 @@
             Update hotel by hotel id.
             </summary>
         </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutChargesController.GetAll">
+            <summary>
+            Get a list of all lateCheckOutCharges.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutChargesController.Get(System.Guid)">
+            <summary>
+            Get lateCheckOutCharge by lateCheckOutCharge id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutChargesController.Create(FHotel.Service.DTOs.LateCheckOutCharges.LateCheckOutChargeRequest)">
+            <summary>
+            Create new lateCheckOutCharge.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutChargesController.Delete(System.Guid)">
+            <summary>
+            Delete lateCheckOutCharge by lateCheckOutCharge id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutChargesController.Update(System.Guid,FHotel.Service.DTOs.LateCheckOutCharges.LateCheckOutChargeRequest)">
+            <summary>
+            Update lateCheckOutCharge by lateCheckOutCharge id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutPoliciesController.GetAll">
+            <summary>
+            Get a list of all lateCheckOutPolicys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutPoliciesController.Get(System.Guid)">
+            <summary>
+            Get lateCheckOutPolicy by lateCheckOutPolicy id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutPoliciesController.Create(FHotel.Service.DTOs.LateCheckOutPolicies.LateCheckOutPolicyRequest)">
+            <summary>
+            Create new lateCheckOutPolicy.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutPoliciesController.Delete(System.Guid)">
+            <summary>
+            Delete lateCheckOutPolicy by lateCheckOutPolicy id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.LateCheckOutPoliciesController.Update(System.Guid,FHotel.Service.DTOs.LateCheckOutPolicies.LateCheckOutPolicyRequest)">
+            <summary>
+            Update lateCheckOutPolicy by lateCheckOutPolicy id.
+            </summary>
+        </member>
         <member name="M:FHotel.API.Controllers.OrderDetailsController.GetAll">
             <summary>
             Get a list of all orderDetails.
@@ -302,6 +427,56 @@
         <member name="M:FHotel.API.Controllers.PaymentsController.Update(System.Guid,FHotel.Services.DTOs.Payments.PaymentRequest)">
             <summary>
             Update payment by payment id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundPoliciesController.GetAll">
+            <summary>
+            Get a list of all refundPolicys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundPoliciesController.Get(System.Guid)">
+            <summary>
+            Get refundPolicy by refundPolicy id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundPoliciesController.Create(FHotel.Service.DTOs.RefundPolicies.RefundPolicyRequest)">
+            <summary>
+            Create new refundPolicy.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundPoliciesController.Delete(System.Guid)">
+            <summary>
+            Delete refundPolicy by refundPolicy id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundPoliciesController.Update(System.Guid,FHotel.Service.DTOs.RefundPolicies.RefundPolicyRequest)">
+            <summary>
+            Update refundPolicy by refundPolicy id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundsController.GetAll">
+            <summary>
+            Get a list of all refunds.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundsController.Get(System.Guid)">
+            <summary>
+            Get refund by refund id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundsController.Create(FHotel.Service.DTOs.Refunds.RefundRequest)">
+            <summary>
+            Create new refund.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundsController.Delete(System.Guid)">
+            <summary>
+            Delete refund by refund id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RefundsController.Update(System.Guid,FHotel.Service.DTOs.Refunds.RefundRequest)">
+            <summary>
+            Update refund by refund id.
             </summary>
         </member>
         <member name="M:FHotel.API.Controllers.ReservationDetailsController.GetAll">
@@ -454,6 +629,31 @@
             Update room by room id.
             </summary>
         </member>
+        <member name="M:FHotel.API.Controllers.RoomStayHistoriesController.GetAll">
+            <summary>
+            Get a list of all roomStayHistorys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomStayHistoriesController.Get(System.Guid)">
+            <summary>
+            Get roomStayHistory by roomStayHistory id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomStayHistoriesController.Create(FHotel.Service.DTOs.RoomStayHistories.RoomStayHistoryRequest)">
+            <summary>
+            Create new roomStayHistory.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomStayHistoriesController.Delete(System.Guid)">
+            <summary>
+            Delete roomStayHistory by roomStayHistory id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.RoomStayHistoriesController.Update(System.Guid,FHotel.Service.DTOs.RoomStayHistories.RoomStayHistoryRequest)">
+            <summary>
+            Update roomStayHistory by roomStayHistory id.
+            </summary>
+        </member>
         <member name="M:FHotel.API.Controllers.RoomTypePricesController.GetAll">
             <summary>
             Get a list of all roomTypePrices.
@@ -602,6 +802,56 @@
         <member name="M:FHotel.API.Controllers.UsersController.Update(System.Guid,FHotel.Services.DTOs.Users.UserRequest)">
             <summary>
             Update user by user id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletHistoriesController.GetAll">
+            <summary>
+            Get a list of all walletHistorys.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletHistoriesController.Get(System.Guid)">
+            <summary>
+            Get walletHistory by walletHistory id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletHistoriesController.Create(FHotel.Service.DTOs.WalletHistories.WalletHistoryRequest)">
+            <summary>
+            Create new walletHistory.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletHistoriesController.Delete(System.Guid)">
+            <summary>
+            Delete walletHistory by walletHistory id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletHistoriesController.Update(System.Guid,FHotel.Service.DTOs.WalletHistories.WalletHistoryRequest)">
+            <summary>
+            Update walletHistory by walletHistory id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletsController.GetAll">
+            <summary>
+            Get a list of all wallets.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletsController.Get(System.Guid)">
+            <summary>
+            Get wallet by wallet id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletsController.Create(FHotel.Service.DTOs.Wallets.WalletRequest)">
+            <summary>
+            Create new wallet.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletsController.Delete(System.Guid)">
+            <summary>
+            Delete wallet by wallet id.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.WalletsController.Update(System.Guid,FHotel.Service.DTOs.Wallets.WalletRequest)">
+            <summary>
+            Update wallet by wallet id.
             </summary>
         </member>
     </members>
