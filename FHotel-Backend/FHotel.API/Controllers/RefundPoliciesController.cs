@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
-    [Route("api/refundPolicies")]
+    [Route("api/refund-policies")]
     [ApiController]
     public class RefundPoliciesController : ControllerBase
     {

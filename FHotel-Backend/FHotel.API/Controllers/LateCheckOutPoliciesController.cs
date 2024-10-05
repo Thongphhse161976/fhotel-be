@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
-    [Route("api/lateCheckOutPolicies")]
+    [Route("api/late-check-out-policies")]
     [ApiController]
     public class LateCheckOutPoliciesController : ControllerBase
     {

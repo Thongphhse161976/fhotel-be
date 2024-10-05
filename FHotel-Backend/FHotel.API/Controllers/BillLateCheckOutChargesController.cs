@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
-    [Route("api/billLateCheckOutCharges")]
+    [Route("api/bill-late-check-out-charges")]
     [ApiController]
     public class BillLateCheckOutChargesController : ControllerBase
     {

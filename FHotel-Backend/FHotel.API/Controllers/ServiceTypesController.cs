@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
-    [Route("api/serviceTypes")]
+    [Route("api/service-types")]
     [ApiController]
     public class ServiceTypesController : ControllerBase
     {

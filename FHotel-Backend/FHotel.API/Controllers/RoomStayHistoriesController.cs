@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
-    [Route("api/roomStayHistories")]
+    [Route("api/room-stay-histories")]
     [ApiController]
     public class RoomStayHistoriesController : ControllerBase
     {
