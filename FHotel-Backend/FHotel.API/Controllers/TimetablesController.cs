@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing timetable.
+    /// </summary>
     [Route("api/timetables")]
     [ApiController]
     public class TimetablesController : ControllerBase

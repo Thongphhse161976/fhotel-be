@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing order-detail.
+    /// </summary>
     [Route("api/order-details")]
     [ApiController]
     public class OrderDetailsController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all orderDetails.
+        /// Get a list of all order-details.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderDetailResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get orderDetail by orderDetail id.
+        /// Get order-detail by order-detail id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderDetailResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new orderDetail.
+        /// Create new order-detail.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete orderDetail by orderDetail id.
+        /// Delete order-detail by order-detail id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<OrderDetailResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update orderDetail by orderDetail id.
+        /// Update order-detail by order-detail id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<OrderDetailResponse>> Update(Guid id, [FromBody] OrderDetailRequest request)

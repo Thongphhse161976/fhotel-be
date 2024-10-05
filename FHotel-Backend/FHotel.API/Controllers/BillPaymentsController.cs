@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing bill-payment.
+    /// </summary>
     [Route("api/bill-payments")]
     [ApiController]
     public class BillPaymentsController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all billPayments.
+        /// Get a list of all bill-payments.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BillPaymentResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get billPayment by billPayment id.
+        /// Get bill-payment by bill-payment id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillPaymentResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new billPayment.
+        /// Create new bill-payment.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete billPayment by billPayment id.
+        /// Delete bill-payment by bill-payment id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<BillPaymentResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update billPayment by billPayment id.
+        /// Update bill-payment by bill-payment id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<BillPaymentResponse>> Update(Guid id, [FromBody] BillPaymentRequest request)

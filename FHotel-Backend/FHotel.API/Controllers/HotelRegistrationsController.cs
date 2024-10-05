@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing hotel-registration.
+    /// </summary>
     [Route("api/hotel-registrations")]
     [ApiController]
     public class HotelRegistrationsController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all hotelRegistrations.
+        /// Get a list of all hotel-registrations.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelRegistrationResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get hotelRegistration by hotelRegistration id.
+        /// Get hotel-registration by hotel-registration id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelRegistrationResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new hotelRegistration.
+        /// Create new hotel-registration.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete hotelRegistration by hotelRegistration id.
+        /// Delete hotel-registration by hotel-registration id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<HotelRegistrationResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update hotelRegistration by hotelRegistration id.
+        /// Update hotel-registration by hotel-registration id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<HotelRegistrationResponse>> Update(Guid id, [FromBody] HotelRegistrationRequest request)

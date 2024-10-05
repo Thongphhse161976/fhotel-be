@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing user.
+    /// </summary>
     [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase

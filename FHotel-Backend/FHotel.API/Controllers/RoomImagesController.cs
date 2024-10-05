@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing room-image.
+    /// </summary>
     [Route("api/room-images")]
     [ApiController]
     public class RoomImagesController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all roomImages.
+        /// Get a list of all room-images.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomImageResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get roomImage by roomImage id.
+        /// Get room-image by room-image id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomImageResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new roomImage.
+        /// Create new room-image.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete roomImage by roomImage id.
+        /// Delete room-image by room-image id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<RoomImageResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update roomImage by roomImage id.
+        /// Update room-image by room-image id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<RoomImageResponse>> Update(Guid id, [FromBody] RoomImageRequest request)

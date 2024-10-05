@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing reservation-detail.
+    /// </summary>
     [Route("api/reservation-details")]
     [ApiController]
     public class ReservationDetailsController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all reservationDetails.
+        /// Get a list of all reservation-details.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationDetailResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get reservationDetail by reservationDetail id.
+        /// Get reservation-detail by reservation-detail id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReservationDetailResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new reservationDetail.
+        /// Create new reservation-detail.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete reservationDetail by reservationDetail id.
+        /// Delete reservation-detail by reservation-detail id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ReservationDetailResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update reservationDetail by reservationDetail id.
+        /// Update reservation-detail by reservation-detail id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<ReservationDetailResponse>> Update(Guid id, [FromBody] ReservationDetailRequest request)

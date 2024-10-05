@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing refund.
+    /// </summary>
     [Route("api/refunds")]
     [ApiController]
     public class RefundsController : ControllerBase

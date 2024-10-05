@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing room-stay-history.
+    /// </summary>
     [Route("api/room-stay-histories")]
     [ApiController]
     public class RoomStayHistoriesController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all roomStayHistorys.
+        /// Get a list of all room-stay-histories.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomStayHistoryResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get roomStayHistory by roomStayHistory id.
+        /// Get room-stay-history by room-stay-history id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomStayHistoryResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new roomStayHistory.
+        /// Create new room-stay-history.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete roomStayHistory by roomStayHistory id.
+        /// Delete room-stay-history by room-stay-history id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<RoomStayHistoryResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update roomStayHistory by roomStayHistory id.
+        /// Update room-stay-history by room-stay-history id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<RoomStayHistoryResponse>> Update(Guid id, [FromBody] RoomStayHistoryRequest request)

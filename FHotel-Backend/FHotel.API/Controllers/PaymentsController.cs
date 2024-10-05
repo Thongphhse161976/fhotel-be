@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing payment.
+    /// </summary>
     [Route("api/payments")]
     [ApiController]
     public class PaymentsController : ControllerBase

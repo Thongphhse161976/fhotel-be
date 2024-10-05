@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing service-type.
+    /// </summary>
     [Route("api/service-types")]
     [ApiController]
     public class ServiceTypesController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all serviceTypes.
+        /// Get a list of all service-types.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ServiceTypeResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get serviceType by serviceType id.
+        /// Get service-type by service-type id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ServiceTypeResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new serviceType.
+        /// Create new service-type.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete serviceType by serviceType id.
+        /// Delete service-type by service-type id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceTypeResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update serviceType by serviceType id.
+        /// Update service-type by service-type id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<ServiceTypeResponse>> Update(Guid id, [FromBody] ServiceTypeRequest request)

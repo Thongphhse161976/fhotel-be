@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing late-check-out-policy.
+    /// </summary>
     [Route("api/late-check-out-policies")]
     [ApiController]
     public class LateCheckOutPoliciesController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all lateCheckOutPolicys.
+        /// Get a list of all late-check-out-policies.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<LateCheckOutPolicyResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get lateCheckOutPolicy by lateCheckOutPolicy id.
+        /// Get late-check-out-policy by late-check-out-policy id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LateCheckOutPolicyResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new lateCheckOutPolicy.
+        /// Create new late-check-out-policy.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete lateCheckOutPolicy by lateCheckOutPolicy id.
+        /// Delete late-check-out-policy by late-check-out-policy id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<LateCheckOutPolicyResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update lateCheckOutPolicy by lateCheckOutPolicy id.
+        /// Update late-check-out-policy by late-check-out-policy id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<LateCheckOutPolicyResponse>> Update(Guid id, [FromBody] LateCheckOutPolicyRequest request)

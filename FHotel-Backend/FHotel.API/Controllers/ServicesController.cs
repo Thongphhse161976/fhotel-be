@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing service.
+    /// </summary>
     [Route("api/services")]
     [ApiController]
     public class ServicesController : ControllerBase

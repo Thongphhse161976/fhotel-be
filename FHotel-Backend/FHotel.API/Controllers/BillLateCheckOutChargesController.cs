@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing bill-late-check-out-charge.
+    /// </summary>
     [Route("api/bill-late-check-out-charges")]
     [ApiController]
     public class BillLateCheckOutChargesController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all billLateCheckOutCharges.
+        /// Get a list of all bill-late-check-out-charges.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BillLateCheckOutChargeResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get billLateCheckOutCharge by billLateCheckOutCharge id.
+        /// Get bill-late-check-out-charge by bill-late-check-out-charge id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillLateCheckOutChargeResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new billLateCheckOutCharge.
+        /// Create new bill-late-check-out-charge.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete BillLateCheckOutCharge by BillLateCheckOutCharge id.
+        /// Delete bill-late-check-out-charge by bill-late-check-out-charge id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<BillLateCheckOutChargeResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update BillLateCheckOutCharge by BillLateCheckOutCharge id.
+        /// Update bill-late-check-out-charge by bill-late-check-out-charge id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<BillLateCheckOutChargeResponse>> Update(Guid id, [FromBody] BillLateCheckOutChargeRequest request)

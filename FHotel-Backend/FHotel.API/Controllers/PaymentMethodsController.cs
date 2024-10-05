@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing payment-method.
+    /// </summary>
     [Route("api/payment-methods")]
     [ApiController]
     public class PaymentMethodsController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all paymentMethods.
+        /// Get a list of all payment-methods.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PaymentMethodResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get paymentMethod by paymentMethod id.
+        /// Get payment-method by payment-method id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaymentMethodResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new paymentMethod.
+        /// Create new payment-method.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete paymentMethod by paymentMethod id.
+        /// Delete payment-method by payment-method id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<PaymentMethodResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update paymentMethod by paymentMethod id.
+        /// Update payment-method by payment-method id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<PaymentMethodResponse>> Update(Guid id, [FromBody] PaymentMethodRequest request)

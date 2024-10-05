@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing role.
+    /// </summary>
     [Route("api/roles")]
     [ApiController]
     /// <summary>

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing hotel-amenity.
+    /// </summary>
     [Route("api/hotel-amenities")]
     [ApiController]
     public class HotelAmenitiesController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all hotelAmenitys.
+        /// Get a list of all hotel-amenities.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelAmenityResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get hotelAmenity by hotelAmenity id.
+        /// Get hotel-amenity by hotel-amenity id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelAmenityResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new hotelAmenity.
+        /// Create new hotel-amenity.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete hotelAmenity by hotelAmenity id.
+        /// Delete hotel-amenity by hotel-amenity id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<HotelAmenityResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update hotelAmenity by hotelAmenity id.
+        /// Update hotel-amenity by hotel-amenity id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<HotelAmenityResponse>> Update(Guid id, [FromBody] HotelAmenityRequest request)

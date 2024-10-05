@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing late-check-out-charge.
+    /// </summary>
     [Route("api/late-check-out-charges")]
     [ApiController]
     public class LateCheckOutChargesController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all lateCheckOutCharges.
+        /// Get a list of all late-check-out-charges.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<LateCheckOutChargeResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get lateCheckOutCharge by lateCheckOutCharge id.
+        /// Get late-check-out-charge by late-check-out-charge id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LateCheckOutChargeResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new lateCheckOutCharge.
+        /// Create new late-check-out-charge.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete lateCheckOutCharge by lateCheckOutCharge id.
+        /// Delete late-check-out-charge by late-check-out-charge id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<LateCheckOutChargeResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update lateCheckOutCharge by lateCheckOutCharge id.
+        /// Update late-check-out-charge by late-check-out-charge id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<LateCheckOutChargeResponse>> Update(Guid id, [FromBody] LateCheckOutChargeRequest request)

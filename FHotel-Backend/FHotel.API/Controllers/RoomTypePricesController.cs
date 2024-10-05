@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing room-type-price.
+    /// </summary>
     [Route("api/room-type-prices")]
     [ApiController]
     public class RoomTypePricesController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all roomTypePrices.
+        /// Get a list of all room-type-prices.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypePriceResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get roomTypePrice by roomTypePrice id.
+        /// Get room-type-price by room-type-price id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomTypePriceResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new roomTypePrice.
+        /// Create new room-type-price.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete roomTypePrice by roomTypePrice id.
+        /// Delete room-type-price by room-type-price id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<RoomTypePriceResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update roomTypePrice by roomTypePrice id.
+        /// Update room-type-price by room-type-price id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<RoomTypePriceResponse>> Update(Guid id, [FromBody] RoomTypePriceRequest request)

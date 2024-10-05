@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing order.
+    /// </summary>
     [Route("api/orders")]
     [ApiController]
     public class OrdersController : ControllerBase

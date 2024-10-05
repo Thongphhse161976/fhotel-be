@@ -7,6 +7,8 @@ using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +71,56 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "MeowLish API",
+        Description = "MeowLish Management API",
+        TermsOfService = new Uri("https://FHotel.com"),
+        Contact = new OpenApiContact
+        {
+            Name = "MeowLish Company",
+            Email = "meowlish.work@gmail.com",
+            Url = new Uri("https://twitter.com/FHotel"),
+        },
+        License = new OpenApiLicense
+        {
+            Name = "MeowLish Open License",
+            Url = new Uri("https://FHotel.com"),
+        }
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT Token with Bearer format"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+{
+    {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        new string[]{ }
+    }
+});
+
+});
 
 var app = builder.Build();
 

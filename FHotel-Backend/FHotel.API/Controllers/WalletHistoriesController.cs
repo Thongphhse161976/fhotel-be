@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing wallet-history.
+    /// </summary>
     [Route("api/wallet-histories")]
     [ApiController]
     public class WalletHistoriesController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all walletHistorys.
+        /// Get a list of all wallet-histories.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WalletHistoryResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get walletHistory by walletHistory id.
+        /// Get wallet-history by wallet-history id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WalletHistoryResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new walletHistory.
+        /// Create new wallet-history.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete walletHistory by walletHistory id.
+        /// Delete wallet-history by wallet-history id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<WalletHistoryResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update walletHistory by walletHistory id.
+        /// Update wallet-history by wallet-history id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<WalletHistoryResponse>> Update(Guid id, [FromBody] WalletHistoryRequest request)

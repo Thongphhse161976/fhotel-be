@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing room-type.
+    /// </summary>
     [Route("api/room-types")]
     [ApiController]
     public class RoomTypesController : ControllerBase
@@ -18,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all roomTypes.
+        /// Get a list of all room-types.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypeResponse>))]
@@ -38,7 +41,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get roomType by roomType id.
+        /// Get room-type by room-type id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomTypeResponse))]
@@ -58,7 +61,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new roomType.
+        /// Create new room-type.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,7 +80,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete roomType by roomType id.
+        /// Delete room-type by room-type id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<RoomTypeResponse>> Delete(Guid id)
@@ -87,7 +90,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update roomType by roomType id.
+        /// Update room-type by room-type id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<RoomTypeResponse>> Update(Guid id, [FromBody] RoomTypeRequest request)

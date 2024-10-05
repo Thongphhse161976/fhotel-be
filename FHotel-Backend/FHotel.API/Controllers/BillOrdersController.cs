@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing bill-order.
+    /// </summary>
     [Route("api/bill-orders")]
     [ApiController]
     public class BillOrdersController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all billOrders.
+        /// Get a list of all bill-orders.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BillOrderResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get billOrder by billOrder id.
+        /// Get bill-order by bill-order id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillOrderResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new billOrder.
+        /// Create new bill-order.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete billOrder by billOrder id.
+        /// Delete bill-order by bill-order id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<BillOrderResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update billOrder by billOrder id.
+        /// Update bill-order by bill-order id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<BillOrderResponse>> Update(Guid id, [FromBody] BillOrderRequest request)

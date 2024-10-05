@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing refund-policy.
+    /// </summary>
     [Route("api/refund-policies")]
     [ApiController]
     public class RefundPoliciesController : ControllerBase
@@ -17,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all refundPolicys.
+        /// Get a list of all refund-policies.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RefundPolicyResponse>))]
@@ -37,7 +40,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get refundPolicy by refundPolicy id.
+        /// Get refund-policy by refund-policy id.
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RefundPolicyResponse))]
@@ -57,7 +60,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new refundPolicy.
+        /// Create new refund-policy.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -76,7 +79,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete refundPolicy by refundPolicy id.
+        /// Delete refund-policy by refund-policy id.
         /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<RefundPolicyResponse>> Delete(Guid id)
@@ -86,7 +89,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Update refundPolicy by refundPolicy id.
+        /// Update refund-policy by refund-policy id.
         /// </summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<RefundPolicyResponse>> Update(Guid id, [FromBody] RefundPolicyRequest request)

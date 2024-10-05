@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing feedback.
+    /// </summary>
     [Route("api/feedbacks")]
     [ApiController]
     public class FeedbacksController : ControllerBase

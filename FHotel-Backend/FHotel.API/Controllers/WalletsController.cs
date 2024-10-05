@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FHotel.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing wallet.
+    /// </summary>
     [Route("api/wallets")]
     [ApiController]
     public class WalletsController : ControllerBase
