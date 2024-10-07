@@ -1,7 +1,9 @@
-﻿using FHotel.Service.Profiles;
+﻿using FHotel.Service.DTOs.Users;
+using FHotel.Service.Profiles;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -76,16 +78,25 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserResponse>> Create([FromBody] UserRequest request)
+        public async Task<ActionResult<UserResponse>> Create([FromBody] UserCreateRequest request)
         {
             try
             {
                 var result = await _userService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 

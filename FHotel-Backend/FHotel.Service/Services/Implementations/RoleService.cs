@@ -44,7 +44,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (role == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Role not find");
                 }
 
                 return _mapper.Map<Role, RoleResponse>(role);

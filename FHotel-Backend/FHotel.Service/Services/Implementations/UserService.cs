@@ -9,6 +9,7 @@ using FHotel.Services.DTOs.Roles;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,12 @@ namespace FHotel.Services.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IRoleService _roleService;
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _roleService = roleService;
         }
 
         public async Task<List<UserResponse>> GetAll()
@@ -63,15 +66,51 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<UserResponse> Create(UserRequest request)
+        public async Task<UserResponse> Create(UserCreateRequest request)
         {
+            var validator = new UserCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // Check dupplicated IdentificationNumber
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.IdentificationNumber == request.IdentificationNumber) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Identification number already exists."));
+            }
+
+            // Check dupplicated Email
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.Email == request.Email) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+            }
+
+            // Check dupplicated PhoneNumber (nếu cần)
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
-                var user = _mapper.Map<UserRequest, User>(request);
+                var validaterole = await _roleService.Get((Guid)request.RoleId);
+                var user = _mapper.Map<UserCreateRequest, User>(request);
                 user.UserId = Guid.NewGuid();
+                user.CreatedDate = localTime;
+                user.IsActive = false;
                 await _unitOfWork.Repository<User>().InsertAsync(user);
                 await _unitOfWork.CommitAsync();
-
                 return _mapper.Map<User, UserResponse>(user);
             }
             catch (Exception e)
@@ -159,7 +198,23 @@ namespace FHotel.Services.Services.Implementations
             return userRes;
         }
 
-
+        public async Task<UserResponse> ActiveAccount(string email)
+        {
+            var accounts = await GetAll();
+            foreach (var account in accounts)
+            {
+                if (account.Email!.Equals(email) && account.IsActive == false)
+                {
+                    User user = _unitOfWork.Repository<User>()
+                            .Find(x => x.UserId == account.UserId);
+                    user.IsActive = true;
+                    await _unitOfWork.Repository<User>().UpdateDetached(user);
+                    await _unitOfWork.CommitAsync();
+                    return _mapper.Map<User, UserResponse>(user);
+                }
+            }
+            return null;
+        }
 
 
     }

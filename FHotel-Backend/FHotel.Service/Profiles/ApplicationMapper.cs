@@ -10,6 +10,7 @@ using FHotel.Service.DTOs.LateCheckOutPolicies;
 using FHotel.Service.DTOs.RefundPolicies;
 using FHotel.Service.DTOs.Refunds;
 using FHotel.Service.DTOs.RoomStayHistories;
+using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.WalletHistories;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Services.DTOs.Cities;
@@ -93,6 +94,8 @@ namespace FHotel.Service.Profiles
             CreateMap<Timetable, TimetableRequest>().ReverseMap();
             CreateMap<Timetable, TimetableResponse>().ReverseMap();
             CreateMap<User, UserRequest>().ReverseMap();
+            CreateMap<User, UserCreateRequest>().ReverseMap();
+            CreateMap<User, UserLoginRequest>().ReverseMap();
             CreateMap<User, UserResponse>().ReverseMap();
             CreateMap<Bill, BillRequest>().ReverseMap();
             CreateMap<Bill, BillResponse>().ReverseMap();

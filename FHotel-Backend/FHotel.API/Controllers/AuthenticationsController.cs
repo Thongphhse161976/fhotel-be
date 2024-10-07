@@ -116,6 +116,22 @@ namespace FHotel.API.Controllers
 
             return jwtTokenHandler.WriteToken(token);
         }
-
+        /// <summary>
+        /// Active an account by email
+        /// </summary>
+        [HttpPost("{email}/activation")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<string>> ActiveAccount(string email)
+        {
+            try
+            {
+                var rs = await _userService.ActiveAccount(email);
+                return Ok("Active Account Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

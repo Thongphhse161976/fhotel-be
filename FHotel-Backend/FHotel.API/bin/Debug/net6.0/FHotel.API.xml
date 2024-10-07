@@ -14,6 +14,11 @@
             Login an account by email and password.
             </summary>
         </member>
+        <member name="M:FHotel.API.Controllers.AuthenticationsController.ActiveAccount(System.String)">
+            <summary>
+            Active an account by email
+            </summary>
+        </member>
         <member name="T:FHotel.API.Controllers.BillLateCheckOutChargesController">
             <summary>
             Controller for managing bill-late-check-out-charge.
@@ -959,7 +964,7 @@
             Get user by user id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.UsersController.Create(FHotel.Services.DTOs.Users.UserRequest)">
+        <member name="M:FHotel.API.Controllers.UsersController.Create(FHotel.Service.DTOs.Users.UserCreateRequest)">
             <summary>
             Create new user.
             </summary>
