@@ -68,7 +68,6 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost]
         public async Task<ActionResult<HotelRegistrationResponse>> Create([FromBody] HotelRegistrationCreateRequest request)
         {
             try

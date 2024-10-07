@@ -9,7 +9,7 @@
             Controller for managing authentication.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.AuthenticationsController.LoginMember(FHotel.Services.DTOs.Users.LoginMem)">
+        <member name="M:FHotel.API.Controllers.AuthenticationsController.LoginMember(FHotel.Service.DTOs.Users.UserLoginRequest)">
             <summary>
             Login an account by email and password.
             </summary>

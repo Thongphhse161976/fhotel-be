@@ -1,4 +1,5 @@
-﻿using FHotel.Services.DTOs.Users;
+﻿using FHotel.Service.DTOs.Users;
+using FHotel.Services.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,6 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<UserResponse> Update(Guid id, UserRequest request);
 
-        public Task<UserResponse> Login(LoginMem account);
+        public Task<UserResponse> Login(UserLoginRequest account);
     }
 }

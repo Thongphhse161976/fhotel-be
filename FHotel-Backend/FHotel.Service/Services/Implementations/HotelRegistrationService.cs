@@ -7,10 +7,10 @@ using FHotel.Service.Validators.HotelResgistrationValidator;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.HotelRegistations;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,10 +68,10 @@ namespace FHotel.Services.Services.Implementations
 
             if (!validationResult.IsValid)
             {
-                // Combine validation errors into a single message
-                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new ValidationException(errors);
+                throw new ValidationException(validationResult.Errors);
             }
+
+
 
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);

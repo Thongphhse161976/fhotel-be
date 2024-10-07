@@ -2,9 +2,13 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Users;
+using FHotel.Service.Validators.HotelResgistrationValidator;
+using FHotel.Service.Validators.UserValidator;
 using FHotel.Services.DTOs.Roles;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -42,6 +46,7 @@ namespace FHotel.Services.Services.Implementations
                 user = await _unitOfWork.Repository<User>().GetAll()
                      .AsNoTracking()
                     .Where(x => x.UserId == id)
+                    .Include(x => x.Role)
                     .FirstOrDefaultAsync();
 
                 if (user == null)
@@ -120,36 +125,41 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<UserResponse> Login(LoginMem account)
+        public async Task<UserResponse> Login(UserLoginRequest request)
         {
-            // Validate input parameters
-            if (account == null || string.IsNullOrEmpty(account.Email) || string.IsNullOrEmpty(account.Password))
+            // Validate the login request using FluentValidation
+            var validator = new UserLoginRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // If validation fails, throw a validation exception with the validation failures
+            if (!validationResult.IsValid)
             {
-                // Handle invalid input, e.g., log an error or return a meaningful response
-                return null;
+                throw new ValidationException(validationResult.Errors);
             }
 
             // Retrieve the user based on email and password
-            User user = _unitOfWork.Repository<User>()
-                .Find(x => x.Email == account.Email && x.Password == account.Password);
+            var user = _unitOfWork.Repository<User>()
+                .Find(x => x.Email == request.Email && x.Password == request.Password);
 
-            // Check if the user is null
+            // Return null if the user is not found or if credentials are incorrect
             if (user == null)
             {
-                // Handle the case where no user is found, e.g., log an error or return a meaningful response
                 return null;
             }
 
-            // Check if Email or Password is null, and handle the case appropriately
+            // Return null if the user's email or password is null (additional precaution)
             if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Password))
             {
-                // Handle the case where Email or Password is null, e.g., log an error or return a meaningful response
                 return null;
             }
 
-            // Map the user to the response object
-            return _mapper.Map<User, UserResponse>(user);
+            // Retrieve additional user details
+            var userRes = await Get(user.UserId);
+
+            return userRes;
         }
+
+
 
 
     }

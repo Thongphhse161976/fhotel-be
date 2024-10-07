@@ -1,7 +1,9 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Users;
 using FHotel.Service.Profiles;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -36,46 +38,61 @@ namespace FHotel.API.Controllers
         /// </summary>
         [HttpPost("login")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<UserResponse>> LoginMember(LoginMem loginMem)
+        public async Task<ActionResult<UserResponse>> LoginMember(UserLoginRequest loginMem)
         {
-            UserResponse userResponse = await _userService.Login(loginMem);
-            if(userResponse == null)
+            try
             {
-                return NotFound(
-                        new ApiResponse
-                        {
-                            Success = false,
-                            Message = "Invalid Username or Password"
-                        }
-                 );
-            }
-            else
-            {
+                // Call the login service to authenticate the user
+                var userResponse = await _userService.Login(loginMem);
+
+                if (userResponse == null)
+                {
+                    return NotFound(new ApiResponse
+                    {
+                        Success = false,
+                        Message = "Invalid Username or Password"
+                    });
+                }
+
                 // Check if the user is active
                 if (userResponse.IsActive != true)
                 {
-                    // Handle the case where user is not active, e.g., log an error or return a meaningful response
-                    return NotFound(
-                        new ApiResponse
-                        {
-                            Success = false,
-                            Message = "Your account is banned"
-                        });
+                    return NotFound(new ApiResponse
+                    {
+                        Success = false,
+                        Message = "Your account is not allowed to log in!"
+                    });
                 }
-                else
+
+                // Authentication successful, generate token and return response
+                return Ok(new ApiResponse
                 {
-                    return Ok(
-                              new ApiResponse
-                              {
-                                  Success = true,
-                                  Message = "Authenticate Successfully",
-                                  Data = GenerateToken(userResponse)
-                              }
-                        );
-                }
-                
+                    Success = true,
+                    Message = "Authenticated Successfully",
+                    Data = GenerateToken(userResponse)
+                });
+            }
+            catch (ValidationException ex)
+            {
+                // Handle validation exception and return validation errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage)
+                });
+            }
+            catch (Exception ex)
+            {
+                // Handle generic exception and return a 500 status code with error message
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    message = ex.Message
+                });
             }
         }
+
+
+
 
         //Generate token
         private string GenerateToken(UserResponse model)
@@ -88,10 +105,7 @@ namespace FHotel.API.Controllers
             {
                 Subject = new ClaimsIdentity(new[] {
                     new Claim("Id", model.UserId.ToString()),
-                    new Claim(ClaimTypes.Role, model.RoleId.ToString()),
-
-                    //roles
-                    new Claim("Token Id", Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Role, model.Role.RoleName.ToString()),
                 }),
                 Expires = DateTime.MaxValue,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes)

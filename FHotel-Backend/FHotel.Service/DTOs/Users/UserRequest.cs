@@ -23,9 +23,5 @@ namespace FHotel.Services.DTOs.Users
         public DateTime? UpdatedDate { get; set; }
         public bool? IsActive { get; set; }
     }
-    public class LoginMem
-    {
-        public string? Email { get; set; }
-        public string? Password { get; set; }
-    }
+   
 }
