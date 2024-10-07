@@ -96,22 +96,22 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "MeowLish API",
-        Description = "MeowLish Management API",
+        Title = "FHotel API",
+        Description = "FHotel Management API",
         TermsOfService = new Uri("https://FHotel.com"),
         Contact = new OpenApiContact
         {
-            Name = "MeowLish Company",
-            Email = "meowlish.work@gmail.com",
+            Name = "FHotel Company",
+            Email = "fhotel.work@gmail.com",
             Url = new Uri("https://twitter.com/FHotel"),
         },
         License = new OpenApiLicense
         {
-            Name = "MeowLish Open License",
+            Name = "FHotel Open License",
             Url = new Uri("https://FHotel.com"),
         }
     });
-
+    
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
@@ -142,10 +142,21 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowOrigin",
+        builder =>
+        {
+            builder.WithOrigins("*")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -154,5 +165,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowOrigin");
 
 app.Run();
