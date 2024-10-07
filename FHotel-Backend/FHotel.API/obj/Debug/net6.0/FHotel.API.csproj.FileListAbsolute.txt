@@ -142,3 +142,5 @@ D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\
 D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\FHotel.API.pdb
 D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\FHotel.API.genruntimeconfig.cache
 D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\ref\FHotel.API.dll
+D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll

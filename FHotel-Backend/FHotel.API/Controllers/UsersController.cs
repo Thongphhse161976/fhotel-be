@@ -1,8 +1,10 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.Profiles;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FHotel.API.Controllers
 {
@@ -32,6 +34,14 @@ namespace FHotel.API.Controllers
             try
             {
                 var rs = await _userService.GetAll();
+                if (rs.IsNullOrEmpty()) // check list is null or empty
+                {
+                    return NotFound(new ApiResponse
+                    {
+                        Success = false,
+                        Message = "No users found."
+                    });
+                }
                 return Ok(rs);
             }
             catch (Exception ex)

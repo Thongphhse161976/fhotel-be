@@ -4,6 +4,16 @@
         <name>FHotel.API</name>
     </assembly>
     <members>
+        <member name="T:FHotel.API.Controllers.AuthenticationsController">
+            <summary>
+            Controller for managing authentication.
+            </summary>
+        </member>
+        <member name="M:FHotel.API.Controllers.AuthenticationsController.LoginMember(FHotel.Services.DTOs.Users.LoginMem)">
+            <summary>
+            Login an account by email and password.
+            </summary>
+        </member>
         <member name="T:FHotel.API.Controllers.BillLateCheckOutChargesController">
             <summary>
             Controller for managing bill-late-check-out-charge.
