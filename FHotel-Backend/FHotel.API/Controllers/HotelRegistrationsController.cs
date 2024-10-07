@@ -1,6 +1,8 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.HotelRegistations;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelRegistations;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,18 +68,25 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelRegistrationResponse>> Create([FromBody] HotelRegistrationRequest request)
+        [HttpPost]
+        public async Task<ActionResult<HotelRegistrationResponse>> Create([FromBody] HotelRegistrationCreateRequest request)
         {
             try
             {
                 var result = await _hotelRegistrationService.Create(request);
-                return CreatedAtAction(nameof(Create), result);
+                return CreatedAtAction(nameof(Create), new { id = result.HotelRegistrationId }, result);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new { message = "Validation failed", errors = ex.Errors.Select(e => e.ErrorMessage) });
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
 
         /// <summary>
         /// Delete hotel-registration by hotel-registration id.
@@ -85,25 +94,45 @@ namespace FHotel.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<HotelRegistrationResponse>> Delete(Guid id)
         {
-            var rs = await _hotelRegistrationService.Delete(id);
-            return Ok(rs);
+            try
+            {
+                var rs = await _hotelRegistrationService.Delete(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         /// <summary>
         /// Update hotel-registration by hotel-registration id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<HotelRegistrationResponse>> Update(Guid id, [FromBody] HotelRegistrationRequest request)
+        public async Task<ActionResult<HotelRegistrationResponse>> Update(Guid id, [FromBody] HotelRegistrationUpdateRequest request)
         {
             try
             {
-                var rs = await _hotelRegistrationService.Update(id, request);
-                return Ok(rs);
+                // Set the HotelRegistrationId from the route parameter
+                request.HotelRegistrationId = id;
+
+                // Call the update method in the service layer
+                var result = await _hotelRegistrationService.Update(id, request);
+
+                return Ok(result);
+            }
+            catch (ValidationException ex)
+            {
+                // Return validation errors as a list of error messages
+                return BadRequest(new { message = "Validation failed", errors = ex.Errors.Select(e => e.ErrorMessage) });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Handle any other exceptions that may occur
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
     }
 }

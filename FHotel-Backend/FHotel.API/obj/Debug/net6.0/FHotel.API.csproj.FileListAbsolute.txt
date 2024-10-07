@@ -142,3 +142,4 @@ D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\
 D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\FHotel.API.pdb
 D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\FHotel.API.genruntimeconfig.cache
 D:\FA2024_capstone_project\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\ref\FHotel.API.dll
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.API\bin\Debug\net6.0\FluentValidation.dll

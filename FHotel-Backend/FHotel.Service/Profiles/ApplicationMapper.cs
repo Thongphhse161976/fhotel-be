@@ -4,6 +4,7 @@ using FHotel.Service.DTOs.BillLateCheckOutCharges;
 using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.BillPayments;
 using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.HotelRegistations;
 using FHotel.Service.DTOs.LateCheckOutCharges;
 using FHotel.Service.DTOs.LateCheckOutPolicies;
 using FHotel.Service.DTOs.RefundPolicies;
@@ -60,7 +61,8 @@ namespace FHotel.Service.Profiles
             CreateMap<Hotel, HotelResponse>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationRequest>().ReverseMap();
+            CreateMap<HotelRegistration, HotelRegistrationCreateRequest>().ReverseMap();
+            CreateMap<HotelRegistration, HotelRegistrationUpdateRequest>().ReverseMap();
             CreateMap<HotelRegistration, HotelRegistrationResponse>().ReverseMap();
             CreateMap<Order, OrderRequest>().ReverseMap();
             CreateMap<Order, OrderResponse>().ReverseMap();

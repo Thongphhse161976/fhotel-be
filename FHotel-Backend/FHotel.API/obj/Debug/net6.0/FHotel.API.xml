@@ -289,7 +289,7 @@
             Get hotel-registration by hotel-registration id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Create(FHotel.Services.DTOs.HotelRegistations.HotelRegistrationRequest)">
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Create(FHotel.Service.DTOs.HotelRegistations.HotelRegistrationCreateRequest)">
             <summary>
             Create new hotel-registration.
             </summary>
@@ -299,7 +299,7 @@
             Delete hotel-registration by hotel-registration id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Update(System.Guid,FHotel.Services.DTOs.HotelRegistations.HotelRegistrationRequest)">
+        <member name="M:FHotel.API.Controllers.HotelRegistrationsController.Update(System.Guid,FHotel.Service.DTOs.HotelRegistations.HotelRegistrationUpdateRequest)">
             <summary>
             Update hotel-registration by hotel-registration id.
             </summary>
