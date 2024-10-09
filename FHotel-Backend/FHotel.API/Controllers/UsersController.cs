@@ -29,7 +29,7 @@ namespace FHotel.API.Controllers
         /// Get a list of all users.
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -116,12 +116,21 @@ namespace FHotel.API.Controllers
         /// Update user by user id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<UserResponse>> Update(Guid id, [FromBody] UserRequest request)
+        public async Task<ActionResult<UserResponse>> Update(Guid id, [FromBody] UserUpdateRequest request)
         {
             try
             {
                 var rs = await _userService.Update(id, request);
                 return Ok(rs);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {

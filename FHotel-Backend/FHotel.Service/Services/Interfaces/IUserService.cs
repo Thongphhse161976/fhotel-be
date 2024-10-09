@@ -18,7 +18,7 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<UserResponse> Delete(Guid id);
 
-        public Task<UserResponse> Update(Guid id, UserRequest request);
+        public Task<UserResponse> Update(Guid id, UserUpdateRequest request);
 
         public Task<UserResponse> Login(UserLoginRequest account);
 

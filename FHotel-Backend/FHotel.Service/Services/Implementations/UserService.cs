@@ -104,7 +104,7 @@ namespace FHotel.Services.Services.Implementations
             DateTime localTime = utcNow + utcOffset;
             try
             {
-                var validaterole = await _roleService.Get((Guid)request.RoleId);
+                await _roleService.Get((Guid)request.RoleId);
                 var user = _mapper.Map<UserCreateRequest, User>(request);
                 user.UserId = Guid.NewGuid();
                 user.CreatedDate = localTime;
@@ -140,16 +140,56 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<UserResponse> Update(Guid id, UserRequest request)
+        public async Task<UserResponse> Update(Guid id, UserUpdateRequest request)
         {
+            var validator = new UserUpdateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+            User user = _unitOfWork.Repository<User>()
+                            .Find(x => x.UserId == id);
+            if (user == null)
+            {
+                var validationErrors = new List<ValidationFailure>
+                    {
+                        new ValidationFailure("User", "User not found.")
+                    };
+                throw new ValidationException(validationErrors);
+            }
+
+            // Check for duplicate IdentificationNumber (excluding current user)
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.IdentificationNumber == request.IdentificationNumber && u.UserId != id) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Identification number already exists."));
+            }
+
+            // Check for duplicate Email (excluding current user)
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.Email == request.Email && u.UserId != id) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+            }
+
+            // Check for duplicate PhoneNumber (excluding current user, if required)
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber && u.UserId != id) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
-                User user = _unitOfWork.Repository<User>()
-                            .Find(x => x.UserId == id);
-                if (user == null)
-                {
-                    throw new Exception();
-                }
+                await _roleService.Get((Guid)request.RoleId);
+                user.UpdatedDate = localTime;
                 user = _mapper.Map(request, user);
 
                 await _unitOfWork.Repository<User>().UpdateDetached(user);
