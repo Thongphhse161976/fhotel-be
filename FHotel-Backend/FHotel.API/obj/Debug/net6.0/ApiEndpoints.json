@@ -1839,7 +1839,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "FHotel.Services.DTOs.Hotels.HotelRequest",
+        "Type": "FHotel.Service.DTOs.Hotels.HotelCreateRequest",
         "IsRequired": true
       }
     ],
@@ -1949,7 +1949,7 @@
       },
       {
         "Name": "request",
-        "Type": "FHotel.Services.DTOs.Hotels.HotelRequest",
+        "Type": "FHotel.Service.DTOs.Hotels.HotelUpdateRequest",
         "IsRequired": true
       }
     ],
@@ -5603,7 +5603,7 @@
       },
       {
         "Name": "request",
-        "Type": "FHotel.Services.DTOs.Users.UserRequest",
+        "Type": "FHotel.Service.DTOs.Users.UserUpdateRequest",
         "IsRequired": true
       }
     ],
