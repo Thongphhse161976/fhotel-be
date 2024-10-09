@@ -334,7 +334,7 @@
             Get hotel by hotel id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.HotelsController.Create(FHotel.Services.DTOs.Hotels.HotelRequest)">
+        <member name="M:FHotel.API.Controllers.HotelsController.Create(FHotel.Service.DTOs.Hotels.HotelCreateRequest)">
             <summary>
             Create new hotel.
             </summary>
@@ -344,7 +344,7 @@
             Delete hotel by hotel id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.HotelsController.Update(System.Guid,FHotel.Services.DTOs.Hotels.HotelRequest)">
+        <member name="M:FHotel.API.Controllers.HotelsController.Update(System.Guid,FHotel.Service.DTOs.Hotels.HotelUpdateRequest)">
             <summary>
             Update hotel by hotel id.
             </summary>
