@@ -1,6 +1,8 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Hotels;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,12 +68,17 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelResponse>> Create([FromBody] HotelRequest request)
+        public async Task<ActionResult<HotelResponse>> Create([FromBody] HotelCreateRequest request)
         {
             try
             {
                 var result = await _hotelService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new { message = "Validation failed", errors = ex.Errors.Select(e => e.ErrorMessage) });
             }
             catch (Exception ex)
             {
@@ -93,12 +100,17 @@ namespace FHotel.API.Controllers
         /// Update hotel by hotel id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<HotelResponse>> Update(Guid id, [FromBody] HotelRequest request)
+        public async Task<ActionResult<HotelResponse>> Update(Guid id, [FromBody] HotelUpdateRequest request)
         {
             try
             {
                 var rs = await _hotelService.Update(id, request);
                 return Ok(rs);
+            }
+            catch (ValidationException ex)
+            {
+                // Return validation errors as a list of error messages
+                return BadRequest(new { message = "Validation failed", errors = ex.Errors.Select(e => e.ErrorMessage) });
             }
             catch (Exception ex)
             {
