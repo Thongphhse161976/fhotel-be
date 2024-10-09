@@ -54,7 +54,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (user == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Not found");
                 }
 
                 return _mapper.Map<User, UserResponse>(user);
@@ -253,7 +253,7 @@ namespace FHotel.Services.Services.Implementations
                     return _mapper.Map<User, UserResponse>(user);
                 }
             }
-            return null;
+            throw new Exception("User not found"); ;
         }
 
 
