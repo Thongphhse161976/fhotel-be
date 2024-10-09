@@ -95,6 +95,7 @@ namespace FHotel.Service.Profiles
             CreateMap<Timetable, TimetableResponse>().ReverseMap();
             CreateMap<User, UserRequest>().ReverseMap();
             CreateMap<User, UserCreateRequest>().ReverseMap();
+            CreateMap<User, UserUpdateRequest>().ReverseMap();
             CreateMap<User, UserLoginRequest>().ReverseMap();
             CreateMap<User, UserResponse>().ReverseMap();
             CreateMap<Bill, BillRequest>().ReverseMap();

@@ -974,7 +974,7 @@
             Delete user by user id.
             </summary>
         </member>
-        <member name="M:FHotel.API.Controllers.UsersController.Update(System.Guid,FHotel.Services.DTOs.Users.UserRequest)">
+        <member name="M:FHotel.API.Controllers.UsersController.Update(System.Guid,FHotel.Service.DTOs.Users.UserUpdateRequest)">
             <summary>
             Update user by user id.
             </summary>
