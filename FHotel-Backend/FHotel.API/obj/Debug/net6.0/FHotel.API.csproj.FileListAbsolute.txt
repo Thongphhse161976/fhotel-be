@@ -224,3 +224,5 @@ C:\Users\nhattpam\Documents\Uni\Code\fhotel-be\FHotel-Backend\FHotel.API\obj\Deb
 C:\Users\nhattpam\Documents\Uni\Code\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\FHotel.API.csproj.Up2Date
 C:\Users\nhattpam\Documents\Uni\Code\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\FHotel.API.genruntimeconfig.cache
 C:\Users\nhattpam\Documents\Uni\Code\fhotel-be\FHotel-Backend\FHotel.API\obj\Debug\net6.0\ref\FHotel.API.dll
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\thongpham\Documents\Doan_Dec\fhotel-be\FHotel-Backend\FHotel.API\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll

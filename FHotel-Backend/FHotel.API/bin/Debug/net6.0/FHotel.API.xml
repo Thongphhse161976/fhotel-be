@@ -146,7 +146,7 @@
         </member>
         <member name="M:FHotel.API.Controllers.CitiesController.GetAll">
             <summary>
-            Get a list of all citys.
+            Get a list of all cities.
             </summary>
         </member>
         <member name="M:FHotel.API.Controllers.CitiesController.Get(System.Guid)">
@@ -176,7 +176,7 @@
         </member>
         <member name="M:FHotel.API.Controllers.CountriesController.GetAll">
             <summary>
-            Get a list of all countrys.
+            Get a list of all countries.
             </summary>
         </member>
         <member name="M:FHotel.API.Controllers.CountriesController.Get(System.Guid)">
