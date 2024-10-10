@@ -39,11 +39,11 @@ namespace FHotel.Service.Validators.HotelValidator
             RuleFor(h => h.Star)
                 .InclusiveBetween(1, 5).WithMessage("Star rating must be between 1 and 5.");
 
-            /*RuleFor(h => h.CityId)
+            RuleFor(h => h.CityId)
                 .NotNull().WithMessage("City is required.");
 
             RuleFor(h => h.OwnerId)
-                .NotNull().WithMessage("Owner is required.");*/
+                .NotNull().WithMessage("Owner is required.");
 
             RuleFor(h => h.IsActive)
                 .NotNull().WithMessage("IsActive field is required.");

@@ -28,10 +28,7 @@ namespace FHotel.Service.Validators.HotelResgistrationValidator
             RuleFor(x => x.Description)
                 .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
 
-            // RegistrationStatus must be present
-            RuleFor(x => x.RegistrationStatus)
-                .NotEmpty().WithMessage("RegistrationStatus is required.")
-                .MaximumLength(50).WithMessage("RegistrationStatus cannot exceed 50 characters.");
+           
         }
     }
 }
