@@ -20,7 +20,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all citys.
+        /// Get a list of all cities.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CityResponse>))]

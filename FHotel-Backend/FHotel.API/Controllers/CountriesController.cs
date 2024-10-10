@@ -21,7 +21,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all countrys.
+        /// Get a list of all countries.
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CountryResponse>))]

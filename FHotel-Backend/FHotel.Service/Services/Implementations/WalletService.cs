@@ -4,6 +4,7 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Service.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -62,10 +63,30 @@ namespace FHotel.Service.Services.Implementations
             {
                 var wallet = _mapper.Map<WalletRequest, Wallet>(request);
                 wallet.WalletId = Guid.NewGuid();
+                if (wallet.UserId == Guid.Empty)
+                {
+                    throw new ValidationException("UserId cannot be empty. Please provide a valid UserId.");
+                }
+                var userExists = await _unitOfWork.Repository<User>().FindAsync(u => u.UserId == wallet.UserId);
+                if (userExists == null)
+                {
+                    throw new ValidationException("The specified user does not exist.");
+                }
                 await _unitOfWork.Repository<Wallet>().InsertAsync(wallet);
                 await _unitOfWork.CommitAsync();
 
                 return _mapper.Map<Wallet, WalletResponse>(wallet);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Handle database-specific exceptions
+                var innerMessage = dbEx.InnerException != null ? dbEx.InnerException.Message : dbEx.Message;
+                throw new Exception($"Database update error: {innerMessage}");
+            }
+            catch (ValidationException vEx)
+            {
+                // Handle validation-specific exceptions
+                throw new Exception(vEx.Message);
             }
             catch (Exception e)
             {

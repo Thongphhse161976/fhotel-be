@@ -596,10 +596,7 @@
           "Microsoft.Extensions.Configuration.Json": "6.0.0"
         },
         "runtime": {
-          "FHotel.Repository.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "FHotel.Repository.dll": {}
         }
       },
       "FHotel.Service/1.0.0": {
@@ -609,10 +606,7 @@
           "FluentValidation": "11.10.0"
         },
         "runtime": {
-          "FHotel.Service.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "FHotel.Service.dll": {}
         }
       }
     }

@@ -3,6 +3,8 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Users;
+using FHotel.Service.DTOs.Wallets;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.HotelResgistrationValidator;
 using FHotel.Service.Validators.UserValidator;
 using FHotel.Services.DTOs.Roles;
@@ -25,11 +27,13 @@ namespace FHotel.Services.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
         private readonly IRoleService _roleService;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService)
+        private readonly IWalletService _walletService;
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService, IWalletService walletService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roleService = roleService;
+            _walletService = walletService;
         }
 
         public async Task<List<UserResponse>> GetAll()
@@ -111,7 +115,17 @@ namespace FHotel.Services.Services.Implementations
                 user.IsActive = false;
                 await _unitOfWork.Repository<User>().InsertAsync(user);
                 await _unitOfWork.CommitAsync();
+                if (user.UserId != Guid.Empty)
+                {
+                    var wallet = new WalletRequest
+                    {
+                        UserId = user.UserId,
+                        Balance = 0
+                    };
+                    await _walletService.Create(wallet);
+                }
                 return _mapper.Map<User, UserResponse>(user);
+
             }
             catch (Exception e)
             {
