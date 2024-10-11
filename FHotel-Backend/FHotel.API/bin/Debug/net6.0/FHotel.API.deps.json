@@ -1510,7 +1510,10 @@
           "Microsoft.Extensions.Configuration.Json": "8.0.0"
         },
         "runtime": {
-          "FHotel.Repository.dll": {}
+          "FHotel.Repository.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "FHotel.Service/1.0.0": {
@@ -1524,7 +1527,10 @@
           "Spire.XLS": "14.9.5"
         },
         "runtime": {
-          "FHotel.Service.dll": {}
+          "FHotel.Service.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
