@@ -1,6 +1,7 @@
 ﻿using FHotel.Service.DTOs.Hotels;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -115,6 +116,38 @@ namespace FHotel.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Upload hotel image.
+        /// </summary>
+        [HttpPost("image")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            // Check if file is present in the request
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file was uploaded.");
+            }
+
+            try
+            {
+                // Call the upload service method
+                var fileLink = await _hotelService.UploadImage(file);
+
+                if (string.IsNullOrEmpty(fileLink))
+                {
+                    return StatusCode(500, "An error occurred while uploading the file.");
+                }
+
+                // Return the link to the uploaded file
+                return Ok(new { link = fileLink });
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, log if necessary
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
     }
