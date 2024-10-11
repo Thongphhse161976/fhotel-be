@@ -3,11 +3,14 @@ using FHotel.Service.Profiles;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Interfaces;
+using Firebase.Auth;
+using Firebase.Storage;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace FHotel.API.Controllers
 {
@@ -137,5 +140,38 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Upload user image.
+        /// </summary>
+        [HttpPost("image")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            // Check if file is present in the request
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file was uploaded.");
+            }
+
+            try
+            {
+                // Call the upload service method
+                var fileLink = await _userService.UploadImage(file);
+
+                if (string.IsNullOrEmpty(fileLink))
+                {
+                    return StatusCode(500, "An error occurred while uploading the file.");
+                }
+
+                // Return the link to the uploaded file
+                return Ok(new { link = fileLink });
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, log if necessary
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
     }
 }

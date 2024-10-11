@@ -979,6 +979,11 @@
             Update user by user id.
             </summary>
         </member>
+        <member name="M:FHotel.API.Controllers.UsersController.Upload(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Upload image account.
+            </summary>
+        </member>
         <member name="T:FHotel.API.Controllers.WalletHistoriesController">
             <summary>
             Controller for managing wallet-history.

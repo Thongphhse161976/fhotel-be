@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Users;
 using FHotel.Services.DTOs.Users;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,6 @@ namespace FHotel.Services.Services.Interfaces
         public Task<UserResponse> Login(UserLoginRequest account);
 
         public Task<UserResponse> ActiveAccount(string email);
+        public Task<string> UploadImage(IFormFile file);
     }
 }
