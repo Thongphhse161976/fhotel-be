@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {}
   },
   "projects": {
@@ -12,12 +13,29 @@
         "projectPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
         "packagesPath": "C:\\Users\\haph1\\.nuget\\packages\\",
         "outputPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\obj\\",
+=======
+    "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
+        "projectName": "FHotel.Repository",
+        "projectPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
+        "packagesPath": "C:\\Users\\thongpham\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\obj\\",
+>>>>>>> origin/api-hotel-amenity
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\haph1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+          "C:\\Users\\thongpham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> origin/api-hotel-amenity
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,8 +44,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "https://api.nuget.org/v3/index.json": {},
           "https://nuget.telerik.com/v3/index.json": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> origin/api-hotel-amenity
         },
         "frameworks": {
           "net6.0": {
@@ -92,6 +114,7 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
@@ -104,12 +127,30 @@
         "projectPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
         "packagesPath": "C:\\Users\\haph1\\.nuget\\packages\\",
         "outputPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\obj\\",
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
+        "projectName": "FHotel.Service",
+        "projectPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
+        "packagesPath": "C:\\Users\\thongpham\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\obj\\",
+>>>>>>> origin/api-hotel-amenity
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\haph1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+          "C:\\Users\\thongpham\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> origin/api-hotel-amenity
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -118,15 +159,24 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "https://api.nuget.org/v3/index.json": {},
           "https://nuget.telerik.com/v3/index.json": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> origin/api-hotel-amenity
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
+<<<<<<< HEAD
               "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
                 "projectPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj"
+=======
+              "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
+                "projectPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj"
+>>>>>>> origin/api-hotel-amenity
               }
             }
           }
@@ -182,7 +232,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
+>>>>>>> origin/api-hotel-amenity
         }
       }
     }

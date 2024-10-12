@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Hotels;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -23,5 +24,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<HotelResponse> Update(Guid id, HotelUpdateRequest request);
 
         public Task<string> UploadImage(IFormFile file);
+
+        Task<List<HotelAmenityResponse>> GetHotelAmenityByHotel(Guid id);
     }
 }
