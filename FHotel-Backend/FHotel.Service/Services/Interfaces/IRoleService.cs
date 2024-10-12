@@ -18,5 +18,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<RoleResponse> Delete(Guid id);
 
         public Task<RoleResponse> Update(Guid id, RoleRequest request);
+
+        public Task<Guid?> GetRoleIdByName(string roleName);
     }
 }

@@ -14,6 +14,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<List<UserResponse>> GetAll();
 
         public Task<UserResponse> Get(Guid id);
+        public Task<UserResponse> GetByEmail(string email);
 
         public Task<UserResponse> Create(UserCreateRequest request);
 
@@ -23,7 +24,9 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<UserResponse> Login(UserLoginRequest account);
 
-        public Task<UserResponse> ActiveAccount(string email);
         public Task<string> UploadImage(IFormFile file);
+        public Task<UserResponse> Register(UserCreateRequest request);
+        public Task SendActivationEmail(string toEmail);
+        public Task ActivateUser(string email);
     }
 }

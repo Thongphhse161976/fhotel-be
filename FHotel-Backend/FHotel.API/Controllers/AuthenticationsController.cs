@@ -116,22 +116,53 @@ namespace FHotel.API.Controllers
 
             return jwtTokenHandler.WriteToken(token);
         }
+
         /// <summary>
-        /// Active an account by email
+        /// Customer register.
         /// </summary>
-        [HttpPost("{email}/activation")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<string>> ActiveAccount(string email)
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserResponse>> Register([FromBody] UserCreateRequest request)
         {
             try
             {
-                var rs = await _userService.ActiveAccount(email);
-                return Ok("Active Account Successfully");
+                var result = await _userService.Register(request);
+                return CreatedAtAction(nameof(Register), result);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Activate user.
+        /// </summary>
+        [HttpGet("activate")]
+        public async Task<IActionResult> ActivateUser(string email)
+        {
+            try
+            {
+                // Call the service method to activate the user
+                await _userService.ActivateUser(email);
+                return Ok(new { message = "Account activated successfully." }); // Corrected this line
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
+
+
     }
 }

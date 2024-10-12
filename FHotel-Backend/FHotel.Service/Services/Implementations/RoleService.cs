@@ -118,6 +118,11 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
+        public async Task<Guid?> GetRoleIdByName(string roleName)
+        {
+            var role = await _unitOfWork.Repository<Role>().FindAsync(r => r.RoleName == roleName);
+            return role?.RoleId; // Returns null if not found
+        }
 
 
     }
