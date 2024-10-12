@@ -8,6 +8,7 @@ using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.Validators.HotelResgistrationValidator;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Services.DTOs.Countries;
+using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.HotelRegistations;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.Services.Interfaces;
@@ -21,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -248,6 +250,30 @@ namespace FHotel.Services.Services.Implementations
                 AuthEmail = configuration.GetSection("FirebaseStorage:authEmail").Value,
                 AuthPassword = configuration.GetSection("FirebaseStorage:authPassword").Value
             };
+        }
+
+        public async Task<List<HotelAmenityResponse>> GetHotelAmenityByHotel(Guid id)
+        {
+            var hotel = await _unitOfWork.Repository<Hotel>().GetAll()
+                .Where(x => x.HotelId == id)
+                .FirstOrDefaultAsync();
+            if (hotel == null)
+            {
+                return null;
+            }
+            try
+            {
+                var hotelAmenities = _unitOfWork.Repository<HotelAmenity>().GetAll()
+                    .Where(a => a.HotelId == id)
+                    .ProjectTo<HotelAmenityResponse>(_mapper.ConfigurationProvider)
+                    .ToList();
+
+                return hotelAmenities;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }

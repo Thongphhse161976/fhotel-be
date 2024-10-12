@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Hotels;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
@@ -17,6 +18,7 @@ namespace FHotel.API.Controllers
     public class HotelsController : ControllerBase
     {
         private readonly IHotelService _hotelService;
+        private readonly IHotelAmenityService _hotelAmenityService;
 
         public HotelsController(IHotelService hotelService)
         {
@@ -56,6 +58,26 @@ namespace FHotel.API.Controllers
             {
                 var rs = await _hotelService.Get(id);
                 return Ok(rs);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get all hotel amenities by hotel id.
+        /// </summary>
+        [HttpGet("{id}/hotel-amenities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelAmenityResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<HotelAmenityResponse>>> GetHotelAmenityByHotel(Guid id)
+        {
+            try
+            {
+                var amenities = await _hotelService.GetHotelAmenityByHotel(id);
+                return Ok(amenities);
             }
             catch
             {
