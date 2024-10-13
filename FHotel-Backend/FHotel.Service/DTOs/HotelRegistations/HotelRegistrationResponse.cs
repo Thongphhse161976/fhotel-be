@@ -16,5 +16,6 @@ namespace FHotel.Services.DTOs.HotelRegistations
         public DateTime? RegistrationDate { get; set; }
         public string? RegistrationStatus { get; set; }
 
+        public virtual User? Owner { get; set; }
     }
 }

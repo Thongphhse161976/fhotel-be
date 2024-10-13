@@ -1,6 +1,8 @@
-﻿using FHotel.Service.DTOs.HotelRegistations;
+﻿using FHotel.Repository.SMTPs.Models;
+using FHotel.Service.DTOs.HotelRegistations;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelRegistations;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -115,10 +117,14 @@ namespace FHotel.API.Controllers
             {
                 // Set the HotelRegistrationId from the route parameter
                 request.HotelRegistrationId = id;
-
+                
                 // Call the update method in the service layer
                 var result = await _hotelRegistrationService.Update(id, request);
-
+                if(request.RegistrationStatus == "Approved")
+                {
+                   var hotelRegistration = await _hotelRegistrationService.Get(id);
+                    await _hotelRegistrationService.ApproveHotelRegistration(hotelRegistration.Owner.Email);
+                }
                 return Ok(result);
             }
             catch (ValidationException ex)
@@ -133,5 +139,6 @@ namespace FHotel.API.Controllers
             }
         }
 
+      
     }
 }
