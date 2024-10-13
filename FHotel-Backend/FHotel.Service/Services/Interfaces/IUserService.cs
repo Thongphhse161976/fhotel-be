@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.Users;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Users;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -28,5 +29,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<UserResponse> Register(UserCreateRequest request);
         public Task SendActivationEmail(string toEmail);
         public Task ActivateUser(string email);
+
+        public Task<List<HotelResponse>> GetHotelByUser(Guid id);
     }
 }
