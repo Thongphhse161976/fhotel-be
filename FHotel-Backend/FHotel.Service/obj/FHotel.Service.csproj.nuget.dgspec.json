@@ -1,42 +1,20 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
-    "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {}
+    "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {}
   },
   "projects": {
-    "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
+    "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
+        "projectUniqueName": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
         "projectName": "FHotel.Repository",
-        "projectPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
-        "packagesPath": "C:\\Users\\haph1\\.nuget\\packages\\",
-        "outputPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\obj\\",
-=======
-    "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {}
-  },
-  "projects": {
-    "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
-        "projectName": "FHotel.Repository",
-        "projectPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
-        "packagesPath": "C:\\Users\\thongpham\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\obj\\",
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
+        "projectPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj",
+        "packagesPath": "C:\\Users\\nhattpam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-<<<<<<< HEAD
-          "C:\\Users\\haph1\\AppData\\Roaming\\NuGet\\NuGet.Config",
-=======
-          "C:\\Users\\thongpham\\AppData\\Roaming\\NuGet\\NuGet.Config",
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\nhattpam\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,12 +22,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-<<<<<<< HEAD
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.telerik.com/v3/index.json": {}
-=======
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
         },
         "frameworks": {
           "net6.0": {
@@ -61,6 +35,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -114,44 +93,21 @@
               "privateAssets": "all"
             }
           },
-<<<<<<< HEAD
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {
+    "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
+        "projectUniqueName": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
         "projectName": "FHotel.Service",
-        "projectPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
-        "packagesPath": "C:\\Users\\haph1\\.nuget\\packages\\",
-        "outputPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Service\\obj\\",
-=======
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
-        }
-      }
-    },
-    "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
-        "projectName": "FHotel.Service",
-        "projectPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
-        "packagesPath": "C:\\Users\\thongpham\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Service\\obj\\",
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
+        "projectPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\FHotel.Service.csproj",
+        "packagesPath": "C:\\Users\\nhattpam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-<<<<<<< HEAD
-          "C:\\Users\\haph1\\AppData\\Roaming\\NuGet\\NuGet.Config",
-=======
-          "C:\\Users\\thongpham\\AppData\\Roaming\\NuGet\\NuGet.Config",
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\nhattpam\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -159,24 +115,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-<<<<<<< HEAD
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.telerik.com/v3/index.json": {}
-=======
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-<<<<<<< HEAD
-              "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
-                "projectPath": "D:\\FA2024_capstone_project\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj"
-=======
-              "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
-                "projectPath": "C:\\Users\\thongpham\\Documents\\Doan_Dec\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj"
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
+              "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj": {
+                "projectPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\FHotel.Repository.csproj"
               }
             }
           }
@@ -185,6 +132,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -232,11 +184,7 @@
               "privateAssets": "all"
             }
           },
-<<<<<<< HEAD
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
-=======
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
->>>>>>> e61f3c41a40a085aee58f52d9bc4da471afaa098
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }
