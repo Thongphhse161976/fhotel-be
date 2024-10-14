@@ -81,8 +81,6 @@ namespace FHotel.Services.Services.Implementations
                 throw new ValidationException(validationResult.Errors);
             }
 
-
-
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 

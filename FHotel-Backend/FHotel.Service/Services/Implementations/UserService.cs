@@ -147,11 +147,10 @@ namespace FHotel.Services.Services.Implementations
             DateTime localTime = utcNow + utcOffset;
             try
             {
-                await _roleService.Get((Guid)request.RoleId);
+                var role = await _roleService.Get((Guid)request.RoleId);
                 var user = _mapper.Map<UserCreateRequest, User>(request);
                 user.UserId = Guid.NewGuid();
                 user.CreatedDate = localTime;
-                user.IsActive = false;
                 await _unitOfWork.Repository<User>().InsertAsync(user);
                 await _unitOfWork.CommitAsync();
                 if (user.UserId != Guid.Empty)
@@ -162,6 +161,10 @@ namespace FHotel.Services.Services.Implementations
                         Balance = 0
                     };
                     await _walletService.Create(wallet);
+                }
+                if(role.RoleName == "Hotel Manager")
+                {
+                    await SendEmail(user.Email, user);
                 }
                 return _mapper.Map<User, UserResponse>(user);
 
@@ -541,6 +544,48 @@ namespace FHotel.Services.Services.Implementations
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public async Task SendEmail(string toEmail, User user)
+        {
+            // Retrieve email settings from appsettings.json
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(toEmail);
+            const string subject = "Hotel Registration Confirmation"; // Email subject
+
+            // Construct the email body with HTML template
+            string body = $@"
+        <h1>Hotel Registration Confirmation</h1>
+        <p>Dear {user.FirstName},</p>
+        <p>Thanks for giving time with us.</p>
+        <p>You now can access our system FHotel</p>
+        <p>Email: {user.Email}</p>
+        <p>Password: {user.Password}</p>     
+        <p>Best regards,<br>FHotel company.</p>";
+
+            // Set up the SMTP client
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            // Configure and send the email
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true // Specify that the email body is HTML
+            })
+            {
+                await smtp.SendMailAsync(message);
             }
         }
     }
