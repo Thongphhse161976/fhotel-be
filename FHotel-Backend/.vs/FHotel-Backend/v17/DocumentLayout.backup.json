@@ -58,8 +58,7 @@
               "RelativeToolTip": "FHotel.Repository\\Repositories\\GenericRepository.cs",
               "ViewState": "AgIAAH8AAAAAAAAAAIA7wIQAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-14T01:57:17.501Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-14T01:57:17.501Z"
             },
             {
               "$type": "Document",
@@ -67,9 +66,9 @@
               "Title": "FHotelContext.cs",
               "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\FHotelContext.cs",
               "RelativeDocumentMoniker": "FHotel.Repository\\Models\\FHotelContext.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\FHotelContext.cs*",
-              "RelativeToolTip": "FHotel.Repository\\Models\\FHotelContext.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAAwAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\FHotelContext.cs",
+              "RelativeToolTip": "FHotel.Repository\\Models\\FHotelContext.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAswB0AAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-14T01:57:07.575Z",
               "EditorCaption": ""
