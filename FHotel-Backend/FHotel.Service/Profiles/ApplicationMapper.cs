@@ -21,7 +21,6 @@ using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Documents;
 using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelAmenities;
-using FHotel.Services.DTOs.HotelRegistations;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
@@ -69,9 +68,6 @@ namespace FHotel.Service.Profiles
             CreateMap<HotelAmenity, HotelAmenityCreateRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityUpdateRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationCreateRequest>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationUpdateRequest>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationResponse>().ReverseMap();
             CreateMap<Order, OrderRequest>().ReverseMap();
             CreateMap<Order, OrderResponse>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailRequest>().ReverseMap();

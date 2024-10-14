@@ -38,9 +38,6 @@ namespace FHotel.Service.Validators.HotelValidator
             RuleFor(x => x.Image)
                  .NotEmpty().WithMessage("Image is required.");
 
-            // Validate Star
-            RuleFor(x => x.Star)
-                .InclusiveBetween(1, 5).WithMessage("Star must be between 1 and 5.");
 
             // Validate CityId
             RuleFor(x => x.CityId)
