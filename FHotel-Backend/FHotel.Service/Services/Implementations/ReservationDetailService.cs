@@ -2,9 +2,10 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
-using FHotel.Services.DTOs.Countries;
+using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Services.DTOs.ReservationDetails;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace FHotel.Services.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public ReservationDetailService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IReservationService _reservationService;
+        public ReservationDetailService(IUnitOfWork unitOfWork, IMapper mapper, IReservationService reservationService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _reservationService = reservationService;
         }
 
         public async Task<List<ReservationDetailResponse>> GetAll()
@@ -59,6 +62,13 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<ReservationDetailResponse> Create(ReservationDetailRequest request)
         {
+            var validator = new ReservationDetailRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
                 var reservationDetail = _mapper.Map<ReservationDetailRequest, ReservationDetail>(request);
@@ -117,6 +127,15 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+        public async Task<List<ReservationDetailResponse>> GetAllByReservationId(Guid id)
+        {
+            await _reservationService.Get(id);
+            var list = await _unitOfWork.Repository<ReservationDetail>().GetAll()
+                                            .ProjectTo<ReservationDetailResponse>(_mapper.ConfigurationProvider)
+                                            .Where(x => x.ReservationId == id)
+                                            .ToListAsync();
+            return list;
         }
     }
 }

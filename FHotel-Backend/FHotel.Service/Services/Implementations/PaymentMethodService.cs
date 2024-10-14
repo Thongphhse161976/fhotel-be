@@ -45,7 +45,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (paymentMethod == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Payment method not found");
                 }
 
                 return _mapper.Map<PaymentMethod, PaymentMethodResponse>(paymentMethod);

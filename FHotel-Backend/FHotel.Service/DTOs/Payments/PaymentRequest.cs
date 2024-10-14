@@ -14,7 +14,6 @@ namespace FHotel.Services.DTOs.Payments
         public DateTime? PaymentDate { get; set; }
         public Guid? PaymentMethodId { get; set; }
         public string? PaymentStatus { get; set; }
-
      
     }
 }

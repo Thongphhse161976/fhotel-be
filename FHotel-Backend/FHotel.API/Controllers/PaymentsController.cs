@@ -1,6 +1,7 @@
 ﻿using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Payments;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -72,6 +73,15 @@ namespace FHotel.API.Controllers
             {
                 var result = await _paymentService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {
