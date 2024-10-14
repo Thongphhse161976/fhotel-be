@@ -10,6 +10,7 @@ namespace FHotel.Service.DTOs.Hotels
     {
         public string? HotelName { get; set; }
         public string? OwnerName { get; set; }
+        public string? OwnerEmail { get; set; }
         public string? Address { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
@@ -18,7 +19,6 @@ namespace FHotel.Service.DTOs.Hotels
         public string? BusinessLicenseNumber { get; set; }
         public string? TaxIdentificationNumber { get; set; }
         public Guid? CityId { get; set; }
-        public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool? IsActive { get; set; }
     }

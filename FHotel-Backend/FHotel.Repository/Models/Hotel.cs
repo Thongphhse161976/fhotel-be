@@ -16,6 +16,7 @@ namespace FHotel.Repository.Models
         public Guid HotelId { get; set; }
         public string? HotelName { get; set; }
         public string? OwnerName { get; set; }
+        public string? OwnerEmail { get; set; }
         public string? Address { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }

@@ -82,7 +82,11 @@ namespace FHotel.API.Controllers
             catch (ValidationException ex)
             {
                 // Access validation errors from ex.Errors
-                return BadRequest(new { message = "Validation failed", errors = ex.Errors.Select(e => e.ErrorMessage) });
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {
@@ -113,8 +117,12 @@ namespace FHotel.API.Controllers
             }
             catch (ValidationException ex)
             {
-                // Return validation errors as a list of error messages
-                return BadRequest(new { message = "Validation failed", errors = ex.Errors.Select(e => e.ErrorMessage) });
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {

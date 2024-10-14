@@ -51,6 +51,8 @@ namespace FHotel.Services.Services.Implementations
                 Hotel hotel = null;
                 hotel = await _unitOfWork.Repository<Hotel>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.City)
+                     .Include(x => x.Owner)
                     .Where(x => x.HotelId == id)
                     .FirstOrDefaultAsync();
 
@@ -94,7 +96,7 @@ namespace FHotel.Services.Services.Implementations
                 var hotel = _mapper.Map<HotelCreateRequest, Hotel>(request);
                 hotel.HotelId = Guid.NewGuid();
                 hotel.CreatedDate = localTime;
-                hotel.IsActive = true;
+                hotel.IsActive = false;
                 await _unitOfWork.Repository<Hotel>().InsertAsync(hotel);
                 await _unitOfWork.CommitAsync();
 

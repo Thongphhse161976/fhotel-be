@@ -43,9 +43,6 @@ namespace FHotel.Service.Validators.HotelValidator
             RuleFor(x => x.CityId)
                 .NotNull().WithMessage("CityId is required.");
 
-            // Validate OwnerId
-            RuleFor(x => x.OwnerId)
-                .NotNull().WithMessage("OwnerId is required.");
 
 
         }
