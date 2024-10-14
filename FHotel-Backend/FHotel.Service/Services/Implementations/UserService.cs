@@ -27,6 +27,8 @@ using System.Text;
 using System.Threading.Tasks;
 using User = FHotel.Repository.Models.User;
 using FHotel.Repository.SMTPs.Models;
+using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.HotelAmenities;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -518,7 +520,29 @@ namespace FHotel.Services.Services.Implementations
             };
         }
 
+        public async Task<List<HotelResponse>> GetHotelByUser(Guid id)
+        {
+            var user = await _unitOfWork.Repository<User>().GetAll()
+                .Where(x => x.UserId == id)
+                .FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return null;
+            }
+            try
+            {
+                var hotel = _unitOfWork.Repository<Hotel>().GetAll()
+                    .Where(a => a.OwnerId == id)
+                    .ProjectTo<HotelResponse>(_mapper.ConfigurationProvider)
+                    .ToList();
 
+                return hotel;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 
 }

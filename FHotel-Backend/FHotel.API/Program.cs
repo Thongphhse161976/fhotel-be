@@ -38,7 +38,6 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddScoped<IHotelStaffService, HotelStaffService>();
 builder.Services.AddScoped<IHotelAmenityService, HotelAmenityService>();
-builder.Services.AddScoped<IHotelRegistrationService, HotelRegistrationService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
