@@ -19,7 +19,6 @@ namespace FHotel.Service.DTOs.Hotels
         public string? BusinessLicenseNumber { get; set; }
         public string? TaxIdentificationNumber { get; set; }
         public Guid? CityId { get; set; }
-        public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool? IsActive { get; set; }
     }
