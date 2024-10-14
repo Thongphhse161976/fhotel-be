@@ -5,7 +5,6 @@ using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.BillPayments;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.HotelAmenities;
-using FHotel.Service.DTOs.HotelRegistations;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.LateCheckOutCharges;

@@ -1,5 +1,4 @@
-﻿using FHotel.Service.DTOs.HotelRegistations;
-using FHotel.Service.DTOs.Users;
+﻿using FHotel.Service.DTOs.Users;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
