@@ -94,7 +94,7 @@ namespace FHotel.Services.Services.Implementations
                 var hotel = _mapper.Map<HotelCreateRequest, Hotel>(request);
                 hotel.HotelId = Guid.NewGuid();
                 hotel.CreatedDate = localTime;
-                hotel.IsActive = true;
+                hotel.IsActive = false;
                 await _unitOfWork.Repository<Hotel>().InsertAsync(hotel);
                 await _unitOfWork.CommitAsync();
 
