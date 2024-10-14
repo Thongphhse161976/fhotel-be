@@ -51,6 +51,8 @@ namespace FHotel.Services.Services.Implementations
                 Hotel hotel = null;
                 hotel = await _unitOfWork.Repository<Hotel>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.City)
+                     .Include(x => x.Owner)
                     .Where(x => x.HotelId == id)
                     .FirstOrDefaultAsync();
 
