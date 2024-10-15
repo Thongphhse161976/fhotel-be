@@ -155,7 +155,7 @@ namespace FHotel.API.Controllers
             {
                 // Call the service method to activate the user
                 await _userService.ActivateUser(email);
-                return Ok(new { message = "Account activated successfully." }); // Corrected this line
+                return Redirect("https://fhotel-web.web.app/success-register");
             }
             catch (Exception ex)
             {
