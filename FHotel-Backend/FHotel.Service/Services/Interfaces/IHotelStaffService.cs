@@ -13,10 +13,13 @@ namespace FHotel.Service.Services.Interfaces
 
         public Task<HotelStaffResponse> Get(Guid id);
 
-        public Task<HotelStaffResponse> Create(HotelStaffCreateteRequest request);
+        public Task<HotelStaffResponse> Create(Guid hotelId, Guid userId);
 
         public Task<HotelStaffResponse> Delete(Guid id);
 
-        public Task<HotelStaffResponse> Update(Guid id, HotelStaffCreateteRequest request);
+        public Task<HotelStaffResponse> Update(Guid id, HotelStaffCreateRequest request);
+
+        public Task<IEnumerable<HotelStaffResponse>> GetAllStaffByHotelId(Guid hotelId);
+
     }
 }

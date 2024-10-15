@@ -3,6 +3,7 @@ using FHotel.Service.Services.Interfaces;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace FHotel.API.Controllers
 {
@@ -61,21 +62,33 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new hotel-staff.
+        /// Assign staff to a hotel.
         /// </summary>
-        [HttpPost]
+        [HttpPost("{hotelId}/assign-staff")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelStaffResponse>> Create([FromBody] HotelStaffCreateteRequest request)
+        public async Task<ActionResult<HotelStaffResponse>> CreateHotelStaff(Guid hotelId, [FromBody] HotelStaffCreateRequest request)
         {
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest(new { message = "UserId is required." });
+            }
+
             try
             {
-                var result = await _hotelStaffService.Create(request);
-                return CreatedAtAction(nameof(Create), result);
+                var result = await _hotelStaffService.Create(hotelId, request.UserId); // Call service with hotelId and UserId
+                return CreatedAtAction(nameof(CreateHotelStaff), new { hotelId = hotelId, userId = request.UserId }, result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                });
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
 
@@ -93,7 +106,7 @@ namespace FHotel.API.Controllers
         /// Update hotelStaff by hotel-staff id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<HotelStaffResponse>> Update(Guid id, [FromBody] HotelStaffCreateteRequest request)
+        public async Task<ActionResult<HotelStaffResponse>> Update(Guid id, [FromBody] HotelStaffCreateRequest request)
         {
             try
             {

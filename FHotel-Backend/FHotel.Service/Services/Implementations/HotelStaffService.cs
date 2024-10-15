@@ -56,22 +56,32 @@ namespace FHotel.Service.Services.Implementations
             }
         }
 
-        public async Task<HotelStaffResponse> Create(HotelStaffCreateteRequest request)
+        public async Task<HotelStaffResponse> Create(Guid hotelId, Guid userId)
         {
             try
             {
-                var hotelStaff = _mapper.Map<HotelStaffCreateteRequest, HotelStaff>(request);
-                hotelStaff.HotelStaffId = Guid.NewGuid();
+                // Create a new HotelStaff object
+                var hotelStaff = new HotelStaff
+                {
+                    HotelStaffId = Guid.NewGuid(),
+                    HotelId = hotelId, // Set the hotel ID
+                    UserId = userId // Set the user ID
+                };
+
+                // Insert the new hotel staff record
                 await _unitOfWork.Repository<HotelStaff>().InsertAsync(hotelStaff);
                 await _unitOfWork.CommitAsync();
 
+                // Map and return the response
                 return _mapper.Map<HotelStaff, HotelStaffResponse>(hotelStaff);
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                // Consider logging the exception
+                throw new Exception("An error occurred while creating the hotel staff: " + e.Message);
             }
         }
+
 
         public async Task<HotelStaffResponse> Delete(Guid id)
         {
@@ -94,7 +104,7 @@ namespace FHotel.Service.Services.Implementations
             }
         }
 
-        public async Task<HotelStaffResponse> Update(Guid id, HotelStaffCreateteRequest request)
+        public async Task<HotelStaffResponse> Update(Guid id, HotelStaffCreateRequest request)
         {
             try
             {
@@ -117,5 +127,18 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<IEnumerable<HotelStaffResponse>> GetAllStaffByHotelId(Guid hotelId)
+        {
+            // Fetch the staff from the repository based on hotelId
+            var hotelStaffList  = await _unitOfWork.Repository<HotelStaff>().GetAll()
+                     .AsNoTracking()
+                    .Where(x => x.HotelId == hotelId)
+                    .ToListAsync();
+
+            // Map the hotel staff to response DTOs
+            return _mapper.Map<IEnumerable<HotelStaff>, IEnumerable<HotelStaffResponse>>(hotelStaffList);
+        }
+
     }
 }
