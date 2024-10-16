@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Services.DTOs.RoomTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.RoomImages;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
@@ -17,10 +18,12 @@ namespace FHotel.API.Controllers
     public class RoomTypesController : ControllerBase
     {
         private readonly IRoomTypeService _roomTypeService;
+        private readonly IRoomImageService _roomImageService;
 
-        public RoomTypesController(IRoomTypeService roomTypeService)
+        public RoomTypesController(IRoomTypeService roomTypeService, IRoomImageService roomImageService)
         {
             _roomTypeService = roomTypeService;
+            _roomImageService = roomImageService;
         }
 
         /// <summary>
@@ -127,35 +130,34 @@ namespace FHotel.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Upload room type image.
-        /// </summary>
-        [HttpPost("image")]
-        public async Task<IActionResult> Upload(IFormFile file)
-        {
-            // Check if file is present in the request
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file was uploaded.");
-            }
+       
 
+
+        /// <summary>
+        /// Get all room type images room type ID.
+        /// </summary>
+        /// <param name="roomTypeId">The ID of the Room Type.</param>
+        /// <returns>A list of room images.</returns>
+        [HttpGet("{roomTypeId}/room-images")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomImageResponse>>> GetAllRoomImageByRoomTypeId(Guid roomTypeId)
+        {
             try
             {
-                // Call the upload service method
-                var fileLink = await _roomTypeService.UploadImage(file);
+                var roomTypeList = await _roomImageService.GetAllRoomImageByRoomTypeId(roomTypeId);
 
-                if (string.IsNullOrEmpty(fileLink))
+                if (roomTypeList == null || !roomTypeList.Any())
                 {
-                    return StatusCode(500, "An error occurred while uploading the file.");
+                    return NotFound(new { message = "No image found for this room type." });
                 }
 
-                // Return the link to the uploaded file
-                return Ok(new { link = fileLink });
+                return Ok(roomTypeList);
             }
             catch (Exception ex)
             {
-                // Handle exceptions, log if necessary
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
     }

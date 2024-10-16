@@ -22,6 +22,8 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<RoomTypeResponse> Update(Guid id, RoomTypeUpdateRequest request);
 
-        public Task<string> UploadImage(IFormFile file);
+
+        public Task<IEnumerable<RoomTypeResponse>> GetAllRoomTypeByHotelId(Guid hotelId);
+
     }
 }

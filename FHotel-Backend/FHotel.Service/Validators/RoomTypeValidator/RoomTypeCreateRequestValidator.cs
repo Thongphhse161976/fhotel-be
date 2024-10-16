@@ -17,14 +17,13 @@ namespace FHotel.Service.Validators.RoomTypeValidator
                 .MaximumLength(100).WithMessage("Room type name must not exceed 100 characters.");
 
             RuleFor(r => r.Description)
-                .MaximumLength(500).WithMessage("Description must not exceed 500 characters.");
+            .NotEmpty().WithMessage("Description is required.");
+            RuleFor(r => r.HotelId)
+            .NotEmpty().WithMessage("HotelId is required.");
 
             RuleFor(r => r.RoomSize)
                 .NotNull().WithMessage("Room size is required.")
                 .GreaterThan(0).WithMessage("Room size must be greater than 0.");
-
-            RuleFor(r => r.Image)
-                .NotEmpty().WithMessage("Image is required.");
 
             RuleFor(r => r.MaxOccupancy)
                 .NotNull().WithMessage("Max occupancy is required.")
@@ -39,8 +38,6 @@ namespace FHotel.Service.Validators.RoomTypeValidator
                 .GreaterThanOrEqualTo(0).WithMessage("Available rooms must be at least 0.")
                 .LessThanOrEqualTo(r => r.TotalRooms).WithMessage("Available rooms cannot exceed total rooms.");
 
-            RuleFor(r => r.Note)
-                .MaximumLength(500).WithMessage("Note must not exceed 500 characters.");
         }
     }
 

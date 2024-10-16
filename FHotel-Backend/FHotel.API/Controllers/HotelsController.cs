@@ -4,6 +4,7 @@ using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
@@ -22,11 +23,13 @@ namespace FHotel.API.Controllers
         private readonly IHotelService _hotelService;
         private readonly IHotelAmenityService _hotelAmenityService;
         private readonly IHotelStaffService _hotelStaffService;
+        private readonly IRoomTypeService _roomTypeService;
 
-        public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService)
+        public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
+            _roomTypeService = roomTypeService;
         }
 
         /// <summary>
@@ -236,6 +239,34 @@ namespace FHotel.API.Controllers
                 if (staffList == null || !staffList.Any())
                 {
                     return NotFound(new { message = "No staff found for this hotel." });
+                }
+
+                return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all room types hotel ID.
+        /// </summary>
+        /// <param name="hotelId">The ID of the hotel.</param>
+        /// <returns>A list of hotel room types.</returns>
+        [HttpGet("{hotelId}/room-types")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomTypeResponse>>> GetAllRoomTypeByHotelId(Guid hotelId)
+        {
+            try
+            {
+                var staffList = await _roomTypeService.GetAllRoomTypeByHotelId(hotelId);
+
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No room type found for this hotel." });
                 }
 
                 return Ok(staffList);

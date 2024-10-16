@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.FirebaseStorages.Models;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Service.Validators.RoomTypeValidator;
@@ -50,6 +51,7 @@ namespace FHotel.Services.Services.Implementations
                 RoomType roomType = null;
                 roomType = await _unitOfWork.Repository<RoomType>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Hotel)
                     .Where(x => x.RoomTypeId == id)
                     .FirstOrDefaultAsync();
 
@@ -229,6 +231,18 @@ namespace FHotel.Services.Services.Implementations
                 AuthEmail = configuration.GetSection("FirebaseStorage:authEmail").Value,
                 AuthPassword = configuration.GetSection("FirebaseStorage:authPassword").Value
             };
+        }
+
+        public async Task<IEnumerable<RoomTypeResponse>> GetAllRoomTypeByHotelId(Guid hotelId)
+        {
+            // Fetch the room types from the repository based on hotelId
+            var roomTypeList = await _unitOfWork.Repository<RoomType>().GetAll()
+                     .AsNoTracking()
+                    .Where(x => x.HotelId == hotelId)
+                    .ToListAsync();
+
+            // Map the hotel room type to response DTOs
+            return _mapper.Map<IEnumerable<RoomType>, IEnumerable<RoomTypeResponse>>(roomTypeList);
         }
 
     }
