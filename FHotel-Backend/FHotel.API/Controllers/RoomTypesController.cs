@@ -19,11 +19,13 @@ namespace FHotel.API.Controllers
     {
         private readonly IRoomTypeService _roomTypeService;
         private readonly IRoomImageService _roomImageService;
+        private readonly IRoomFacilityService _roomFacilityService;
 
-        public RoomTypesController(IRoomTypeService roomTypeService, IRoomImageService roomImageService)
+        public RoomTypesController(IRoomTypeService roomTypeService, IRoomImageService roomImageService, IRoomFacilityService roomFacilityService)
         {
             _roomTypeService = roomTypeService;
             _roomImageService = roomImageService;
+            _roomFacilityService = roomFacilityService;
         }
 
         /// <summary>
@@ -158,6 +160,26 @@ namespace FHotel.API.Controllers
             {
                 // Log the exception if you have logging set up
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all room-facilities by room-type id.
+        /// </summary>
+        [HttpGet("{id}/room-facilities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypeResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<RoomTypeResponse>>> GetAllRoomFacilityByRoomTypeId(Guid id)
+        {
+            try
+            {
+                var rs = await _roomFacilityService.GetAllByRoomTypeId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
