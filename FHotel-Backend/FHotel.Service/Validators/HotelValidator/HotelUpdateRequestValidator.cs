@@ -38,7 +38,7 @@ namespace FHotel.Service.Validators.HotelValidator
                 .EmailAddress().WithMessage("A valid email is required.");
 
             RuleFor(h => h.Description)
-                .MaximumLength(500).WithMessage("Description must not exceed 500 characters.");
+                .NotEmpty().WithMessage("Description is required.");
 
             RuleFor(h => h.Image)
                 .NotEmpty().WithMessage("Image is required.");
@@ -49,11 +49,6 @@ namespace FHotel.Service.Validators.HotelValidator
             RuleFor(h => h.CityId)
                 .NotNull().WithMessage("City is required.");
 
-            RuleFor(h => h.OwnerId)
-                .NotNull().WithMessage("Owner is required.");
-
-            RuleFor(h => h.IsActive)
-                .NotNull().WithMessage("IsActive field is required.");
 
             RuleFor(x => x.BusinessLicenseNumber)
                 .NotEmpty().WithMessage("Business license number is required.")
