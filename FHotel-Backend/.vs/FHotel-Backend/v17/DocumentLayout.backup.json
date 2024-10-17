@@ -1,18 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\",
+  "WorkspaceRootPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|d:\\fpt_edu\\deploy\\fhotel-be\\fhotel-backend\\fhotel.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|solutionrelative:fhotel.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\validators\\roomtypevalidator\\roomtypeupdaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\validators\\roomtypevalidator\\roomtypeupdaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|d:\\fpt_edu\\deploy\\fhotel-be\\fhotel-backend\\fhotel.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|solutionrelative:fhotel.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\roomtypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\roomtypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|d:\\fpt_edu\\deploy\\fhotel-be\\fhotel-backend\\fhotel.api\\fhotel.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|solutionrelative:fhotel.api\\fhotel.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.repository\\models\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|solutionrelative:fhotel.repository\\models\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,43 +27,41 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\FHotel.API\\Program.cs",
-              "RelativeDocumentMoniker": "FHotel.API\\Program.cs",
-              "ToolTip": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\FHotel.API\\Program.cs",
-              "RelativeToolTip": "FHotel.API\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJQAAAAJAAAAAAAAAA==",
+              "Title": "RoomTypeUpdateRequestValidator.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs*",
+              "RelativeToolTip": "FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs*",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAzwBQAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-11T07:47:34.972Z",
+              "WhenOpened": "2024-10-17T01:46:00.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RoomTypeService.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAowIMAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-17T01:21:36.251Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "FHotel.API.csproj",
-              "DocumentMoniker": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\FHotel.API\\FHotel.API.csproj",
-              "RelativeDocumentMoniker": "FHotel.API\\FHotel.API.csproj",
-              "ToolTip": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\FHotel.API\\FHotel.API.csproj",
-              "RelativeToolTip": "FHotel.API\\FHotel.API.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-09T01:50:27.146Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\FHotel.API\\appsettings.json",
-              "RelativeDocumentMoniker": "FHotel.API\\appsettings.json",
-              "ToolTip": "D:\\FPT_Edu\\Deploy\\fhotel-be\\FHotel-Backend\\FHotel.API\\appsettings.json",
-              "RelativeToolTip": "FHotel.API\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAABRAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-09T01:16:50.877Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "Title": "RoomType.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\RoomType.cs",
+              "RelativeDocumentMoniker": "FHotel.Repository\\Models\\RoomType.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\RoomType.cs",
+              "RelativeToolTip": "FHotel.Repository\\Models\\RoomType.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAgwBsAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-17T01:21:13.426Z",
+              "EditorCaption": ""
             }
           ]
         }

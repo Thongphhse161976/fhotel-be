@@ -1,4 +1,4 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Reservations;
 using FHotel.Services.DTOs.Reservations;
 using System;
 using System.Collections.Generic;
@@ -14,10 +14,10 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<ReservationResponse> Get(Guid id);
 
-        public Task<ReservationResponse> Create(ReservationRequest request);
+        public Task<ReservationResponse> Create(ReservationCreateRequest request);
 
         public Task<ReservationResponse> Delete(Guid id);
 
-        public Task<ReservationResponse> Update(Guid id, ReservationRequest request);
+        public Task<ReservationResponse> Update(Guid id, ReservationUpdateRequest request);
     }
 }

@@ -4,14 +4,21 @@ using FHotel.Service.DTOs.BillLateCheckOutCharges;
 using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.BillPayments;
 using FHotel.Service.DTOs.Bills;
-using FHotel.Service.DTOs.HotelRegistations;
+using FHotel.Service.DTOs.HotelAmenities;
 using FHotel.Service.DTOs.Hotels;
+using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.LateCheckOutCharges;
 using FHotel.Service.DTOs.LateCheckOutPolicies;
 using FHotel.Service.DTOs.RefundPolicies;
 using FHotel.Service.DTOs.Refunds;
+using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
+<<<<<<< HEAD
 using FHotel.Service.DTOs.Services;
+=======
+using FHotel.Service.DTOs.RoomTypePrices;
+using FHotel.Service.DTOs.RoomTypes;
+>>>>>>> a3e87efaa3e45f6f96e4a3ba25c4987f69e8cc36
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.WalletHistories;
 using FHotel.Service.DTOs.Wallets;
@@ -20,7 +27,6 @@ using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Documents;
 using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelAmenities;
-using FHotel.Services.DTOs.HotelRegistations;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
@@ -63,11 +69,11 @@ namespace FHotel.Service.Profiles
             CreateMap<Hotel, HotelCreateRequest>().ReverseMap();
             CreateMap<Hotel, HotelUpdateRequest>().ReverseMap();
             CreateMap<Hotel, HotelResponse>().ReverseMap();
-            CreateMap<HotelAmenity, HotelAmenityRequest>().ReverseMap();
+            CreateMap<HotelStaff, HotelStaffResponse>().ReverseMap();
+            CreateMap<HotelStaff, HotelStaffCreateRequest>().ReverseMap();
+            CreateMap<HotelAmenity, HotelAmenityCreateRequest>().ReverseMap();
+            CreateMap<HotelAmenity, HotelAmenityUpdateRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationCreateRequest>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationUpdateRequest>().ReverseMap();
-            CreateMap<HotelRegistration, HotelRegistrationResponse>().ReverseMap();
             CreateMap<Order, OrderRequest>().ReverseMap();
             CreateMap<Order, OrderResponse>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailRequest>().ReverseMap();
@@ -77,6 +83,8 @@ namespace FHotel.Service.Profiles
             CreateMap<PaymentMethod, PaymentMethodRequest>().ReverseMap();
             CreateMap<PaymentMethod, PaymentMethodResponse>().ReverseMap();
             CreateMap<Reservation, ReservationRequest>().ReverseMap();
+            CreateMap<Reservation, ReservationCreateRequest>().ReverseMap();
+            CreateMap<Reservation, ReservationUpdateRequest>().ReverseMap();
             CreateMap<Reservation, ReservationResponse>().ReverseMap();
             CreateMap<ReservationDetail, ReservationDetailRequest>().ReverseMap();
             CreateMap<ReservationDetail, ReservationDetailResponse>().ReverseMap();
@@ -86,9 +94,11 @@ namespace FHotel.Service.Profiles
             CreateMap<RoomFacility, RoomFacilityResponse>().ReverseMap();
             CreateMap<RoomImage, RoomImageRequest>().ReverseMap();
             CreateMap<RoomImage, RoomImageResponse>().ReverseMap();
-            CreateMap<RoomType, RoomTypeRequest>().ReverseMap();
+            CreateMap<RoomType, RoomTypeCreateRequest>().ReverseMap();
+            CreateMap<RoomType, RoomTypeUpdateRequest>().ReverseMap();
             CreateMap<RoomType, RoomTypeResponse>().ReverseMap();
-            CreateMap<RoomTypePrice, RoomTypePriceRequest>().ReverseMap();
+            CreateMap<RoomTypePrice, RoomTypePriceCreateRequest>().ReverseMap();
+            CreateMap<RoomTypePrice, RoomTypePriceUpdateRequest>().ReverseMap();
             CreateMap<RoomTypePrice, RoomTypePriceResponse>().ReverseMap();
             CreateMap<Repository.Models.Service, ServiceCreateRequest>().ReverseMap();
             CreateMap<Repository.Models.Service, ServiceUpdateRequest>().ReverseMap();
@@ -124,6 +134,8 @@ namespace FHotel.Service.Profiles
             CreateMap<Wallet, WalletResponse>().ReverseMap();
             CreateMap<WalletHistory, WalletHistoryRequest>().ReverseMap();
             CreateMap<WalletHistory, WalletHistoryResponse>().ReverseMap();
+            CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
+
         }
           
     }

@@ -1,6 +1,7 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Reservations;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +15,12 @@ namespace FHotel.API.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly IReservationService _reservationService;
+        private readonly IReservationDetailService _reservationdetailService;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, IReservationDetailService reservationDetail)
         {
             _reservationService = reservationService;
+            _reservationdetailService = reservationDetail;
         }
 
         /// <summary>
@@ -66,17 +69,42 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ReservationResponse>> Create([FromBody] ReservationRequest request)
+        public async Task<ActionResult<ReservationResponse>> Create([FromBody] CombinedReservationRequest combinedRequest)
         {
             try
             {
-                var result = await _reservationService.Create(request);
-                return CreatedAtAction(nameof(Create), result);
+                var reservation = await _reservationService.Create(combinedRequest.Reservation);
+                if (reservation != null)
+                {
+                    combinedRequest.Detail.ReservationId = reservation.ReservationId;
+                    var reservationDetail = await _reservationdetailService.Create(combinedRequest.Detail);
+
+                    var combinedResponse = new CombinedReservationResponse
+                    {
+                        Reservation = reservation,
+                        ReservationDetail = reservationDetail
+                    };
+
+                    
+                    return CreatedAtAction(nameof(Create), new { combinedResponse });
+                }
+
+                return BadRequest("Reservation creation failed.");
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+            
         }
 
         /// <summary>
@@ -93,12 +121,50 @@ namespace FHotel.API.Controllers
         /// Update reservation by reservation id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ReservationResponse>> Update(Guid id, [FromBody] ReservationRequest request)
+        public async Task<ActionResult<ReservationResponse>> Update(Guid id, [FromBody] ReservationUpdateRequest request)
         {
             try
             {
                 var rs = await _reservationService.Update(id, request);
                 return Ok(rs);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all reservation-details by reservation id.
+        /// </summary>
+        [HttpGet("{id}/reservation-details")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReservationResponse>>> GetAllReservationDetailByReservationId(Guid id)
+        {
+            try
+            {
+                var rs = await _reservationdetailService.GetAllByReservationId(id);
+                return Ok(rs);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {

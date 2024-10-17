@@ -43,6 +43,7 @@ namespace FHotel.Service.Validators.UserValidator
             // Validate RoleId: must not be empty
             RuleFor(x => x.RoleId)
                 .NotEmpty().WithMessage("Role is required and must be selected.");
+            
         }
     }
 }

@@ -16,15 +16,15 @@ namespace FHotel.Services.DTOs.RoomTypes
         public string? TypeName { get; set; }
         public string? Description { get; set; }
         public decimal? RoomSize { get; set; }
-        public string? Image { get; set; }
+        public decimal? BasePrice { get; set; }
         public int? MaxOccupancy { get; set; }
         public int? TotalRooms { get; set; }
         public int? AvailableRooms { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? Note { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual HotelResponse? Hotel { get; set; }
-        public virtual ReservationDetailResponse? ReservationDetail { get; set; }
     }
 }

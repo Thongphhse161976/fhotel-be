@@ -13,6 +13,7 @@ namespace FHotel.Services.DTOs.Services
         public Guid ServiceId { get; set; }
         public string? ServiceName { get; set; }
         public decimal? Price { get; set; }
+        public string? Image { get; set; }
         public string? Description { get; set; }
         public Guid? ServiceTypeId { get; set; }
         public string? Image { get; set; }

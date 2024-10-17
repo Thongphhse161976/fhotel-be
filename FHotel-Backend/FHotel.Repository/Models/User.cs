@@ -8,7 +8,7 @@ namespace FHotel.Repository.Models
         public User()
         {
             Documents = new HashSet<Document>();
-            HotelRegistrations = new HashSet<HotelRegistration>();
+            HotelStaffs = new HashSet<HotelStaff>();
             Hotels = new HashSet<Hotel>();
             Reservations = new HashSet<Reservation>();
             Timetables = new HashSet<Timetable>();
@@ -24,7 +24,6 @@ namespace FHotel.Repository.Models
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         public bool? Sex { get; set; }
-        public Guid? HotelId { get; set; }
         public Guid? RoleId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
@@ -33,7 +32,7 @@ namespace FHotel.Repository.Models
         public virtual Role? Role { get; set; }
         public virtual Wallet? Wallet { get; set; }
         public virtual ICollection<Document> Documents { get; set; }
-        public virtual ICollection<HotelRegistration> HotelRegistrations { get; set; }
+        public virtual ICollection<HotelStaff> HotelStaffs { get; set; }
         public virtual ICollection<Hotel> Hotels { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
         public virtual ICollection<Timetable> Timetables { get; set; }

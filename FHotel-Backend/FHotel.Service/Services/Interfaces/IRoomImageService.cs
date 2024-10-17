@@ -1,5 +1,7 @@
 ﻿using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.RoomImages;
+using FHotel.Services.DTOs.RoomTypes;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +21,8 @@ namespace FHotel.Services.Services.Interfaces
         public Task<RoomImageResponse> Delete(Guid id);
 
         public Task<RoomImageResponse> Update(Guid id, RoomImageRequest request);
+        public Task<IEnumerable<RoomImageResponse>> GetAllRoomImageByRoomTypeId(Guid roomTypeId);
+        public Task<string> UploadImage(IFormFile file);
+
     }
 }

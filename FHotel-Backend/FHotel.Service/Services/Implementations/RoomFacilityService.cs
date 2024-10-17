@@ -45,7 +45,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (roomFacility == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Room facility not found");
                 }
 
                 return _mapper.Map<RoomFacility, RoomFacilityResponse>(roomFacility);
@@ -116,6 +116,24 @@ namespace FHotel.Services.Services.Implementations
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+        public async Task<List<RoomFacilityResponse>> GetAllByRoomTypeId(Guid id)
+        {
+            try
+            {
+                var list = await _unitOfWork.Repository<RoomFacility>().GetAll()
+                                            .ProjectTo<RoomFacilityResponse>(_mapper.ConfigurationProvider)
+                                            .Where(x=> x.RoomTypeId == id)
+                                            .ToListAsync();
+
+
+                return list;
+            }
+
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

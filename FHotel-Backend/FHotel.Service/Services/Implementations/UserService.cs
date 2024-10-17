@@ -20,10 +20,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using User = FHotel.Repository.Models.User;
+using FHotel.Repository.SMTPs.Models;
+using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.HotelAmenities;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -75,6 +80,35 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
+        public async Task<UserResponse> GetByEmail(string email)
+        {
+            try
+            {
+                User user = null;
+                user = await _unitOfWork.Repository<User>().GetAll()
+                     .AsNoTracking()
+                    .Where(x => x.Email == email)
+                    .Include(x => x.Role)
+                    .FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    throw new Exception("Not found");
+                }
+
+                return _mapper.Map<User, UserResponse>(user);
+            }
+
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+
+
+
+
         public async Task<UserResponse> Create(UserCreateRequest request)
         {
             var validator = new UserCreateRequestValidator();
@@ -92,7 +126,7 @@ namespace FHotel.Services.Services.Implementations
                 validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
             }
 
-            // Check dupplicated PhoneNumber (nếu cần)
+            // Check dupplicated PhoneNumber
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber) != null)
             {
                 validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
@@ -113,11 +147,10 @@ namespace FHotel.Services.Services.Implementations
             DateTime localTime = utcNow + utcOffset;
             try
             {
-                await _roleService.Get((Guid)request.RoleId);
+                var role = await _roleService.Get((Guid)request.RoleId);
                 var user = _mapper.Map<UserCreateRequest, User>(request);
                 user.UserId = Guid.NewGuid();
                 user.CreatedDate = localTime;
-                user.IsActive = false;
                 await _unitOfWork.Repository<User>().InsertAsync(user);
                 await _unitOfWork.CommitAsync();
                 if (user.UserId != Guid.Empty)
@@ -128,6 +161,10 @@ namespace FHotel.Services.Services.Implementations
                         Balance = 0
                     };
                     await _walletService.Create(wallet);
+                }
+                if(role.RoleName == "Hotel Manager")
+                {
+                    await SendEmail(user.Email, user);
                 }
                 return _mapper.Map<User, UserResponse>(user);
 
@@ -257,23 +294,7 @@ namespace FHotel.Services.Services.Implementations
             return userRes;
         }
 
-        public async Task<UserResponse> ActiveAccount(string email)
-        {
-            var accounts = await GetAll();
-            foreach (var account in accounts)
-            {
-                if (account.Email!.Equals(email) && account.IsActive == false)
-                {
-                    User user = _unitOfWork.Repository<User>()
-                            .Find(x => x.UserId == account.UserId);
-                    user.IsActive = true;
-                    await _unitOfWork.Repository<User>().UpdateDetached(user);
-                    await _unitOfWork.CommitAsync();
-                    return _mapper.Map<User, UserResponse>(user);
-                }
-            }
-            throw new Exception("User not found"); ;
-        }
+      
 
         public async Task<string> UploadImage(IFormFile file)
         {
@@ -341,7 +362,232 @@ namespace FHotel.Services.Services.Implementations
             };
         }
 
+        public async Task<UserResponse> Register(UserCreateRequest request)
+        {
+            var validator = new UserRegisterRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
 
+            // Check dupplicated IdentificationNumber
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.IdentificationNumber == request.IdentificationNumber) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Identification number already exists."));
+            }
+
+            // Check dupplicated Email
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.Email == request.Email) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+            }
+
+            // Check dupplicated PhoneNumber
+            if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            try
+            {
+                var user = _mapper.Map<UserCreateRequest, User>(request);
+                user.UserId = Guid.NewGuid();
+                user.CreatedDate = localTime;
+                user.IsActive = false;
+                user.RoleId = await _roleService.GetRoleIdByName("Customer");
+                await _unitOfWork.Repository<User>().InsertAsync(user);
+                await _unitOfWork.CommitAsync();
+                if (user.UserId != Guid.Empty)
+                {
+                    var wallet = new WalletRequest
+                    {
+                        UserId = user.UserId,
+                        Balance = 0
+                    };
+                    await _walletService.Create(wallet);
+                }
+                await SendActivationEmail(request.Email);
+                return _mapper.Map<User, UserResponse>(user);
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task SendActivationEmail(string toEmail)
+        {
+            // Retrieve email settings from appsettings.json
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(toEmail);
+            const string subject = "Account Activation"; // Email subject
+
+            // Construct the activation link with email as a query parameter
+            string activationLink = $"https://fhotelapi.azurewebsites.net/api/authentications/activate?email={toEmail}";
+            string body = $"Please activate your account by clicking the following link: {activationLink}";
+
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
+
+
+
+        public async Task ActivateUser(string email)
+        {
+            // Retrieve the user by email
+            var user = await GetByEmail(email);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            // Create a UserUpdateRequest from the UserResponse
+            var updateRequest = new UserUpdateRequest
+            {
+                Email = user.Email,
+                // Populate other fields if necessary
+                // Example: PhoneNumber = user.PhoneNumber
+                // Add any other necessary properties that your UserUpdateRequest has
+            };
+
+            // Validate the UserUpdateRequest before activation
+            var validator = new UserUpdateStatusRequestValidator();
+            var validationResult = await validator.ValidateAsync(updateRequest);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
+            // Activate the user if not already active
+            if (user.IsActive != true)
+            {
+                user.IsActive = true; // Activate the user
+                User userUpdate = _unitOfWork.Repository<User>()
+                            .Find(x => x.UserId == user.UserId);
+                userUpdate.IsActive = user.IsActive;
+                await _unitOfWork.Repository<User>().UpdateDetached(userUpdate);
+                await _unitOfWork.CommitAsync(); // Update the user in the database
+            }
+            else
+            {
+                throw new Exception("Account already activated");
+            }
+        }
+
+
+        private Email GetEmailSettings()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                                          .SetBasePath(Directory.GetCurrentDirectory())
+                                          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+
+            return new Email()
+            {
+                SystemName = configuration.GetSection("Email:SystemName").Value,
+                Sender = configuration.GetSection("Email:Sender").Value,
+                Password = configuration.GetSection("Email:Password").Value,
+                Port = int.Parse(configuration.GetSection("Email:Port").Value),
+                Host = configuration.GetSection("Email:Host").Value
+            };
+        }
+
+        public async Task<List<HotelResponse>> GetHotelByUser(Guid id)
+        {
+            var user = await _unitOfWork.Repository<User>().GetAll()
+                .Where(x => x.UserId == id)
+                .FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return null;
+            }
+            try
+            {
+                var hotel = _unitOfWork.Repository<Hotel>().GetAll()
+                    .Where(a => a.OwnerId == id)
+                    .ProjectTo<HotelResponse>(_mapper.ConfigurationProvider)
+                    .ToList();
+
+                return hotel;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task SendEmail(string toEmail, User user)
+        {
+            // Retrieve email settings from appsettings.json
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(toEmail);
+            const string subject = "Hotel Registration Confirmation"; // Email subject
+
+            // Construct the email body with HTML template
+            string body = $@"
+        <h1>Hotel Registration Confirmation</h1>
+        <p>Dear {user.FirstName},</p>
+        <p>Thanks for giving time with us.</p>
+        <p>You now can access our system FHotel</p>
+        <p>Email: {user.Email}</p>
+        <p>Password: {user.Password}</p>     
+        <p>Best regards,<br>FHotel company.</p>";
+
+            // Set up the SMTP client
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            // Configure and send the email
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true // Specify that the email body is HTML
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
     }
 
 }

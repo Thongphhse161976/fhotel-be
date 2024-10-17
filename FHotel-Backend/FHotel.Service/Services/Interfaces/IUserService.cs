@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.Users;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Users;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -15,6 +16,8 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<UserResponse> Get(Guid id);
 
+        public Task<UserResponse> GetByEmail(string email);
+
         public Task<UserResponse> Create(UserCreateRequest request);
 
         public Task<UserResponse> Delete(Guid id);
@@ -23,7 +26,14 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<UserResponse> Login(UserLoginRequest account);
 
-        public Task<UserResponse> ActiveAccount(string email);
         public Task<string> UploadImage(IFormFile file);
+
+        public Task<UserResponse> Register(UserCreateRequest request);
+
+        public Task SendActivationEmail(string toEmail);
+
+        public Task ActivateUser(string email);
+
+        public Task<List<HotelResponse>> GetHotelByUser(Guid id);
     }
 }

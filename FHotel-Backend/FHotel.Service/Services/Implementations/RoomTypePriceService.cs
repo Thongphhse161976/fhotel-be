@@ -2,9 +2,13 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.RoomTypePrices;
+using FHotel.Service.Validators.RoomTypePriceValidator;
+using FHotel.Service.Validators.RoomTypeValidator;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.RoomTypePrices;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -57,11 +61,19 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<RoomTypePriceResponse> Create(RoomTypePriceRequest request)
+        public async Task<RoomTypePriceResponse> Create(RoomTypePriceCreateRequest request)
         {
+            // Validate the create request
+            var validator = new RoomTypePriceCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
-                var roomTypePrice = _mapper.Map<RoomTypePriceRequest, RoomTypePrice>(request);
+                var roomTypePrice = _mapper.Map<RoomTypePriceCreateRequest, RoomTypePrice>(request);
                 roomTypePrice.RoomTypePriceId = Guid.NewGuid();
                 await _unitOfWork.Repository<RoomTypePrice>().InsertAsync(roomTypePrice);
                 await _unitOfWork.CommitAsync();
@@ -95,8 +107,16 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<RoomTypePriceResponse> Update(Guid id, RoomTypePriceRequest request)
+        public async Task<RoomTypePriceResponse> Update(Guid id, RoomTypePriceUpdateRequest request)
         {
+            // Validate the create request
+            var validator = new RoomTypePriceUpdateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
                 RoomTypePrice roomTypePrice = _unitOfWork.Repository<RoomTypePrice>()

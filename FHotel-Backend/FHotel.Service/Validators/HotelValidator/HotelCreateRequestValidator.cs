@@ -15,6 +15,16 @@ namespace FHotel.Service.Validators.HotelValidator
             .NotEmpty().WithMessage("HotelName is required.")
             .MaximumLength(50).WithMessage("HotelName cannot exceed 50 characters.");
 
+            // Validate OwnerName
+            RuleFor(x => x.OwnerName)
+                .NotEmpty().WithMessage("Owner name is required.")
+                .MaximumLength(50).WithMessage("Owner name cannot exceed 50 characters.");
+
+            // Validate OwnerEmail
+            RuleFor(x => x.OwnerEmail)
+                .NotEmpty().WithMessage("Owner email is required.")
+                .EmailAddress().WithMessage("Invalid email format for owner.");
+
             // Validate Address
             RuleFor(x => x.Address)
                 .NotEmpty().WithMessage("Address is required.")
@@ -38,19 +48,19 @@ namespace FHotel.Service.Validators.HotelValidator
             RuleFor(x => x.Image)
                  .NotEmpty().WithMessage("Image is required.");
 
-            // Validate Star
-            RuleFor(x => x.Star)
-                .InclusiveBetween(1, 5).WithMessage("Star must be between 1 and 5.");
-
             // Validate CityId
             RuleFor(x => x.CityId)
                 .NotNull().WithMessage("CityId is required.");
 
-            // Validate OwnerId
-            RuleFor(x => x.OwnerId)
-                .NotNull().WithMessage("OwnerId is required.");
+            // Validate BusinessLicenseNumber
+            RuleFor(x => x.BusinessLicenseNumber)
+                .NotEmpty().WithMessage("Business license number is required.")
+                .MaximumLength(20).WithMessage("Business license number cannot exceed 20 characters.");
 
-
+            // Validate TaxIdentificationNumber
+            RuleFor(x => x.TaxIdentificationNumber)
+                .NotEmpty().WithMessage("Tax identification number is required.")
+                .MaximumLength(15).WithMessage("Tax identification number cannot exceed 15 characters.");
         }
     }
 }

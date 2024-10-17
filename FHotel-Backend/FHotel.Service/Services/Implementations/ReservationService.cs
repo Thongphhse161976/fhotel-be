@@ -2,9 +2,12 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,6 +33,11 @@ namespace FHotel.Services.Services.Implementations
             var list = await _unitOfWork.Repository<Reservation>().GetAll()
                                             .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
+            // Check if list is null or empty
+            if (list == null || !list.Any())
+            {
+                throw new Exception("No reservations found.");
+            }
             return list;
         }
 
@@ -45,7 +53,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (reservation == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Reservation not found");
                 }
 
                 return _mapper.Map<Reservation, ReservationResponse>(reservation);
@@ -57,12 +65,31 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<ReservationResponse> Create(ReservationRequest request)
+        public async Task<ReservationResponse> Create(ReservationCreateRequest request)
         {
+            var validator = new ReservationCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+
             try
             {
-                var reservation = _mapper.Map<ReservationRequest, Reservation>(request);
+                var reservation = _mapper.Map<ReservationCreateRequest, Reservation>(request);
                 reservation.ReservationId = Guid.NewGuid();
+                reservation.CreatedDate = localTime;
+                reservation.ReservationStatus = "Pending";
                 await _unitOfWork.Repository<Reservation>().InsertAsync(reservation);
                 await _unitOfWork.CommitAsync();
 
@@ -95,19 +122,30 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<ReservationResponse> Update(Guid id, ReservationRequest request)
+        public async Task<ReservationResponse> Update(Guid id, ReservationUpdateRequest request)
         {
+            // Fetch the existing reservation
+            var reservation = await _unitOfWork.Repository<Reservation>().FindAsync(x => x.ReservationId == id);
+
+            // Check if the reservation exists
+            if (reservation == null)
+            {
+                throw new KeyNotFoundException($"Reservation with ID {id} does not exist.");
+            }
+
+            // Validate the request (consider using a separate validator)
+            var validator = new ReservationUpdateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
-                Reservation reservation = _unitOfWork.Repository<Reservation>()
-                            .Find(x => x.ReservationId == id);
-                if (reservation == null)
-                {
-                    throw new Exception();
-                }
-                reservation = _mapper.Map(request, reservation);
+                var updatereservation = _mapper.Map(request, reservation);
 
-                await _unitOfWork.Repository<Reservation>().UpdateDetached(reservation);
+                await _unitOfWork.Repository<Reservation>().UpdateDetached(updatereservation);
                 await _unitOfWork.CommitAsync();
 
                 return _mapper.Map<Reservation, ReservationResponse>(reservation);

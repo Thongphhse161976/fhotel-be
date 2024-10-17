@@ -18,7 +18,7 @@ namespace FHotel.Service.DTOs.Users
         public string? Address { get; set; }
         public bool? Sex { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public Guid? HotelId { get; set; }
         public Guid? RoleId { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

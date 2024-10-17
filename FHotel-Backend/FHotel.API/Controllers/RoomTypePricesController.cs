@@ -1,6 +1,8 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.RoomTypePrices;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.RoomTypePrices;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,12 +68,21 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RoomTypePriceResponse>> Create([FromBody] RoomTypePriceRequest request)
+        public async Task<ActionResult<RoomTypePriceResponse>> Create([FromBody] RoomTypePriceCreateRequest request)
         {
             try
             {
                 var result = await _roomTypePriceService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {
@@ -93,12 +104,21 @@ namespace FHotel.API.Controllers
         /// Update room-type-price by room-type-price id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<RoomTypePriceResponse>> Update(Guid id, [FromBody] RoomTypePriceRequest request)
+        public async Task<ActionResult<RoomTypePriceResponse>> Update(Guid id, [FromBody] RoomTypePriceUpdateRequest request)
         {
             try
             {
                 var rs = await _roomTypePriceService.Update(id, request);
                 return Ok(rs);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
             }
             catch (Exception ex)
             {

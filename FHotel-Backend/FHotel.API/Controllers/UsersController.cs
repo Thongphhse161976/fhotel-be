@@ -1,7 +1,10 @@
 ﻿using FHotel.Service.DTOs.Users;
 using FHotel.Service.Profiles;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.HotelAmenities;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Users;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
 using Firebase.Storage;
@@ -172,6 +175,28 @@ namespace FHotel.API.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Get all hotel by user id.
+        /// </summary>
+        [HttpGet("{id}/hotels")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<HotelResponse>>> GetHotelByUser(Guid id)
+        {
+            try
+            {
+                var hotel = await _userService.GetHotelByUser(id);
+                return Ok(hotel);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+
 
     }
 }

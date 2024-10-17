@@ -17,6 +17,8 @@ namespace FHotel.Services.DTOs.Reservations
         public decimal? TotalAmount { get; set; }
         public string? ReservationStatus { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public DateTime? ActualCheckInTime { get; set; }
+        public DateTime? ActualCheckOutDate { get; set; }
 
         public virtual UserResponse? Customer { get; set; }
     }

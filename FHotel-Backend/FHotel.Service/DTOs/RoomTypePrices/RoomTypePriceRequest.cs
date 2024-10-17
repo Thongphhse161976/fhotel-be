@@ -12,7 +12,7 @@ namespace FHotel.Services.DTOs.RoomTypePrices
       
         public Guid? RoomTypeId { get; set; }
         public string? DayOfWeek { get; set; }
-        public decimal? Price { get; set; }
+        public decimal? PercentageIncrease { get; set; }
 
       
     }
