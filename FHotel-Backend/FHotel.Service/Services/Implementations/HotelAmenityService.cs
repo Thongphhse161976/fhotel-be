@@ -3,10 +3,8 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.FirebaseStorages.Models;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
-using FHotel.Service.DTOs.HotelAmenities;
+using FHotel.Service.DTOs.Amenities;
 using FHotel.Service.Validators.HotelAmenityValidator;
-using FHotel.Service.Validators.HotelValidator;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
@@ -55,7 +53,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (hotelAmenity == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Hotel amenity not found");
                 }
 
                 return _mapper.Map<HotelAmenity, HotelAmenityResponse>(hotelAmenity);
@@ -67,9 +65,9 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<HotelAmenityResponse> Create(HotelAmenityCreateRequest request)
+        public async Task<HotelAmenityResponse> Create(HotelAmenityRequest request)
         {
-            var validator = new HotelAmenityCreateRequestValidator();
+            var validator = new HotelAmenityRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
 
             if (!validationResult.IsValid)
@@ -78,7 +76,7 @@ namespace FHotel.Services.Services.Implementations
             }
             try
             {
-                var hotelAmenity = _mapper.Map<HotelAmenityCreateRequest, HotelAmenity>(request);
+                var hotelAmenity = _mapper.Map<HotelAmenityRequest, HotelAmenity>(request);
                 hotelAmenity.HotelAmenityId = Guid.NewGuid();
              
                 await _unitOfWork.Repository<HotelAmenity>().InsertAsync(hotelAmenity);
@@ -113,9 +111,9 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<HotelAmenityResponse> Update(Guid id, HotelAmenityUpdateRequest request)
+        public async Task<HotelAmenityResponse> Update(Guid id, HotelAmenityRequest request)
         {
-            var validator = new HotelAmenityUpdateRequestValidator();
+            var validator = new HotelAmenityRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
 
             if (!validationResult.IsValid)
@@ -133,7 +131,6 @@ namespace FHotel.Services.Services.Implementations
                     throw new Exception();
                 }
                 hotelAmenity = _mapper.Map(request, hotelAmenity);
-                hotelAmenity.Image = request.Image;
                 await _unitOfWork.Repository<HotelAmenity>().UpdateDetached(hotelAmenity);
                 await _unitOfWork.CommitAsync();
 
@@ -210,7 +207,27 @@ namespace FHotel.Services.Services.Implementations
                 AuthPassword = configuration.GetSection("FirebaseStorage:authPassword").Value
             };
         }
-        
+        public async Task<IEnumerable<AmenityResponse>> GetAllAmenityByHotelId(Guid hotelId)
+        {
+            // Fetch the amenity from the repository based on hotelId
+            var hotelAmenityList = await _unitOfWork.Repository<HotelAmenity>().GetAll()
+                    .ProjectTo<HotelAmenityResponse>(_mapper.ConfigurationProvider)
+                    .Where(x => x.HotelId == hotelId)
+                    .ToListAsync();
+            
+            if (hotelAmenityList == null)
+            {
+                throw new Exception("Hotel amenity not found");
+            }
+
+            var amenityList = new List<AmenityResponse>();
+            foreach (var amenity in hotelAmenityList)
+            {
+                amenityList.Add(amenity.Amenity);
+            }
+            // Map the hotel amenity to response DTOs
+            return amenityList;
+        }
 
     }
 }

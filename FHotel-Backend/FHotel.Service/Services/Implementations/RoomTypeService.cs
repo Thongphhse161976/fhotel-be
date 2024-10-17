@@ -57,7 +57,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (roomType == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Room type not found");
                 }
 
                 return _mapper.Map<RoomType, RoomTypeResponse>(roomType);

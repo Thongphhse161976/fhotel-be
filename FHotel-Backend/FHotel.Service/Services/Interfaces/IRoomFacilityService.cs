@@ -1,4 +1,5 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Facilities;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.RoomFacilities;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,6 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<RoomFacilityResponse> Update(Guid id, RoomFacilityRequest request);
 
-        public Task<List<RoomFacilityResponse>> GetAllByRoomTypeId(Guid id);
+        public Task<List<FacilityResponse>> GetAllFacilityByRoomTypeId(Guid id);
     }
 }

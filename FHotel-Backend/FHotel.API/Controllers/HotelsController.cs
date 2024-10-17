@@ -1,7 +1,7 @@
-﻿using FHotel.Service.DTOs.Hotels;
+﻿using FHotel.Service.DTOs.Amenities;
+using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.Services.Interfaces;
-using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.RoomTypes;
@@ -25,11 +25,12 @@ namespace FHotel.API.Controllers
         private readonly IHotelStaffService _hotelStaffService;
         private readonly IRoomTypeService _roomTypeService;
 
-        public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService)
+        public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
             _roomTypeService = roomTypeService;
+            _hotelAmenityService = hotelAmenityService;
         }
 
         /// <summary>
@@ -251,7 +252,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get all room types hotel ID.
+        /// Get all room types by hotel ID.
         /// </summary>
         /// <param name="hotelId">The ID of the hotel.</param>
         /// <returns>A list of hotel room types.</returns>
@@ -270,6 +271,33 @@ namespace FHotel.API.Controllers
                 }
 
                 return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Get all amenities by hotel ID.
+        /// </summary>
+        /// <param name="hotelId">The ID of the hotel.</param>
+        /// <returns>A list of hotel room types.</returns>
+        [HttpGet("{hotelId}/amenities")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<AmenityResponse>>> GetAllAmenityByHotelId(Guid hotelId)
+        {
+            try
+            {
+                var amenityList = await _hotelAmenityService.GetAllAmenityByHotelId(hotelId);
+
+                if (amenityList == null || !amenityList.Any())
+                {
+                    return NotFound(new { message = "No amenity found for this hotel." });
+                }
+
+                return Ok(amenityList);
             }
             catch (Exception ex)
             {

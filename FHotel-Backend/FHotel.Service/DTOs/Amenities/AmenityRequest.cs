@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FHotel.Service.DTOs.HotelAmenities
+namespace FHotel.Service.DTOs.Amenities
 {
-    public class HotelAmenityUpdateRequest
+    public class AmenityRequest
     {
+        public string? AmenityName { get; set; }
         public string? Image { get; set; }
     }
 }

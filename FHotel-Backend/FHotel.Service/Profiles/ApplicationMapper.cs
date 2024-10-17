@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Amenities;
 using FHotel.Service.DTOs.BillLateCheckOutCharges;
 using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.BillPayments;
 using FHotel.Service.DTOs.Bills;
-using FHotel.Service.DTOs.HotelAmenities;
+using FHotel.Service.DTOs.Facilities;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.LateCheckOutCharges;
@@ -49,6 +50,8 @@ namespace FHotel.Service.Profiles
     {
         public ApplicationMapper()
         {
+            CreateMap<Amenity, AmenityRequest>().ReverseMap();
+            CreateMap<Amenity, AmenityResponse>().ReverseMap();
             CreateMap<Role, RoleRequest>().ReverseMap();
             CreateMap<Role, RoleResponse>().ReverseMap();
             CreateMap<City, CityRequest>().ReverseMap();
@@ -57,6 +60,8 @@ namespace FHotel.Service.Profiles
             CreateMap<Country, CountryResponse>().ReverseMap();
             CreateMap<Document, DocumentRequest>().ReverseMap();
             CreateMap<Document, DocumentResponse>().ReverseMap();
+            CreateMap<Facility, FacilityRequest>().ReverseMap();
+            CreateMap<Facility, FacilityResponse>().ReverseMap();
             CreateMap<Feedback, FeedbackRequest>().ReverseMap();
             CreateMap<Feedback, FeedbackResponse>().ReverseMap();
             CreateMap<Hotel, HotelCreateRequest>().ReverseMap();
@@ -64,8 +69,7 @@ namespace FHotel.Service.Profiles
             CreateMap<Hotel, HotelResponse>().ReverseMap();
             CreateMap<HotelStaff, HotelStaffResponse>().ReverseMap();
             CreateMap<HotelStaff, HotelStaffCreateRequest>().ReverseMap();
-            CreateMap<HotelAmenity, HotelAmenityCreateRequest>().ReverseMap();
-            CreateMap<HotelAmenity, HotelAmenityUpdateRequest>().ReverseMap();
+            CreateMap<HotelAmenity, HotelAmenityRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
             CreateMap<Order, OrderRequest>().ReverseMap();
             CreateMap<Order, OrderResponse>().ReverseMap();

@@ -1,5 +1,4 @@
-﻿using FHotel.Service.DTOs.HotelAmenities;
-using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Amenities;
 using FHotel.Services.DTOs.HotelAmenities;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -16,14 +15,14 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<HotelAmenityResponse> Get(Guid id);
 
-        public Task<HotelAmenityResponse> Create(HotelAmenityCreateRequest request);
+        public Task<HotelAmenityResponse> Create(HotelAmenityRequest request);
 
         public Task<HotelAmenityResponse> Delete(Guid id);
 
-        public Task<HotelAmenityResponse> Update(Guid id, HotelAmenityUpdateRequest request);
+        public Task<HotelAmenityResponse> Update(Guid id, HotelAmenityRequest request);
 
         public Task<string> UploadImage(IFormFile file);
-       
 
+        public Task<IEnumerable<AmenityResponse>> GetAllAmenityByHotelId(Guid hotelId);
     }
 }

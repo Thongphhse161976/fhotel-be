@@ -79,13 +79,6 @@ namespace FHotel.API.Controllers
                 var result = await _hotelStaffService.Create(hotelId, request.UserId); // Call service with hotelId and UserId
                 return CreatedAtAction(nameof(CreateHotelStaff), new { hotelId = hotelId, userId = request.UserId }, result);
             }
-            catch (ValidationException ex)
-            {
-                return BadRequest(new
-                {
-                    message = "Validation failed",
-                });
-            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });

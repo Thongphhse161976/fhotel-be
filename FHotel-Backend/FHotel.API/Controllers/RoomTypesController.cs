@@ -1,5 +1,6 @@
-﻿using FHotel.Service.DTOs.RoomTypes;
-using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Facilities;
+using FHotel.Service.DTOs.RoomTypes;
+using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.DTOs.RoomImages;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Implementations;
@@ -164,17 +165,17 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all room-facilities by room-type id.
+        /// Get a list of all facilities by room-type id.
         /// </summary>
-        [HttpGet("{id}/room-facilities")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypeResponse>))]
+        [HttpGet("{id}/facilities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FacilityResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<RoomTypeResponse>>> GetAllRoomFacilityByRoomTypeId(Guid id)
+        public async Task<ActionResult<List<FacilityResponse>>> GetAllFacilityByRoomTypeId(Guid id)
         {
             try
             {
-                var rs = await _roomFacilityService.GetAllByRoomTypeId(id);
+                var rs = await _roomFacilityService.GetAllFacilityByRoomTypeId(id);
                 return Ok(rs);
             }
             catch (Exception ex)

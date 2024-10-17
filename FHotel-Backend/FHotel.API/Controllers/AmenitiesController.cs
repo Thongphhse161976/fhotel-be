@@ -1,6 +1,5 @@
-﻿using FHotel.Services.DTOs.Cities;
-using FHotel.Services.DTOs.RoomFacilities;
-using FHotel.Services.Services.Interfaces;
+﻿using FHotel.Service.DTOs.Amenities;
+using FHotel.Service.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,31 +7,31 @@ using Microsoft.AspNetCore.Mvc;
 namespace FHotel.API.Controllers
 {
     /// <summary>
-    /// Controller for managing room-facility.
+    /// Controller for managing amenity.
     /// </summary>
-    [Route("api/room-facilities")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class RoomFacilitiesController : ControllerBase
+    public class AmenitiesController : ControllerBase
     {
-        private readonly IRoomFacilityService _roomFacilityService;
+        private readonly IAmenityService _amenityService;
 
-        public RoomFacilitiesController(IRoomFacilityService roomFacilityService)
+        public AmenitiesController(IAmenityService amenityService)
         {
-            _roomFacilityService = roomFacilityService;
+            _amenityService = amenityService;
         }
 
         /// <summary>
-        /// Get a list of all room-facilities.
+        /// Get a list of all amenities.
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFacilityResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AmenityResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<RoomFacilityResponse>>> GetAll()
+        public async Task<ActionResult<List<AmenityResponse>>> GetAll()
         {
             try
             {
-                var rs = await _roomFacilityService.GetAll();
+                var rs = await _amenityService.GetAll();
                 return Ok(rs);
             }
             catch (Exception ex)
@@ -42,17 +41,17 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get room-facility by room-facility id.
+        /// Get amenity by amenity id.
         /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomFacilityResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AmenityResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<RoomFacilityResponse>> Get(Guid id)
+        public async Task<ActionResult<AmenityResponse>> Get(Guid id)
         {
             try
             {
-                var rs = await _roomFacilityService.Get(id);
+                var rs = await _amenityService.Get(id);
                 return Ok(rs);
             }
             catch
@@ -62,16 +61,16 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new room-facility.
+        /// Create new amenity.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RoomFacilityResponse>> Create([FromBody] RoomFacilityRequest request)
+        public async Task<ActionResult<AmenityResponse>> Create([FromBody] AmenityRequest request)
         {
             try
             {
-                var result = await _roomFacilityService.Create(request);
+                var result = await _amenityService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
             catch (ValidationException ex)
@@ -90,24 +89,24 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete room-facility by room-facility id.
+        /// Delete amenity by amenity id.
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<RoomFacilityResponse>> Delete(Guid id)
+        public async Task<ActionResult<AmenityResponse>> Delete(Guid id)
         {
-            var rs = await _roomFacilityService.Delete(id);
+            var rs = await _amenityService.Delete(id);
             return Ok(rs);
         }
 
         /// <summary>
-        /// Update room-facility by room-facility id.
+        /// Update amenity by amenity id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<RoomFacilityResponse>> Update(Guid id, [FromBody] RoomFacilityRequest request)
+        public async Task<ActionResult<AmenityResponse>> Update(Guid id, [FromBody] AmenityRequest request)
         {
             try
             {
-                var rs = await _roomFacilityService.Update(id, request);
+                var rs = await _amenityService.Update(id, request);
                 return Ok(rs);
             }
             catch (ValidationException ex)

@@ -1,7 +1,4 @@
-﻿using FHotel.Service.DTOs.HotelAmenities;
-using FHotel.Services.DTOs.Cities;
-using FHotel.Services.DTOs.HotelAmenities;
-using FHotel.Services.Services.Implementations;
+﻿using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -72,7 +69,7 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelAmenityResponse>> Create([FromBody] HotelAmenityCreateRequest request)
+        public async Task<ActionResult<HotelAmenityResponse>> Create([FromBody] HotelAmenityRequest request)
         {
             try
             {
@@ -108,7 +105,7 @@ namespace FHotel.API.Controllers
         /// Update hotel-amenity by hotel-amenity id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<HotelAmenityResponse>> Update(Guid id, [FromBody] HotelAmenityUpdateRequest request)
+        public async Task<ActionResult<HotelAmenityResponse>> Update(Guid id, [FromBody] HotelAmenityRequest request)
         {
             try
             {

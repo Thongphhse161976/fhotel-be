@@ -10,7 +10,7 @@ namespace FHotel.Services.DTOs.HotelAmenities
     public class HotelAmenityRequest
     {
         public Guid? HotelId { get; set; }
-        public string? Image { get; set; }
+        public Guid? AmenityId { get; set; }
 
     }
 }

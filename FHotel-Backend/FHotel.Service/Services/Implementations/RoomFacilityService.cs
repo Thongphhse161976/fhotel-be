@@ -2,9 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
-using FHotel.Services.DTOs.Countries;
+using FHotel.Service.DTOs.Facilities;
+using FHotel.Service.Validators.RoomFacilityValidator;
 using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -59,6 +61,14 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<RoomFacilityResponse> Create(RoomFacilityRequest request)
         {
+            var validator = new RoomFacilityRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
                 var roomFacility = _mapper.Map<RoomFacilityRequest, RoomFacility>(request);
@@ -97,6 +107,14 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<RoomFacilityResponse> Update(Guid id, RoomFacilityRequest request)
         {
+            var validator = new RoomFacilityRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
                 RoomFacility roomFacility = _unitOfWork.Repository<RoomFacility>()
@@ -118,15 +136,19 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<List<RoomFacilityResponse>> GetAllByRoomTypeId(Guid id)
+        public async Task<List<FacilityResponse>> GetAllFacilityByRoomTypeId(Guid id)
         {
             try
             {
-                var list = await _unitOfWork.Repository<RoomFacility>().GetAll()
+                var roomlist = await _unitOfWork.Repository<RoomFacility>().GetAll()
                                             .ProjectTo<RoomFacilityResponse>(_mapper.ConfigurationProvider)
                                             .Where(x=> x.RoomTypeId == id)
                                             .ToListAsync();
-
+                var list = new List<FacilityResponse>();
+                foreach(var roomFacility in roomlist)
+                {
+                    list.Add(roomFacility.Facility);
+                }
 
                 return list;
             }
