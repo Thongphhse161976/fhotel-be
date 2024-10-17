@@ -14,7 +14,8 @@ namespace FHotel.Services.DTOs.Services
         public decimal? Price { get; set; }
         public string? Description { get; set; }
         public Guid? ServiceTypeId { get; set; }
+        public string? Image { get; set; }
 
-     
+
     }
 }
