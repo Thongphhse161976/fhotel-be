@@ -15,6 +15,7 @@ using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypePrices;
 using FHotel.Service.DTOs.RoomTypes;
+using FHotel.Service.DTOs.Services;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.WalletHistories;
 using FHotel.Service.DTOs.Wallets;
@@ -40,11 +41,7 @@ using FHotel.Services.DTOs.Services;
 using FHotel.Services.DTOs.ServiceTypes;
 using FHotel.Services.DTOs.Timetable;
 using FHotel.Services.DTOs.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FHotel.Service.Profiles
 {
@@ -96,7 +93,8 @@ namespace FHotel.Service.Profiles
             CreateMap<RoomTypePrice, RoomTypePriceCreateRequest>().ReverseMap();
             CreateMap<RoomTypePrice, RoomTypePriceUpdateRequest>().ReverseMap();
             CreateMap<RoomTypePrice, RoomTypePriceResponse>().ReverseMap();
-            CreateMap<Repository.Models.Service, ServiceRequest>().ReverseMap();
+            CreateMap<Repository.Models.Service, ServiceCreateRequest>().ReverseMap();
+            CreateMap<Repository.Models.Service, ServiceUpdateRequest>().ReverseMap();
             CreateMap<Repository.Models.Service, ServiceResponse>().ReverseMap();
             CreateMap<ServiceType, ServiceTypeRequest>().ReverseMap();
             CreateMap<ServiceType, ServiceTypeResponse>().ReverseMap();

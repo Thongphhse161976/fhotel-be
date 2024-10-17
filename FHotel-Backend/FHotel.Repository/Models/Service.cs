@@ -16,6 +16,7 @@ namespace FHotel.Repository.Models
         public string? Image { get; set; }
         public string? Description { get; set; }
         public Guid? ServiceTypeId { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual ServiceType? ServiceType { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

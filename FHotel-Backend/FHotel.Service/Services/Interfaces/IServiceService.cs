@@ -1,5 +1,7 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Services;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Services;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +16,13 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<ServiceResponse> Get(Guid id);
 
-        public Task<ServiceResponse> Create(ServiceRequest request);
+        public Task<ServiceResponse> Create(ServiceCreateRequest request);
 
         public Task<ServiceResponse> Delete(Guid id);
 
-        public Task<ServiceResponse> Update(Guid id, ServiceRequest request);
+        public Task<ServiceResponse> Update(Guid id, ServiceUpdateRequest request);
+
+        public Task<string> UploadImage(IFormFile file);
+
     }
 }
