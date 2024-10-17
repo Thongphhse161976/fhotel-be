@@ -92,6 +92,7 @@ namespace FHotel.Services.Services.Implementations
             {
                 var roomType = _mapper.Map<RoomTypeCreateRequest, RoomType>(request);
                 roomType.RoomTypeId = Guid.NewGuid();
+                roomType.IsActive = false;
                 roomType.CreatedDate = localTime;
                 await _unitOfWork.Repository<RoomType>().InsertAsync(roomType);
                 await _unitOfWork.CommitAsync();

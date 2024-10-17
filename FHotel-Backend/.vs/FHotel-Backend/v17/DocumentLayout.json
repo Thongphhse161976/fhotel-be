@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\roomimageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\roomimageservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\dtos\\roomtypes\\roomtypeupdaterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\dtos\\roomtypes\\roomtypeupdaterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.api\\controllers\\roomimagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|solutionrelative:fhotel.api\\controllers\\roomimagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.repository\\models\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|solutionrelative:fhotel.repository\\models\\roomtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\validators\\roomtypevalidator\\roomtypeupdaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\validators\\roomtypevalidator\\roomtypeupdaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\roomtypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\roomtypeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,27 +31,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RoomImageService.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomImageService.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\RoomImageService.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomImageService.cs*",
-              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\RoomImageService.cs*",
-              "ViewState": "AgIAAEkAAAAAAAAAAAAkwF4AAAA2AAAAAAAAAA==",
+              "Title": "RoomTypeUpdateRequest.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\RoomTypes\\RoomTypeUpdateRequest.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\DTOs\\RoomTypes\\RoomTypeUpdateRequest.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\RoomTypes\\RoomTypeUpdateRequest.cs",
+              "RelativeToolTip": "FHotel.Service\\DTOs\\RoomTypes\\RoomTypeUpdateRequest.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAkwBMAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-16T06:59:47.253Z",
+              "WhenOpened": "2024-10-17T01:50:54.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RoomTypeUpdateRequestValidator.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
+              "RelativeToolTip": "FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAzwBUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-17T01:46:00.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "RoomTypeService.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\RoomTypeService.cs",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAowIMAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-17T01:21:36.251Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "RoomImagesController.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.API\\Controllers\\RoomImagesController.cs",
-              "RelativeDocumentMoniker": "FHotel.API\\Controllers\\RoomImagesController.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.API\\Controllers\\RoomImagesController.cs",
-              "RelativeToolTip": "FHotel.API\\Controllers\\RoomImagesController.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAgwFgAAAAmAAAAAAAAAA==",
+              "Title": "RoomType.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\RoomType.cs",
+              "RelativeDocumentMoniker": "FHotel.Repository\\Models\\RoomType.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\RoomType.cs",
+              "RelativeToolTip": "FHotel.Repository\\Models\\RoomType.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAA7wBsAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-16T06:52:14.29Z",
+              "WhenOpened": "2024-10-17T01:21:13.426Z",
               "EditorCaption": ""
             }
           ]

@@ -25,6 +25,7 @@ namespace FHotel.Repository.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? Note { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual Hotel? Hotel { get; set; }
         public virtual ReservationDetail? ReservationDetail { get; set; }
