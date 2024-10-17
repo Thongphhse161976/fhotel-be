@@ -42,7 +42,7 @@ namespace FHotel.Service.Validators.HotelValidator
 
             // Validate Description
             RuleFor(x => x.Description)
-                .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
+                .NotEmpty().WithMessage("Description is required.");
 
             // Validate Image
             RuleFor(x => x.Image)

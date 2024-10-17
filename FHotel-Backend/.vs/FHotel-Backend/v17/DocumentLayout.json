@@ -86,8 +86,7 @@
               "RelativeToolTip": "FHotel.Service\\Validators\\RoomTypeValidator\\RoomTypeUpdateRequestValidator.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAAwBUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-17T01:46:00.38Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-17T01:46:00.38Z"
             },
             {
               "$type": "Document",
@@ -97,7 +96,7 @@
               "RelativeDocumentMoniker": "FHotel.Service\\DTOs\\Services\\ServiceResponse.cs",
               "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\Services\\ServiceResponse.cs",
               "RelativeToolTip": "FHotel.Service\\DTOs\\Services\\ServiceResponse.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAADwvxIAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAADwvwsAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-17T03:23:52.068Z",
               "EditorCaption": ""
