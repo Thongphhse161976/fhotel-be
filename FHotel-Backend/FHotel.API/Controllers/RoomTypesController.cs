@@ -171,7 +171,7 @@ namespace FHotel.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FacilityResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<FacilityResponse>>> GetAllFacilityByRoomTypeId(Guid id)
+        public async Task<ActionResult<IEnumerable<FacilityResponse>>> GetAllFacilityByRoomTypeId(Guid id)
         {
             try
             {
@@ -183,5 +183,31 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypeResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<RoomTypeResponse>>> SearchRoomTypesWithQuantities([FromBody] List<RoomSearchRequest> searchRequests, [FromQuery] string? cityName)
+        {
+            try
+            {
+                // Call the service to search with multiple room types and quantities
+                var result = await _roomTypeService.SearchRoomTypesWithQuantities(searchRequests, cityName);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound("No rooms found matching the search criteria.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
+
     }
 }

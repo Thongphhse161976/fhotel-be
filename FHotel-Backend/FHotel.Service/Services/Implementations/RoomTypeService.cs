@@ -246,5 +246,63 @@ namespace FHotel.Services.Services.Implementations
             return _mapper.Map<IEnumerable<RoomType>, IEnumerable<RoomTypeResponse>>(roomTypeList);
         }
 
+        public async Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName)
+        {
+            // Fetch all room types with their availability and associated hotel
+            var roomTypeList = await _unitOfWork.Repository<RoomType>()
+                .GetAll()
+                .AsNoTracking()
+                .Include(rt => rt.Hotel)
+                .ThenInclude(hotel => hotel.City)
+                .Where(rt => rt.IsActive == true)  // Only active rooms
+                .ToListAsync();
+
+            // Filter by city if cityName is provided
+            if (!string.IsNullOrEmpty(cityName))
+            {
+                roomTypeList = roomTypeList
+                    .Where(rt => rt.Hotel.City != null &&
+                                 rt.Hotel.City.CityName.Contains(cityName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Now check that all requested room types match
+            foreach (var searchRequest in searchRequests)
+            {
+                // Check if there's any matching room type for each request
+                var matchingRoomType = roomTypeList
+                    .Where(rt => rt.TypeName.Equals(searchRequest.RoomTypeName, StringComparison.OrdinalIgnoreCase)
+                                 && rt.AvailableRooms >= searchRequest.Quantity)
+                    .FirstOrDefault();
+
+                // If even one room type doesn't match, return an empty list
+                if (matchingRoomType == null)
+                {
+                    return Enumerable.Empty<RoomTypeResponse>();
+                }
+            }
+
+            // If all match, return the results
+            var result = roomTypeList
+                .Where(rt => searchRequests.Any(sr => sr.RoomTypeName.Equals(rt.TypeName, StringComparison.OrdinalIgnoreCase)))
+                .Select(rt => new RoomTypeResponse
+                {
+                    RoomTypeId = rt.RoomTypeId,
+                    TypeName = rt.TypeName,
+                    Description = rt.Description,
+                    RoomSize = rt.RoomSize,
+                    BasePrice = rt.BasePrice,
+                    MaxOccupancy = rt.MaxOccupancy,
+                    AvailableRooms = rt.AvailableRooms,
+                    HotelName = rt.Hotel?.HotelName,
+                    CityName = rt.Hotel?.City?.CityName
+                })
+                .ToList();
+
+            return result;
+        }
+
+
+
     }
 }

@@ -15,11 +15,11 @@ namespace FHotel.Repository.Models
 
         public Guid RoomTypeId { get; set; }
         public Guid? HotelId { get; set; }
-        public string? TypeName { get; set; }
+        public string? TypeName { get; set; } //e.g: single, double,...
         public string? Description { get; set; }
         public decimal? RoomSize { get; set; }
         public decimal? BasePrice { get; set; }
-        public int? MaxOccupancy { get; set; }
+        public int? MaxOccupancy { get; set; } //e.g: single(1), double(2),... three people(3)
         public int? TotalRooms { get; set; }
         public int? AvailableRooms { get; set; }
         public bool? IsActive { get; set; }

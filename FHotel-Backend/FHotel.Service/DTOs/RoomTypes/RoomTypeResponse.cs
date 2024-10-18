@@ -24,7 +24,8 @@ namespace FHotel.Services.DTOs.RoomTypes
         public DateTime? UpdatedDate { get; set; }
         public string? Note { get; set; }
         public bool? IsActive { get; set; }
-
+        public string? HotelName { get; set; }
+        public string? CityName { get; set; }
         public virtual HotelResponse? Hotel { get; set; }
     }
 }
