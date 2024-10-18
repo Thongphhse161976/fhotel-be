@@ -9,17 +9,14 @@ namespace FHotel.Repository.Models
         {
             RoomFacilities = new HashSet<RoomFacility>();
             RoomImages = new HashSet<RoomImage>();
-            RoomTypePrices = new HashSet<RoomTypePrice>();
             Rooms = new HashSet<Room>();
         }
 
         public Guid RoomTypeId { get; set; }
         public Guid? HotelId { get; set; }
-        public string? TypeName { get; set; } //e.g: single, double,...
+        public Guid? TypeId { get; set; }
         public string? Description { get; set; }
         public decimal? RoomSize { get; set; }
-        public decimal? BasePrice { get; set; }
-        public int? MaxOccupancy { get; set; } //e.g: single(1), double(2),... three people(3)
         public int? TotalRooms { get; set; }
         public int? AvailableRooms { get; set; }
         public bool? IsActive { get; set; }
@@ -28,10 +25,10 @@ namespace FHotel.Repository.Models
         public string? Note { get; set; }
 
         public virtual Hotel? Hotel { get; set; }
+        public virtual Type? Type { get; set; }
         public virtual ReservationDetail? ReservationDetail { get; set; }
         public virtual ICollection<RoomFacility> RoomFacilities { get; set; }
         public virtual ICollection<RoomImage> RoomImages { get; set; }
-        public virtual ICollection<RoomTypePrice> RoomTypePrices { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }
     }
 }

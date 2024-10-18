@@ -51,7 +51,7 @@ namespace FHotel.Services.Services.Implementations
                 Hotel hotel = null;
                 hotel = await _unitOfWork.Repository<Hotel>().GetAll()
                      .AsNoTracking()
-                     .Include(x => x.City)
+                     .Include(x => x.District)
                      .Include(x => x.Owner)
                     .Where(x => x.HotelId == id)
                     .FirstOrDefaultAsync();
@@ -165,7 +165,7 @@ namespace FHotel.Services.Services.Implementations
                 hotel.Email = request.Email ?? hotel.Email;
                 hotel.Description = request.Description ?? hotel.Description;
                 hotel.Star = request.Star ?? hotel.Star;
-                hotel.CityId = request.CityId ?? hotel.CityId;
+                hotel.DistrictId = request.DistrictId ?? hotel.DistrictId;
                 hotel.OwnerId = request.OwnerId ?? hotel.OwnerId;
                 hotel.UpdatedDate = localTime; // Ensure you update this field automatically
                 hotel.IsActive = request.IsActive ?? hotel.IsActive;

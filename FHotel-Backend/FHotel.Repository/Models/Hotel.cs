@@ -25,13 +25,13 @@ namespace FHotel.Repository.Models
         public int? Star { get; set; }
         public string? BusinessLicenseNumber { get; set; }
         public string? TaxIdentificationNumber { get; set; }
-        public Guid? CityId { get; set; }
+        public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public bool? IsActive { get; set; }
 
-        public virtual City? City { get; set; }
+        public virtual District? District { get; set; }
         public virtual User? Owner { get; set; }
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
         public virtual ICollection<HotelStaff> HotelStaffs { get; set; }

@@ -48,9 +48,9 @@ namespace FHotel.Service.Validators.HotelValidator
             RuleFor(x => x.Image)
                  .NotEmpty().WithMessage("Image is required.");
 
-            // Validate CityId
-            RuleFor(x => x.CityId)
-                .NotNull().WithMessage("CityId is required.");
+            // Validate DistrictId
+            RuleFor(x => x.DistrictId)
+                .NotNull().WithMessage("District is required.");
 
             // Validate BusinessLicenseNumber
             RuleFor(x => x.BusinessLicenseNumber)

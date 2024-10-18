@@ -7,7 +7,8 @@ namespace FHotel.Repository.Models
     {
         public City()
         {
-            Hotels = new HashSet<Hotel>();
+            Districts = new HashSet<District>();
+            TypePricings = new HashSet<TypePricing>();
         }
 
         public Guid CityId { get; set; }
@@ -16,6 +17,7 @@ namespace FHotel.Repository.Models
         public Guid? CountryId { get; set; }
 
         public virtual Country? Country { get; set; }
-        public virtual ICollection<Hotel> Hotels { get; set; }
+        public virtual ICollection<District> Districts { get; set; }
+        public virtual ICollection<TypePricing> TypePricings { get; set; }
     }
 }

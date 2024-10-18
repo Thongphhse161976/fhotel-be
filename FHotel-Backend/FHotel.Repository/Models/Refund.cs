@@ -10,6 +10,7 @@ namespace FHotel.Repository.Models
         public decimal? RefundAmount { get; set; }
         public string? RefundStatus { get; set; }
         public DateTime? RefundDate { get; set; }
+        public string? PaymentAccountInformation { get; set; }
         public Guid? RefundPolicyId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
