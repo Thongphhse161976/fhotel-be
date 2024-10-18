@@ -166,6 +166,14 @@ namespace FHotel.Services.Services.Implementations
                 {
                     await SendEmail(user.Email, user);
                 }
+                if (role.RoleName == "Receptionist")
+                {
+                    await SendEmail(user.Email, user);
+                }
+                if (role.RoleName == "Room Attendant")
+                {
+                    await SendEmail(user.Email, user);
+                }
                 return _mapper.Map<User, UserResponse>(user);
 
             }
