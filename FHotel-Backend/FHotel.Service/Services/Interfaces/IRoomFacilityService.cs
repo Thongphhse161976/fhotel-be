@@ -21,6 +21,6 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<RoomFacilityResponse> Update(Guid id, RoomFacilityRequest request);
 
-        public Task<List<FacilityResponse>> GetAllFacilityByRoomTypeId(Guid id);
+        public Task<List<RoomFacilityResponse>> GetAllRoomFacilityByRoomTypeId(Guid id);
     }
 }

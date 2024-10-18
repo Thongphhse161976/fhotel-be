@@ -167,15 +167,15 @@ namespace FHotel.API.Controllers
         /// <summary>
         /// Get a list of all facilities by room-type id.
         /// </summary>
-        [HttpGet("{id}/facilities")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FacilityResponse>))]
+        [HttpGet("{id}/room-facilities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomFacilityResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IEnumerable<FacilityResponse>>> GetAllFacilityByRoomTypeId(Guid id)
+        public async Task<ActionResult<IEnumerable<RoomFacilityResponse>>> GetAllRoomFacilityByRoomTypeId(Guid id)
         {
             try
             {
-                var rs = await _roomFacilityService.GetAllFacilityByRoomTypeId(id);
+                var rs = await _roomFacilityService.GetAllRoomFacilityByRoomTypeId(id);
                 return Ok(rs);
             }
             catch (Exception ex)

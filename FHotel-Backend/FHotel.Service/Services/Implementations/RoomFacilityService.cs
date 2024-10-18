@@ -136,20 +136,14 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<List<FacilityResponse>> GetAllFacilityByRoomTypeId(Guid id)
+        public async Task<List<RoomFacilityResponse>> GetAllRoomFacilityByRoomTypeId(Guid id)
         {
             try
             {
-                var roomlist = await _unitOfWork.Repository<RoomFacility>().GetAll()
+                var list = await _unitOfWork.Repository<RoomFacility>().GetAll()
                                             .ProjectTo<RoomFacilityResponse>(_mapper.ConfigurationProvider)
                                             .Where(x=> x.RoomTypeId == id)
                                             .ToListAsync();
-                var list = new List<FacilityResponse>();
-                foreach(var roomFacility in roomlist)
-                {
-                    list.Add(roomFacility.Facility);
-                }
-
                 return list;
             }
 

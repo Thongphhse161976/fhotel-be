@@ -4,6 +4,7 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.RoomFacilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -133,11 +134,12 @@ namespace FHotel.Service.Services.Implementations
             // Fetch the staff from the repository based on hotelId
             var hotelStaffList  = await _unitOfWork.Repository<HotelStaff>().GetAll()
                      .AsNoTracking()
+                     .ProjectTo<HotelStaffResponse>(_mapper.ConfigurationProvider)
                     .Where(x => x.HotelId == hotelId)
                     .ToListAsync();
 
             // Map the hotel staff to response DTOs
-            return _mapper.Map<IEnumerable<HotelStaff>, IEnumerable<HotelStaffResponse>>(hotelStaffList);
+            return hotelStaffList;
         }
 
     }

@@ -228,7 +228,7 @@ namespace FHotel.API.Controllers
         /// </summary>
         /// <param name="hotelId">The ID of the hotel.</param>
         /// <returns>A list of hotel staff members.</returns>
-        [HttpGet("{hotelId}/staffs")]
+        [HttpGet("{hotelId}/hotel-staffs")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<HotelStaffResponse>>> GetAllStaffByHotelId(Guid hotelId)
@@ -278,33 +278,33 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
-        /// <summary>
-        /// Get all amenities by hotel ID.
-        /// </summary>
-        /// <param name="hotelId">The ID of the hotel.</param>
-        /// <returns>A list of hotel room types.</returns>
-        [HttpGet("{hotelId}/amenities")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<AmenityResponse>>> GetAllAmenityByHotelId(Guid hotelId)
-        {
-            try
-            {
-                var amenityList = await _hotelAmenityService.GetAllAmenityByHotelId(hotelId);
+        ///// <summary>
+        ///// Get all amenities by hotel ID.
+        ///// </summary>
+        ///// <param name="hotelId">The ID of the hotel.</param>
+        ///// <returns>A list of hotel room types.</returns>
+        //[HttpGet("{hotelId}/amenities")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<IEnumerable<AmenityResponse>>> GetAllAmenityByHotelId(Guid hotelId)
+        //{
+        //    try
+        //    {
+        //        var amenityList = await _hotelAmenityService.GetAllAmenityByHotelId(hotelId);
 
-                if (amenityList == null || !amenityList.Any())
-                {
-                    return NotFound(new { message = "No amenity found for this hotel." });
-                }
+        //        if (amenityList == null || !amenityList.Any())
+        //        {
+        //            return NotFound(new { message = "No amenity found for this hotel." });
+        //        }
 
-                return Ok(amenityList);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception if you have logging set up
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
-            }
-        }
+        //        return Ok(amenityList);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception if you have logging set up
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+        //    }
+        //}
 
     }
 }

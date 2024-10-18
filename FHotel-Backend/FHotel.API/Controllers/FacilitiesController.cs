@@ -9,7 +9,7 @@ namespace FHotel.API.Controllers
     /// <summary>
     /// Controller for managing facility.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/facilities")]
     [ApiController]
     public class FacilitiesController : ControllerBase
     {
