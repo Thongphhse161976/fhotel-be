@@ -8,6 +8,7 @@ using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Service.Validators.RoomTypeValidator;
 using FHotel.Services.DTOs.Countries;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
@@ -248,12 +249,11 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName)
         {
-            // Fetch all room types with their availability and associated hotel
             var roomTypeList = await _unitOfWork.Repository<RoomType>()
                 .GetAll()
                 .AsNoTracking()
-                .Include(rt => rt.Hotel)
-                .ThenInclude(hotel => hotel.City)
+                .Include(rt => rt.Hotel)  // Include full hotel details
+                .ThenInclude(hotel => hotel.City)  // If city is a separate entity
                 .Where(rt => rt.IsActive == true)  // Only active rooms
                 .ToListAsync();
 
@@ -266,41 +266,53 @@ namespace FHotel.Services.Services.Implementations
                     .ToList();
             }
 
-            // Now check that all requested room types match
+            // Now check that all requested room types match and map the response
+            var result = new List<RoomTypeResponse>();
+
             foreach (var searchRequest in searchRequests)
             {
-                // Check if there's any matching room type for each request
-                var matchingRoomType = roomTypeList
+                var matchingRoomTypes = roomTypeList
                     .Where(rt => rt.TypeName.Equals(searchRequest.RoomTypeName, StringComparison.OrdinalIgnoreCase)
-                                 && rt.AvailableRooms >= searchRequest.Quantity)
-                    .FirstOrDefault();
+                                 && rt.AvailableRooms >= searchRequest.Quantity)  // Ensure enough available rooms
+                    .ToList();
 
-                // If even one room type doesn't match, return an empty list
-                if (matchingRoomType == null)
+                if (!matchingRoomTypes.Any())
                 {
-                    return Enumerable.Empty<RoomTypeResponse>();
+                    return Enumerable.Empty<RoomTypeResponse>();  // Return no matches if any room type fails
+                }
+
+                foreach (var roomType in matchingRoomTypes)
+                {
+                    result.Add(new RoomTypeResponse
+                    {
+                        HotelId = roomType.HotelId,
+                        RoomTypeId = roomType.RoomTypeId,
+                        TypeName = roomType.TypeName,
+                        Description = roomType.Description,
+                        RoomSize = roomType.RoomSize,
+                        BasePrice = roomType.BasePrice,
+                        MaxOccupancy = roomType.MaxOccupancy,
+                        AvailableRooms = roomType.AvailableRooms,
+                        Hotel = new HotelResponse  // Include full hotel details here
+                        {
+                            HotelId = roomType.Hotel.HotelId,
+                            HotelName = roomType.Hotel.HotelName,
+                            Address = roomType.Hotel.Address,
+                            Phone = roomType.Hotel.Phone,
+                            Description = roomType.Hotel.Description,
+                            Email = roomType.Hotel.Email,
+                            CreatedDate = roomType.Hotel.CreatedDate,
+                            IsActive = roomType.Hotel.IsActive,
+                            Image = roomType.Hotel.Image,
+                            Star = roomType.Hotel.Star
+                        }
+                    });
                 }
             }
 
-            // If all match, return the results
-            var result = roomTypeList
-                .Where(rt => searchRequests.Any(sr => sr.RoomTypeName.Equals(rt.TypeName, StringComparison.OrdinalIgnoreCase)))
-                .Select(rt => new RoomTypeResponse
-                {
-                    RoomTypeId = rt.RoomTypeId,
-                    TypeName = rt.TypeName,
-                    Description = rt.Description,
-                    RoomSize = rt.RoomSize,
-                    BasePrice = rt.BasePrice,
-                    MaxOccupancy = rt.MaxOccupancy,
-                    AvailableRooms = rt.AvailableRooms,
-                    HotelName = rt.Hotel?.HotelName,
-                    CityName = rt.Hotel?.City?.CityName
-                })
-                .ToList();
-
             return result;
         }
+
 
 
 
