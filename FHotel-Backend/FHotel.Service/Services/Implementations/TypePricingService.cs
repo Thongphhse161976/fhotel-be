@@ -134,5 +134,17 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<List<TypePricingResponse>> GetAllByTypeId(Guid id)
+        {
+            var list = await _unitOfWork.Repository<TypePricing>().GetAll()
+                                            .ProjectTo<TypePricingResponse>(_mapper.ConfigurationProvider)
+                                            .Where(x=> x.TypeId == id)
+                                            .ToListAsync();
+            if (list == null)
+            {
+                throw new Exception("TypePricing is empty");
+            }
+            return list;
+        }
     }
 }

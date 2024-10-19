@@ -18,5 +18,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<TypePricingResponse> Delete(Guid id);
 
         public Task<TypePricingResponse> Update(Guid id, TypePricingUpdateRequest request);
+
+        public Task<List<TypePricingResponse>> GetAllByTypeId(Guid id);
     }
 }

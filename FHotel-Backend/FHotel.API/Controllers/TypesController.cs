@@ -1,4 +1,5 @@
-﻿using FHotel.Service.DTOs.Types;
+﻿using FHotel.Service.DTOs.TypePricings;
+using FHotel.Service.DTOs.Types;
 using FHotel.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace FHotel.API.Controllers
     public class TypesController : ControllerBase
     {
         private readonly ITypeService _typeService;
+        private readonly ITypePricingService _typePricingService;
 
-        public TypesController(ITypeService typeService)
+        public TypesController(ITypeService typeService, ITypePricingService typePricingService)
         {
             _typeService = typeService;
+            _typePricingService = typePricingService;
         }
 
         /// <summary>
@@ -97,6 +100,25 @@ namespace FHotel.API.Controllers
             try
             {
                 var rs = await _typeService.Update(id, request);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Get a list of all type-pricings by type id.
+        /// </summary>
+        [HttpGet("id/type-pricings")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TypePricingResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<TypePricingResponse>>> GetAllTypePriceByTypeId(Guid id)
+        {
+            try
+            {
+                var rs = await _typePricingService.GetAllByTypeId(id);
                 return Ok(rs);
             }
             catch (Exception ex)

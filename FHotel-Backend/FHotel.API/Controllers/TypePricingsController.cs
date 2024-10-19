@@ -42,7 +42,7 @@ namespace FHotel.API.Controllers
         /// <summary>
         /// Get type-pricing by type-pricing id.
         /// </summary>
-        [HttpGet("{ }")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TypePricingResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
