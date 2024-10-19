@@ -19,5 +19,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<DistrictResponse> Delete(Guid id);
 
         public Task<DistrictResponse> Update(Guid id, DistrictRequest request);
+
+        public Task<List<DistrictResponse>> GetAllByCityId(Guid id);
     }
 }

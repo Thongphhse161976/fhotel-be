@@ -119,5 +119,15 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<DistrictResponse>> GetAllByCityId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<District>().GetAll()
+                                            .ProjectTo<DistrictResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.CityId == id)
+                                            .ToListAsync();
+            return list;
+        }
     }
 }

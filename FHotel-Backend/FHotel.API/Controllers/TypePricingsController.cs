@@ -74,6 +74,7 @@ namespace FHotel.API.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.InnerException?.Message);
                 throw new Exception(ex.Message);
             }
         }

@@ -1,5 +1,7 @@
 ﻿using FHotel.Service.DTOs.Facilities;
 using FHotel.Service.DTOs.RoomTypes;
+using FHotel.Service.DTOs.TypePricings;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.DTOs.RoomImages;
@@ -22,12 +24,14 @@ namespace FHotel.API.Controllers
         private readonly IRoomTypeService _roomTypeService;
         private readonly IRoomImageService _roomImageService;
         private readonly IRoomFacilityService _roomFacilityService;
+        private readonly ITypePricingService _typePricingService;
 
-        public RoomTypesController(IRoomTypeService roomTypeService, IRoomImageService roomImageService, IRoomFacilityService roomFacilityService)
+        public RoomTypesController(IRoomTypeService roomTypeService, IRoomImageService roomImageService, IRoomFacilityService roomFacilityService, ITypePricingService typePricingService)
         {
             _roomTypeService = roomTypeService;
             _roomImageService = roomImageService;
             _roomFacilityService = roomFacilityService;
+            _typePricingService = typePricingService;
         }
 
         /// <summary>
@@ -209,7 +213,25 @@ namespace FHotel.API.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Get a list of all type-pricings by room-type id.
+        /// </summary>
+        [HttpGet("{id}/type-pricings")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TypePricingResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<TypePricingResponse>>> GetAllTypePriceByTypeId(Guid id)
+        {
+            try
+            {
+                var rs = await _typePricingService.GetAllByRoomTypeId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

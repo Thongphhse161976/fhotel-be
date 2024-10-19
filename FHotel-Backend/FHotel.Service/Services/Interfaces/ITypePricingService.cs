@@ -20,5 +20,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<TypePricingResponse> Update(Guid id, TypePricingUpdateRequest request);
 
         public Task<List<TypePricingResponse>> GetAllByTypeId(Guid id);
+
+        public Task<List<TypePricingResponse>> GetAllByRoomTypeId(Guid roomTypeId);
     }
 }

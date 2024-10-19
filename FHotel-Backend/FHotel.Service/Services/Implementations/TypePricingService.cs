@@ -2,8 +2,11 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.TypePricings;
+using FHotel.Service.DTOs.Types;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,10 +20,12 @@ namespace FHotel.Service.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public TypePricingService(IUnitOfWork unitOfWork, IMapper mapper)
+        private IRoomTypeService _roomTypeService;
+        public TypePricingService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _roomTypeService = roomTypeService;
         }
 
         public async Task<List<TypePricingResponse>> GetAll()
@@ -145,6 +150,24 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception("TypePricing is empty");
             }
             return list;
+        }
+
+        public async Task<List<TypePricingResponse>> GetAllByRoomTypeId(Guid roomTypeId)
+        {
+            var roomType = await _roomTypeService.Get(roomTypeId);
+
+            var typePricings = await _unitOfWork.Repository<TypePricing>()
+                                        .GetAll()
+                                        .Where(tp => tp.TypeId == roomType.TypeId && tp.DistrictId == roomType.Hotel.DistrictId)
+                                        .ProjectTo<TypePricingResponse>(_mapper.ConfigurationProvider)
+                                        .ToListAsync();
+
+            if (typePricings == null || !typePricings.Any())
+            {
+                throw new Exception("No TypePricing found for the given RoomTypeId.");
+            }
+
+            return typePricings;
         }
     }
 }

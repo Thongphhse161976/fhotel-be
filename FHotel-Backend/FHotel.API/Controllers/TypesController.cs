@@ -110,7 +110,7 @@ namespace FHotel.API.Controllers
         /// <summary>
         /// Get a list of all type-pricings by type id.
         /// </summary>
-        [HttpGet("id/type-pricings")]
+        [HttpGet("{id}/type-pricings")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TypePricingResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
