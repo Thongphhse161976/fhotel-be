@@ -246,6 +246,7 @@ namespace FHotel.Services.Services.Implementations
             // Fetch the room types from the repository based on hotelId
             var roomTypeList = await _unitOfWork.Repository<RoomType>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Type)
                     .Where(x => x.HotelId == hotelId)
                     .ToListAsync();
 
