@@ -50,7 +50,7 @@ namespace FHotel.Service.Validators.HotelValidator
 
             // Validate DistrictId
             RuleFor(x => x.DistrictId)
-                .NotNull().WithMessage("District is required.");
+                .NotEmpty().WithMessage("District is required.");
 
             // Validate BusinessLicenseNumber
             RuleFor(x => x.BusinessLicenseNumber)

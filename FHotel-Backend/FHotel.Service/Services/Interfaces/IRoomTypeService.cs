@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.RoomTypes;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -25,7 +26,7 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<IEnumerable<RoomTypeResponse>> GetAllRoomTypeByHotelId(Guid hotelId);
 
-        //public Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName);
+        public Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName);
 
     }
 }

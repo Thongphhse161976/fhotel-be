@@ -13,9 +13,8 @@ namespace FHotel.Service.Validators.RoomTypeValidator
         public RoomTypeUpdateRequestValidator()
         {
 
-            RuleFor(r => r.TypeName)
-                .NotEmpty().WithMessage("Room type name is required.")
-                .MaximumLength(100).WithMessage("Room type name must not exceed 100 characters.");
+            RuleFor(r => r.TypeId)
+                .NotEmpty().WithMessage("Type Id is required.");
 
             RuleFor(r => r.Description)
                 .NotEmpty().WithMessage("Description is required");
@@ -24,9 +23,6 @@ namespace FHotel.Service.Validators.RoomTypeValidator
                 .NotNull().WithMessage("Room size is required.")
                 .GreaterThan(0).WithMessage("Room size must be greater than 0.");
 
-            RuleFor(r => r.MaxOccupancy)
-                .NotNull().WithMessage("Max occupancy is required.")
-                .GreaterThan(0).WithMessage("Max occupancy must be greater than 0.");
 
             RuleFor(r => r.TotalRooms)
                 .NotNull().WithMessage("Total rooms are required.")

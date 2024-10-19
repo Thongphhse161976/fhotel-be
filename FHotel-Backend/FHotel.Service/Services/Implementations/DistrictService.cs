@@ -40,6 +40,7 @@ namespace FHotel.Service.Services.Implementations
                 District district = null;
                 district = await _unitOfWork.Repository<District>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.City)
                     .Where(x => x.DistrictId == id)
                     .FirstOrDefaultAsync();
 

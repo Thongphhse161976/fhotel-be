@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FHotel.Services.DTOs.RoomTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,6 @@ namespace FHotel.Service.DTOs.RoomTypes
         public string RoomTypeName { get; set; }   // e.g., Single, Double
         public int Quantity { get; set; }          // e.g., 2 rooms, 1 room
     }
+
 
 }

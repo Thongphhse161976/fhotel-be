@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Facilities;
 using FHotel.Service.DTOs.RoomTypes;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.DTOs.RoomImages;
 using FHotel.Services.DTOs.RoomTypes;
@@ -184,29 +185,30 @@ namespace FHotel.API.Controllers
             }
         }
 
-        //[HttpPost("search")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypeResponse>))]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<ActionResult<IEnumerable<RoomTypeResponse>>> SearchRoomTypesWithQuantities([FromBody] List<RoomSearchRequest> searchRequests, [FromQuery] string? cityName)
-        //{
-        //    try
-        //    {
-        //        // Call the service to search with multiple room types and quantities
-        //        var result = await _roomTypeService.SearchRoomTypesWithQuantities(searchRequests, cityName);
+        [HttpPost("search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RoomTypeResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<RoomTypeResponse>>> SearchRoomTypesWithQuantities([FromBody] List<RoomSearchRequest> searchRequests, [FromQuery] string? cityName)
+        {
+            try
+            {
+                // Call the service to search with multiple room types and quantities
+                var result = await _roomTypeService.SearchRoomTypesWithQuantities(searchRequests, cityName);
 
-        //        if (result == null || !result.Any())
-        //        {
-        //            return NotFound("No rooms found matching the search criteria.");
-        //        }
+                if (result == null || !result.Any())
+                {
+                    return NotFound("No rooms found matching the search criteria.");
+                }
 
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest($"An error occurred: {ex.Message}");
-        //    }
-        //}
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
 
 
     }

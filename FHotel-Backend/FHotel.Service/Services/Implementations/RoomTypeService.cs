@@ -3,12 +3,15 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.FirebaseStorages.Models;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.RoomTypes;
+using FHotel.Service.DTOs.Types;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Service.Validators.RoomTypeValidator;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
@@ -54,6 +57,7 @@ namespace FHotel.Services.Services.Implementations
                 roomType = await _unitOfWork.Repository<RoomType>().GetAll()
                      .AsNoTracking()
                      .Include(x => x.Hotel)
+                     .Include(x => x.Type)
                     .Where(x => x.RoomTypeId == id)
                     .FirstOrDefaultAsync();
 
@@ -248,76 +252,80 @@ namespace FHotel.Services.Services.Implementations
             return _mapper.Map<IEnumerable<RoomType>, IEnumerable<RoomTypeResponse>>(roomTypeList);
         }
 
-        //public async Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? districtName)
-        //{
-        //    var roomTypeList = await _unitOfWork.Repository<RoomType>()
-        //        .GetAll()
-        //        .AsNoTracking()
-        //        .Include(rt => rt.Hotel)  // Include full hotel details
-        //        .ThenInclude(hotel => hotel.District)  // If Districrt is a separate entity
-        //        .Include(t => t.Type)
-        //        .Where(rt => rt.IsActive == true)  // Only active rooms
-        //        .ToListAsync();
+        public async Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName)
+        {
+            var roomTypeList = await _unitOfWork.Repository<RoomType>()
+                .GetAll()
+                .AsNoTracking()
+                .Include(rt => rt.Hotel)  // Include full hotel details
+                .ThenInclude(hotel => hotel.District)  // If city is a separate entity
+                    .ThenInclude(disctrict => disctrict.City)  // If city is a separate entity
+                .Include(rt => rt.Type)  // Include full type details
+                .Where(rt => rt.IsActive == true)  // Only active rooms
+                .ToListAsync();
 
-        //    // Filter by district if district name is provided
-        //    if (!string.IsNullOrEmpty(districtName))
-        //    {
-        //        roomTypeList = roomTypeList
-        //            .Where(rt => rt.Hotel.District != null &&
-        //                         rt.Hotel.District.DistrictName.Contains(districtName, StringComparison.OrdinalIgnoreCase))
-        //            .ToList();
-        //    }
+            // Filter by city if cityName is provided
+            if (!string.IsNullOrEmpty(cityName))
+            {
+                roomTypeList = roomTypeList
+                    .Where(rt => rt.Hotel.District.City != null &&
+                                 rt.Hotel.District.City.CityName.Contains(cityName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
 
-        //    // Now check that all requested room types match and map the response
-        //    var result = new List<RoomTypeResponse>();
+            // Now check that all requested room types match and map the response
+            var result = new List<RoomTypeResponse>();
 
-        //    foreach (var searchRequest in searchRequests)
-        //    {
-        //        var matchingRoomTypes = roomTypeList
-        //            .Where(rt => rt.Type.TypeName.Equals(searchRequest.RoomTypeName, StringComparison.OrdinalIgnoreCase)
-        //                         && rt.AvailableRooms >= searchRequest.Quantity)  // Ensure enough available rooms
-        //            .ToList();
+            foreach (var searchRequest in searchRequests)
+            {
+                var matchingRoomTypes = roomTypeList
+                    .Where(rt => rt.Type.TypeName.Equals(searchRequest.RoomTypeName, StringComparison.OrdinalIgnoreCase)
+                                 && rt.AvailableRooms >= searchRequest.Quantity)  // Ensure enough available rooms
+                    .ToList();
 
-        //        if (!matchingRoomTypes.Any())
-        //        {
-        //            return Enumerable.Empty<RoomTypeResponse>();  // Return no matches if any room type fails
-        //        }
+                if (!matchingRoomTypes.Any())
+                {
+                    return Enumerable.Empty<RoomTypeResponse>();  // Return no matches if any room type fails
+                }
 
-        //        foreach (var roomType in matchingRoomTypes)
-        //        {
-        //            result.Add(new RoomTypeResponse
-        //            {
-        //                HotelId = roomType.HotelId,
-        //                RoomTypeId = roomType.RoomTypeId,
-        //                TypeId= roomType.TypeId,
-        //                Description = roomType.Description,
-        //                RoomSize = roomType.RoomSize,
-        //                AvailableRooms = roomType.AvailableRooms,
-        //                TotalRooms = roomType.TotalRooms,
-        //                Note = roomType.Note,
-        //                Hotel = new HotelResponse  // Include full hotel details here
-        //                {
-        //                    HotelId = roomType.Hotel.HotelId,
-        //                    HotelName = roomType.Hotel.HotelName,
-        //                    Address = roomType.Hotel.Address,
-        //                    Phone = roomType.Hotel.Phone,
-        //                    Description = roomType.Hotel.Description,
-        //                    Email = roomType.Hotel.Email,
-        //                    CreatedDate = roomType.Hotel.CreatedDate,
-        //                    IsActive = roomType.Hotel.IsActive,
-        //                    Image = roomType.Hotel.Image,
-        //                    Star = roomType.Hotel.Star
-        //                },
-        //                Type = new Service.DTOs.Types.TypeResponse
-        //                {
+                foreach (var roomType in matchingRoomTypes)
+                {
+                    result.Add(new RoomTypeResponse
+                    {
+                        HotelId = roomType.HotelId,
+                        RoomTypeId = roomType.RoomTypeId,
+                        TypeId = roomType.TypeId,
+                        Description = roomType.Description,
+                        RoomSize = roomType.RoomSize,
+                        AvailableRooms = roomType.AvailableRooms,
+                        Hotel = new HotelResponse  // Include full hotel details here
+                        {
+                            HotelId = roomType.Hotel.HotelId,
+                            HotelName = roomType.Hotel.HotelName,
+                            Address = roomType.Hotel.Address,
+                            Phone = roomType.Hotel.Phone,
+                            Description = roomType.Hotel.Description,
+                            Email = roomType.Hotel.Email,
+                            CreatedDate = roomType.Hotel.CreatedDate,
+                            IsActive = roomType.Hotel.IsActive,
+                            Image = roomType.Hotel.Image,
+                            Star = roomType.Hotel.Star
+                        },
+                        Type = new TypeResponse  // Include full hotel details here
+                        {
+                            TypeName = roomType.Type.TypeName,
+                        },
+                    });
+                }
+            }
 
-        //                }
-        //            });
-        //        }
-        //    }
+            return result;
+        }
 
-        //    return result;
-        //}
+
+
+
+
 
 
 

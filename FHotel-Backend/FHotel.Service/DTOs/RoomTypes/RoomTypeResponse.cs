@@ -2,6 +2,7 @@
 using FHotel.Service.DTOs.Types;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.ReservationDetails;
+using FHotel.Services.DTOs.Rooms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,6 @@ namespace FHotel.Services.DTOs.RoomTypes
 
         public virtual HotelResponse? Hotel { get; set; }
         public virtual TypeResponse? Type { get; set; }
+
     }
 }
