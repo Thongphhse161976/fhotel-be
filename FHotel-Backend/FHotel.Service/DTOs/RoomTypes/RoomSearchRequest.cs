@@ -9,7 +9,7 @@ namespace FHotel.Service.DTOs.RoomTypes
 {
     public class RoomSearchRequest
     {
-        public string RoomTypeName { get; set; }   // e.g., Single, Double
+        public Guid TypeId { get; set; }   // e.g., Single, Double
         public int Quantity { get; set; }          // e.g., 2 rooms, 1 room
     }
 

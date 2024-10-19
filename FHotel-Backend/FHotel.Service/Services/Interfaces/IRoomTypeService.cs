@@ -26,7 +26,7 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<IEnumerable<RoomTypeResponse>> GetAllRoomTypeByHotelId(Guid hotelId);
 
-        public Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName);
+        public  Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? cityName);
 
     }
 }

@@ -33,6 +33,5 @@ namespace FHotel.Services.DTOs.Hotels
 
         public virtual DistrictResponse? District { get; set; }
         public virtual UserResponse? Owner { get; set; }
-        public virtual ICollection<RoomType> RoomTypes { get; set; }
     }
 }

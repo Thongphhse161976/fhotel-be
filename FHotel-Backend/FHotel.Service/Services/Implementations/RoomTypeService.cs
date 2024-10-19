@@ -9,6 +9,7 @@ using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.DTOs.Types;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Service.Validators.RoomTypeValidator;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Rooms;
@@ -252,19 +253,19 @@ namespace FHotel.Services.Services.Implementations
             return _mapper.Map<IEnumerable<RoomType>, IEnumerable<RoomTypeResponse>>(roomTypeList);
         }
 
-        public async Task<IEnumerable<RoomTypeResponse>> SearchRoomTypesWithQuantities(List<RoomSearchRequest> searchRequests, string? cityName)
+        public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? cityName)
         {
             var roomTypeList = await _unitOfWork.Repository<RoomType>()
                 .GetAll()
                 .AsNoTracking()
-                .Include(rt => rt.Hotel)  // Include full hotel details
-                .ThenInclude(hotel => hotel.District)  // If city is a separate entity
-                    .ThenInclude(disctrict => disctrict.City)  // If city is a separate entity
-                .Include(rt => rt.Type)  // Include full type details
-                .Where(rt => rt.IsActive == true)  // Only active rooms
+                .Include(rt => rt.Hotel)
+                    .ThenInclude(hotel => hotel.District)
+                        .ThenInclude(district => district.City)
+                .Include(rt => rt.Type)
+                .Where(rt => rt.IsActive == true)
                 .ToListAsync();
 
-            // Filter by city if cityName is provided
+            // Filter by city if provided
             if (!string.IsNullOrEmpty(cityName))
             {
                 roomTypeList = roomTypeList
@@ -273,60 +274,55 @@ namespace FHotel.Services.Services.Implementations
                     .ToList();
             }
 
-            // Now check that all requested room types match and map the response
-            var result = new List<RoomTypeResponse>();
+            var hotels = new List<HotelResponse>();
+            var hotelIds = new HashSet<Guid>();
 
-            foreach (var searchRequest in searchRequests)
+            // Group room types by hotel
+            var hotelRoomTypes = roomTypeList
+                .GroupBy(rt => rt.Hotel.HotelId) // Group by HotelId to avoid duplicates
+                .Select(g => new
+                {
+                    Hotel = g.First().Hotel, // Get the hotel from the first room type
+                    RoomTypes = g.ToList()
+                })
+                .ToList();
+
+            // Log after grouping
+            Console.WriteLine($"Grouped Hotels Count After Grouping: {hotelRoomTypes.Count}");
+            foreach (var hotelGroup in hotelRoomTypes)
             {
-                var matchingRoomTypes = roomTypeList
-                    .Where(rt => rt.Type.TypeName.Equals(searchRequest.RoomTypeName, StringComparison.OrdinalIgnoreCase)
-                                 && rt.AvailableRooms >= searchRequest.Quantity)  // Ensure enough available rooms
-                    .ToList();
-
-                if (!matchingRoomTypes.Any())
+                Console.WriteLine($"Hotel: {hotelGroup.Hotel.HotelName}, Room Types Count: {hotelGroup.RoomTypes.Count}");
+                foreach (var roomType in hotelGroup.RoomTypes)
                 {
-                    return Enumerable.Empty<RoomTypeResponse>();  // Return no matches if any room type fails
-                }
-
-                foreach (var roomType in matchingRoomTypes)
-                {
-                    result.Add(new RoomTypeResponse
-                    {
-                        HotelId = roomType.HotelId,
-                        RoomTypeId = roomType.RoomTypeId,
-                        TypeId = roomType.TypeId,
-                        Description = roomType.Description,
-                        RoomSize = roomType.RoomSize,
-                        AvailableRooms = roomType.AvailableRooms,
-                        Hotel = new HotelResponse  // Include full hotel details here
-                        {
-                            HotelId = roomType.Hotel.HotelId,
-                            HotelName = roomType.Hotel.HotelName,
-                            Address = roomType.Hotel.Address,
-                            Phone = roomType.Hotel.Phone,
-                            Description = roomType.Hotel.Description,
-                            Email = roomType.Hotel.Email,
-                            CreatedDate = roomType.Hotel.CreatedDate,
-                            IsActive = roomType.Hotel.IsActive,
-                            Image = roomType.Hotel.Image,
-                            Star = roomType.Hotel.Star
-                        },
-                        Type = new TypeResponse  // Include full hotel details here
-                        {
-                            TypeName = roomType.Type.TypeName,
-                        },
-                    });
+                    Console.WriteLine($"- Room Type ID: {roomType.TypeId}, Available: {roomType.AvailableRooms}");
                 }
             }
 
-            return result;
+            // Check each hotel against all search requests
+            foreach (var searchRequest in searchRequests)
+            {
+                // Iterate over the hotels
+                foreach (var hotelGroup in hotelRoomTypes)
+                {
+                    // Check if the hotel has all required room types with sufficient availability
+                    bool hasAllRequiredRoomTypes = searchRequests.All(sr =>
+                        hotelGroup.RoomTypes.Any(rt => rt.TypeId == sr.TypeId
+                                                        && rt.AvailableRooms >= sr.Quantity));
+
+                    if (hasAllRequiredRoomTypes)
+                    {
+                        // Directly check HotelId without using Value
+                        if (!hotelIds.Contains(hotelGroup.Hotel.HotelId))
+                        {
+                            hotels.Add(_mapper.Map<HotelResponse>(hotelGroup.Hotel));
+                            hotelIds.Add(hotelGroup.Hotel.HotelId); // Directly use HotelId
+                        }
+                    }
+                }
+            }
+
+            return hotels;
         }
-
-
-
-
-
-
 
 
 
