@@ -7,6 +7,7 @@ namespace FHotel.Repository.Models
     {
         public RoomType()
         {
+            Reservations = new HashSet<Reservation>();
             RoomFacilities = new HashSet<RoomFacility>();
             RoomImages = new HashSet<RoomImage>();
             Rooms = new HashSet<Room>();
@@ -26,7 +27,7 @@ namespace FHotel.Repository.Models
 
         public virtual Hotel? Hotel { get; set; }
         public virtual Type? Type { get; set; }
-        public virtual Reservation? Reservation { get; set; }
+        public virtual ICollection<Reservation> Reservations { get; set; }
         public virtual ICollection<RoomFacility> RoomFacilities { get; set; }
         public virtual ICollection<RoomImage> RoomImages { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }
