@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Reservations;
@@ -21,10 +22,15 @@ namespace FHotel.Services.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public ReservationService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IRoomTypeService _roomTypeService;
+        private readonly ITypePricingService _typePricingService;
+        public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
+            ITypePricingService typePricingService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _roomTypeService = roomTypeService;
+            _typePricingService = typePricingService;
         }
 
         public async Task<List<ReservationResponse>> GetAll()
@@ -156,5 +162,37 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<decimal> CalculateTotalAmount(Guid roomTypeId, DateTime checkInDate, DateTime checkOutDate, int numberOfRooms)
+        {
+            var roomType = await _roomTypeService.Get(roomTypeId);
+
+            if (roomType == null || roomType.IsActive != true || numberOfRooms <= 0)
+            {
+                throw new ArgumentException("Invalid room type or number of rooms.");
+            }
+
+            decimal totalAmount = 0;
+
+            // Get the district ID from the room type
+            var districtId = roomType.Hotel.DistrictId;
+
+            for (DateTime currentDate = checkInDate.Date; currentDate < checkOutDate.Date; currentDate = currentDate.AddDays(1))
+            {
+                int dayOfWeek = (int)currentDate.DayOfWeek == 0 ? 7 : (int)currentDate.DayOfWeek;
+
+                var dailyPricing = await _typePricingService.GetPricingByTypeAndDistrict(roomType.TypeId ?? Guid.Empty, districtId ?? Guid.Empty, dayOfWeek);
+
+                if (dailyPricing == null)
+                {
+                    throw new Exception($"No pricing available for {currentDate.ToShortDateString()}.");
+                }
+
+                totalAmount += dailyPricing.Price.Value * numberOfRooms;
+            }
+
+            return totalAmount;
+        }
+
     }
 }

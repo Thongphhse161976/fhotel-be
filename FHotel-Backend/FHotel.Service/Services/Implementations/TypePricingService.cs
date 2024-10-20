@@ -169,5 +169,27 @@ namespace FHotel.Service.Services.Implementations
 
             return typePricings;
         }
+
+        public async Task<TypePricingResponse> GetPricingByTypeAndDistrict(Guid typeId, Guid districtId, int dayOfWeek)
+        {
+            try
+            {
+                var pricing = await _unitOfWork.Repository<TypePricing>()
+                    .GetAll()
+                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
+                    .FirstOrDefaultAsync();
+
+                if (pricing == null)
+                {
+                    throw new Exception("No pricing found for the specified criteria.");
+                }
+
+                return _mapper.Map<TypePricing, TypePricingResponse>(pricing);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching pricing: {ex.Message}");
+            }
+        }
     }
 }

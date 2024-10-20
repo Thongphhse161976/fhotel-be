@@ -1,4 +1,5 @@
-﻿using FHotel.Service.DTOs.Reservations;
+﻿using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.Reservations;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
@@ -15,12 +16,10 @@ namespace FHotel.API.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly IReservationService _reservationService;
-        private readonly IReservationDetailService _reservationdetailService;
 
-        public ReservationsController(IReservationService reservationService, IReservationDetailService reservationDetail)
+        public ReservationsController(IReservationService reservationService)
         {
             _reservationService = reservationService;
-            _reservationdetailService = reservationDetail;
         }
 
         /// <summary>
@@ -69,42 +68,17 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ReservationResponse>> Create([FromBody] CombinedReservationRequest combinedRequest)
+        public async Task<ActionResult<ReservationResponse>> Create([FromBody] ReservationCreateRequest request)
         {
             try
             {
-                var reservation = await _reservationService.Create(combinedRequest.Reservation);
-                if (reservation != null)
-                {
-                    combinedRequest.Detail.ReservationId = reservation.ReservationId;
-                    var reservationDetail = await _reservationdetailService.Create(combinedRequest.Detail);
-
-                    var combinedResponse = new CombinedReservationResponse
-                    {
-                        Reservation = reservation,
-                        ReservationDetail = reservationDetail
-                    };
-
-                    
-                    return CreatedAtAction(nameof(Create), new { combinedResponse });
-                }
-
-                return BadRequest("Reservation creation failed.");
-            }
-            catch (ValidationException ex)
-            {
-                // Access validation errors from ex.Errors
-                return BadRequest(new
-                {
-                    message = "Validation failed",
-                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
-                });
+                var result = await _reservationService.Create(request);
+                return CreatedAtAction(nameof(Create), result);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
         }
 
         /// <summary>
@@ -143,33 +117,36 @@ namespace FHotel.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get a list of all reservation-details by reservation id.
-        /// </summary>
-        [HttpGet("{id}/reservation-details")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ReservationResponse>>> GetAllReservationDetailByReservationId(Guid id)
+        // POST: api/reservations/calculate
+        [HttpPost("calculate")]
+        public async Task<IActionResult> CalculateTotalAmount([FromBody] CalculateTotalAmountRequest request)
         {
             try
             {
-                var rs = await _reservationdetailService.GetAllByReservationId(id);
-                return Ok(rs);
+                var totalAmount = await _reservationService.CalculateTotalAmount(
+                    request.RoomTypeId,
+                    request.CheckInDate,
+                    request.CheckOutDate,
+                    request.NumberOfRooms);
+
+                return Ok(new { TotalAmount = totalAmount });
             }
-            catch (ValidationException ex)
-            {
-                // Access validation errors from ex.Errors
-                return BadRequest(new
-                {
-                    message = "Validation failed",
-                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
-                });
-            }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+    }
+
+    public class CalculateTotalAmountRequest
+    {
+        public Guid RoomTypeId { get; set; }
+        public DateTime CheckInDate { get; set; }
+        public DateTime CheckOutDate { get; set; }
+        public int NumberOfRooms { get; set; }
     }
 }

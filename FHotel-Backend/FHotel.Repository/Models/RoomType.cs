@@ -26,7 +26,7 @@ namespace FHotel.Repository.Models
 
         public virtual Hotel? Hotel { get; set; }
         public virtual Type? Type { get; set; }
-        public virtual ReservationDetail? ReservationDetail { get; set; }
+        public virtual Reservation? Reservation { get; set; }
         public virtual ICollection<RoomFacility> RoomFacilities { get; set; }
         public virtual ICollection<RoomImage> RoomImages { get; set; }
         public virtual ICollection<Room> Rooms { get; set; }

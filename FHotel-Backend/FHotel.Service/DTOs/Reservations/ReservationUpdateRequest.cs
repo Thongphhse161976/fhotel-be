@@ -8,11 +8,15 @@ namespace FHotel.Service.DTOs.Reservations
 {
     public class ReservationUpdateRequest
     {
+        public Guid ReservationId { get; set; }
         public Guid? CustomerId { get; set; }
         public DateTime? CheckInDate { get; set; }
         public DateTime? CheckOutDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? ReservationStatus { get; set; }
+        public Guid? RoomTypeId { get; set; }
+        public int? NumberOfRooms { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public DateTime? ActualCheckInTime { get; set; }
         public DateTime? ActualCheckOutDate { get; set; }
     }

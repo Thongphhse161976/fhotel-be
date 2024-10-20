@@ -19,5 +19,8 @@ namespace FHotel.Services.Services.Interfaces
         public Task<ReservationResponse> Delete(Guid id);
 
         public Task<ReservationResponse> Update(Guid id, ReservationUpdateRequest request);
+        public Task<decimal> CalculateTotalAmount(Guid roomTypeId
+            , DateTime checkInDate, DateTime checkOutDate, int numberOfRooms);
+
     }
 }

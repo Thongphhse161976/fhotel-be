@@ -1,7 +1,6 @@
 ﻿using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Types;
 using FHotel.Services.DTOs.Hotels;
-using FHotel.Services.DTOs.ReservationDetails;
 using FHotel.Services.DTOs.Rooms;
 using System;
 using System.Collections.Generic;

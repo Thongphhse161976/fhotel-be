@@ -12,7 +12,6 @@ namespace FHotel.Repository.Models
             LateCheckOutCharges = new HashSet<LateCheckOutCharge>();
             Orders = new HashSet<Order>();
             Payments = new HashSet<Payment>();
-            ReservationDetails = new HashSet<ReservationDetail>();
             RoomStayHistories = new HashSet<RoomStayHistory>();
         }
 
@@ -22,17 +21,19 @@ namespace FHotel.Repository.Models
         public DateTime? CheckOutDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? ReservationStatus { get; set; }
+        public Guid? RoomTypeId { get; set; }
+        public int? NumberOfRooms { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ActualCheckInTime { get; set; }
         public DateTime? ActualCheckOutDate { get; set; }
 
         public virtual User? Customer { get; set; }
+        public virtual RoomType? RoomType { get; set; }
         public virtual ICollection<Bill> Bills { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<LateCheckOutCharge> LateCheckOutCharges { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
-        public virtual ICollection<ReservationDetail> ReservationDetails { get; set; }
         public virtual ICollection<RoomStayHistory> RoomStayHistories { get; set; }
     }
 }
