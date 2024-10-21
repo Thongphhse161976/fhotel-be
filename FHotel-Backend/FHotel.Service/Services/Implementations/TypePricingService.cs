@@ -191,5 +191,40 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception($"Error fetching pricing: {ex.Message}");
             }
         }
+
+        public async Task<decimal> GetTodayPricingByRoomType(Guid roomTypeId)
+        {
+            try
+            {
+                // Step 1: Fetch Room Type details
+                var roomType = await _roomTypeService.Get(roomTypeId);
+                if (roomType == null || roomType.IsActive != true)
+                {
+                    throw new ArgumentException("Invalid or inactive room type.");
+                }
+
+                // Step 2: Get the district ID from the room type
+                var districtId = roomType.Hotel.DistrictId;
+
+                // Step 3: Get today's day of the week (1 = Monday, ..., 7 = Sunday)
+                int dayOfWeek = (int)DateTime.Now.DayOfWeek == 0 ? 7 : (int)DateTime.Now.DayOfWeek;
+
+                // Step 4: Fetch today's pricing for the specific room type and district
+                var todayPricing = await GetPricingByTypeAndDistrict(roomType.TypeId.Value, districtId.Value, dayOfWeek);
+
+                if (todayPricing == null)
+                {
+                    throw new Exception("No pricing available for today.");
+                }
+
+                // Step 5: Return the price
+                return todayPricing.Price ?? throw new Exception("Price for today is not set.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching today's pricing: {ex.Message}");
+            }
+        }
+
     }
 }

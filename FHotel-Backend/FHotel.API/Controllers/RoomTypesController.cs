@@ -233,5 +233,25 @@ namespace FHotel.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get today price by room-type id.
+        /// </summary>
+        [HttpGet("{id}/today-price")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(decimal))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<decimal>> GetTodayPricingByRoomType(Guid id)
+        {
+            try
+            {
+                var rs = await _typePricingService.GetTodayPricingByRoomType(id);
+                return Ok(rs);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
     }
 }
