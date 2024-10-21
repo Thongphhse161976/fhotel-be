@@ -1,5 +1,7 @@
-﻿using FHotel.Service.DTOs.Users;
+﻿using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.DTOs.Users;
 using FHotel.Service.Profiles;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
@@ -27,10 +29,12 @@ namespace FHotel.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IReservationService _reservationService;
-        public UsersController(IUserService userService, IReservationService reservationService)
+        private readonly IHotelStaffService _hotelStaffService;
+        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService)
         {
             _userService = userService;
             _reservationService = reservationService;
+            _hotelStaffService = hotelStaffService;
         }
 
         /// <summary>
@@ -225,6 +229,32 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+        /// <summary>
+        /// Get all staff members by owner ID.
+        /// </summary>
+        /// <param name="hotelId">The ID of the owner.</param>
+        /// <returns>A list of hotel staff members.</returns>
+        [HttpGet("{ownerId}/hotel-staffs")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<HotelStaffResponse>>> GetAllStaffByOnwerId(Guid ownerId)
+        {
+            try
+            {
+                var staffList = await _hotelStaffService.GetAllStaffByOwnerlId(ownerId);
 
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No staff found for this owner." });
+                }
+
+                return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 }

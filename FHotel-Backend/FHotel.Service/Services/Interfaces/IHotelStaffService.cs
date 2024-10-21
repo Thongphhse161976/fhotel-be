@@ -22,5 +22,7 @@ namespace FHotel.Service.Services.Interfaces
 
         public Task<IEnumerable<HotelStaffResponse>> GetAllStaffByHotelId(Guid hotelId);
 
+        public Task<IEnumerable<HotelStaffResponse>> GetAllStaffByOwnerlId(Guid ownerId);
+
     }
 }

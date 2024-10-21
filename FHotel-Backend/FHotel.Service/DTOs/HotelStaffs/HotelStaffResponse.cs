@@ -1,4 +1,6 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace FHotel.Service.DTOs.HotelStaffs
         public Guid? HotelId { get; set; }
         public Guid? UserId { get; set; }
 
-        public virtual Hotel? Hotel { get; set; }
-        public virtual User? User { get; set; }
+        public virtual HotelResponse? Hotel { get; set; }
+        public virtual UserResponse? User { get; set; }
     }
 }

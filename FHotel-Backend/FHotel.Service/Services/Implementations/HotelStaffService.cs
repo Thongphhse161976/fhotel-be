@@ -141,6 +141,18 @@ namespace FHotel.Service.Services.Implementations
             // Map the hotel staff to response DTOs
             return hotelStaffList;
         }
+        public async Task<IEnumerable<HotelStaffResponse>> GetAllStaffByOwnerlId(Guid ownerId)
+        {
+            // Fetch the staff from the repository based on ownerId
+            var hotelStaffList  = await _unitOfWork.Repository<HotelStaff>().GetAll()
+                     .AsNoTracking()
+                     .ProjectTo<HotelStaffResponse>(_mapper.ConfigurationProvider)
+                    .Where(x => x.Hotel.OwnerId == ownerId)
+                    .ToListAsync();
+
+            // Map the hotel staff to response DTOs
+            return hotelStaffList;
+        }
 
     }
 }

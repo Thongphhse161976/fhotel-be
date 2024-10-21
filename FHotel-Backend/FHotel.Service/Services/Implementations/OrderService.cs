@@ -66,11 +66,20 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<OrderResponse> Create(OrderRequest request, List<OrderDetailRequest> orderDetailRequests)
         {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
                 var order = _mapper.Map<OrderRequest, Order>(request);
                 order.OrderId = Guid.NewGuid();
-
+                order.OrderedDate = localTime;
+                order.OrderStatus = "Pending";
                 await _unitOfWork.Repository<Order>().InsertAsync(order);
                 await _unitOfWork.CommitAsync();
                 foreach (var detailRequest in orderDetailRequests)
