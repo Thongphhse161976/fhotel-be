@@ -208,6 +208,20 @@ namespace FHotel.Services.Services.Implementations
             }
             return list;
         }
+        public async Task<List<ReservationResponse>> GetAllByUserId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Reservation>().GetAll()
+                                            .Where(r=> r.CustomerId == id)
+                                            .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            // Check if list is null or empty
+            if (list == null || !list.Any())
+            {
+                throw new Exception("No reservations found.");
+            }
+            return list;
+        }
 
     }
 }

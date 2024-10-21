@@ -1,4 +1,5 @@
 ﻿using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<OrderResponse> Get(Guid id);
 
-        public Task<OrderResponse> Create(OrderRequest request);
+        public Task<OrderResponse> Create(OrderRequest request, List<OrderDetailRequest> orderDetailRequests);
 
         public Task<OrderResponse> Delete(Guid id);
 

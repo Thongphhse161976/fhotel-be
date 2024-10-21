@@ -58,10 +58,19 @@ namespace FHotel.Service.Services.Implementations
 
         public async Task<LateCheckOutPolicyResponse> Create(LateCheckOutPolicyRequest request)
         {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
                 var lateCheckOutPolicy = _mapper.Map<LateCheckOutPolicyRequest, LateCheckOutPolicy>(request);
                 lateCheckOutPolicy.LateCheckOutPolicyId = Guid.NewGuid();
+                lateCheckOutPolicy.CreatedDate = localTime;
                 await _unitOfWork.Repository<LateCheckOutPolicy>().InsertAsync(lateCheckOutPolicy);
                 await _unitOfWork.CommitAsync();
 
@@ -96,6 +105,14 @@ namespace FHotel.Service.Services.Implementations
 
         public async Task<LateCheckOutPolicyResponse> Update(Guid id, LateCheckOutPolicyRequest request)
         {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
                 LateCheckOutPolicy lateCheckOutPolicy = _unitOfWork.Repository<LateCheckOutPolicy>()
@@ -105,7 +122,7 @@ namespace FHotel.Service.Services.Implementations
                     throw new Exception();
                 }
                 lateCheckOutPolicy = _mapper.Map(request, lateCheckOutPolicy);
-
+                lateCheckOutPolicy.UpdatedDate = localTime;
                 await _unitOfWork.Repository<LateCheckOutPolicy>().UpdateDetached(lateCheckOutPolicy);
                 await _unitOfWork.CommitAsync();
 

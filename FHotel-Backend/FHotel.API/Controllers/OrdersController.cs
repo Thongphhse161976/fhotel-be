@@ -1,4 +1,6 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Service.DTOs.Orders;
+using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -66,11 +68,11 @@ namespace FHotel.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<OrderResponse>> Create([FromBody] OrderRequest request)
+        public async Task<ActionResult<OrderResponse>> Create([FromBody] OrderCreateRequest request)
         {
             try
             {
-                var result = await _orderService.Create(request);
+                var result = await _orderService.Create(request.Order, request.OrderDetails);
                 return CreatedAtAction(nameof(Create), result);
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@ using FHotel.Service.Profiles;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
@@ -25,10 +26,11 @@ namespace FHotel.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UsersController(IUserService userService)
+        private readonly IReservationService _reservationService;
+        public UsersController(IUserService userService, IReservationService reservationService)
         {
             _userService = userService;
+            _reservationService = reservationService;
         }
 
         /// <summary>
@@ -196,7 +198,33 @@ namespace FHotel.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all reservations by user id.
+        /// </summary>
+        /// <param name="Id">The ID of the user.</param>
+        /// <returns>A list of hotel room types.</returns>
+        [HttpGet("{id}/reservations")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> GetAllReservationByUserId(Guid id)
+        {
+            try
+            {
+                var staffList = await _reservationService.GetAllByUserId(id);
 
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No reservation found for this user." });
+                }
+
+                return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
 
     }
 }

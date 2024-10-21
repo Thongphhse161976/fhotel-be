@@ -283,7 +283,7 @@ namespace FHotel.API.Controllers
         }
         
         /// <summary>
-        /// Get all reservations by hotel ID.
+        /// Get all reservations by hotel id.
         /// </summary>
         /// <param name="hotelId">The ID of the hotel.</param>
         /// <returns>A list of hotel room types.</returns>
