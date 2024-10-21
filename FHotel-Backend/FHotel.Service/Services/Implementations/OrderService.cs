@@ -30,6 +30,10 @@ namespace FHotel.Services.Services.Implementations
             var list = await _unitOfWork.Repository<Order>().GetAll()
                                             .ProjectTo<OrderResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
+            if (list == null)
+            {
+                throw new Exception("Order not found");
+            }
             return list;
         }
 
@@ -45,7 +49,7 @@ namespace FHotel.Services.Services.Implementations
 
                 if (order == null)
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Order not found");
                 }
 
                 return _mapper.Map<Order, OrderResponse>(order);
@@ -117,6 +121,20 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<List<OrderResponse>> GetAllByReservationId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Order>().GetAll()
+                                            .Where(o=> o.ReservationId == id)
+                                            .ProjectTo<OrderResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            if (list == null)
+            {
+                throw new Exception("Order not found");
+            }
+            return list;
         }
     }
 }

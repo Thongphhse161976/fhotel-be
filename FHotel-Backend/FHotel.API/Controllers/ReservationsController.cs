@@ -1,6 +1,8 @@
 ﻿using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +18,12 @@ namespace FHotel.API.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly IReservationService _reservationService;
+        private readonly IOrderService _orderService;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, IOrderService orderService)
         {
             _reservationService = reservationService;
+            _orderService = orderService;
         }
 
         /// <summary>
@@ -140,6 +144,25 @@ namespace FHotel.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        /// <summary>
+        /// Get a list of all orders by reservation id.
+        /// </summary>
+        [HttpGet("{id}/orders")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<OrderResponse>>> GetAllOrderByReservationId(Guid id)
+        {
+            try
+            {
+                var rs = await _orderService.GetAllByReservationId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 
     public class CalculateTotalAmountRequest
@@ -149,4 +172,6 @@ namespace FHotel.API.Controllers
         public DateTime CheckOutDate { get; set; }
         public int NumberOfRooms { get; set; }
     }
+
+    
 }

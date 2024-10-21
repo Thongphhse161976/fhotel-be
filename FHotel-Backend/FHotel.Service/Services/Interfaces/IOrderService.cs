@@ -19,5 +19,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<OrderResponse> Delete(Guid id);
 
         public Task<OrderResponse> Update(Guid id, OrderRequest request);
+
+        public Task<List<OrderResponse>> GetAllByReservationId(Guid id);
     }
 }

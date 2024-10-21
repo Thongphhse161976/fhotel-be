@@ -1,4 +1,5 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Users;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,13 @@ namespace FHotel.Services.DTOs.Reservations
         public DateTime? CheckOutDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? ReservationStatus { get; set; }
+        public Guid? RoomTypeId { get; set; }
+        public int? NumberOfRooms { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? ActualCheckInTime { get; set; }
         public DateTime? ActualCheckOutDate { get; set; }
 
         public virtual UserResponse? Customer { get; set; }
+        public virtual RoomTypeResponse? RoomType { get; set; }
     }
 }

@@ -22,5 +22,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<decimal> CalculateTotalAmount(Guid roomTypeId
             , DateTime checkInDate, DateTime checkOutDate, int numberOfRooms);
 
+        public Task<List<ReservationResponse>> GetAllByHotelId(Guid id);
+
     }
 }
