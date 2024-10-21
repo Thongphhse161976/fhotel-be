@@ -57,18 +57,11 @@ namespace FHotel.Service.Services.Implementations
             }
         }
 
-        public async Task<HotelStaffResponse> Create(Guid hotelId, Guid userId)
+        public async Task<HotelStaffResponse> Create(HotelStaffCreateRequest request)
         {
             try
             {
-                // Create a new HotelStaff object
-                var hotelStaff = new HotelStaff
-                {
-                    HotelStaffId = Guid.NewGuid(),
-                    HotelId = hotelId, // Set the hotel ID
-                    UserId = userId // Set the user ID
-                };
-
+                var hotelStaff = _mapper.Map<HotelStaffCreateRequest, HotelStaff>(request);
                 // Insert the new hotel staff record
                 await _unitOfWork.Repository<HotelStaff>().InsertAsync(hotelStaff);
                 await _unitOfWork.CommitAsync();

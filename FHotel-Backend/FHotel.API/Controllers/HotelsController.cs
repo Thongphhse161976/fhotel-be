@@ -195,10 +195,10 @@ namespace FHotel.API.Controllers
         /// <summary>
         /// Assign staff to a hotel.
         /// </summary>
-        [HttpPost("{hotelId}/assign-staff")]
+        [HttpPost("assign-staff")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelStaffResponse>> CreateHotelStaff(Guid hotelId, [FromBody] HotelStaffCreateRequest request)
+        public async Task<ActionResult<HotelStaffResponse>> CreateHotelStaff([FromBody] HotelStaffCreateRequest request)
         {
             if (request.UserId == null)
             {
@@ -207,8 +207,8 @@ namespace FHotel.API.Controllers
 
             try
             {
-                var result = await _hotelStaffService.Create(hotelId, request.UserId); // Pass hotelId to the service
-                return CreatedAtAction(nameof(CreateHotelStaff), new { hotelId = hotelId, userId = request.UserId }, result);
+                var result = await _hotelStaffService.Create(request); // Pass hotelId to the service
+                return CreatedAtAction(nameof(CreateHotelStaff),result);
             }
             catch (ValidationException ex)
             {

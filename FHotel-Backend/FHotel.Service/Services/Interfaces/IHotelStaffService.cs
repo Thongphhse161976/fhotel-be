@@ -14,7 +14,7 @@ namespace FHotel.Service.Services.Interfaces
 
         public Task<HotelStaffResponse> Get(Guid id);
 
-        public Task<HotelStaffResponse> Create(Guid hotelId, Guid userId);
+        public Task<HotelStaffResponse> Create(HotelStaffCreateRequest request);
 
         public Task<HotelStaffResponse> Delete(Guid id);
 

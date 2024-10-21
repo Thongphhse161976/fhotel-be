@@ -67,17 +67,17 @@ namespace FHotel.API.Controllers
         [HttpPost("{hotelId}/assign-staff")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelStaffResponse>> CreateHotelStaff(Guid hotelId, [FromBody] HotelStaffCreateRequest request)
+        public async Task<ActionResult<HotelStaffResponse>> CreateHotelStaff([FromBody] HotelStaffCreateRequest request)
         {
-            if (request.UserId == Guid.Empty)
+            if (request ==null)
             {
                 return BadRequest(new { message = "UserId is required." });
             }
 
             try
             {
-                var result = await _hotelStaffService.Create(hotelId, request.UserId); // Call service with hotelId and UserId
-                return CreatedAtAction(nameof(CreateHotelStaff), new { hotelId = hotelId, userId = request.UserId }, result);
+                var result = await _hotelStaffService.Create(request); // Call service with hotelId and UserId
+                return CreatedAtAction(nameof(CreateHotelStaff), result);
             }
             catch (Exception ex)
             {
