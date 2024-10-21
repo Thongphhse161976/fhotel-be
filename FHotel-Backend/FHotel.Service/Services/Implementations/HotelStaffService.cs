@@ -62,6 +62,8 @@ namespace FHotel.Service.Services.Implementations
             try
             {
                 var hotelStaff = _mapper.Map<HotelStaffCreateRequest, HotelStaff>(request);
+                hotelStaff.HotelStaffId = Guid.NewGuid();
+
                 // Insert the new hotel staff record
                 await _unitOfWork.Repository<HotelStaff>().InsertAsync(hotelStaff);
                 await _unitOfWork.CommitAsync();
