@@ -64,7 +64,7 @@ namespace FHotel.API.Controllers
         /// <summary>
         /// Assign staff to a hotel.
         /// </summary>
-        [HttpPost("assign-staff")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<HotelStaffResponse>> CreateHotelStaff([FromBody] HotelStaffCreateRequest request)
