@@ -159,19 +159,7 @@ namespace FHotel.Services.Services.Implementations
                 // Convert the UTC time to UTC+7
                 DateTime localTime = utcNow + utcOffset;
 
-                // Update fields
-                hotel.HotelName = request.HotelName ?? hotel.HotelName;
-                hotel.Address = request.Address ?? hotel.Address;
-                hotel.Phone = request.Phone ?? hotel.Phone;
-                hotel.Email = request.Email ?? hotel.Email;
-                hotel.Description = request.Description ?? hotel.Description;
-                hotel.Star = request.Star ?? hotel.Star;
-                hotel.DistrictId = request.DistrictId ?? hotel.DistrictId;
-                hotel.OwnerId = request.OwnerId ?? hotel.OwnerId;
                 hotel.UpdatedDate = localTime; // Ensure you update this field automatically
-                hotel.IsActive = request.IsActive ?? hotel.IsActive;
-
-
                 await _unitOfWork.Repository<Hotel>().UpdateDetached(hotel);
                 await _unitOfWork.CommitAsync();
 
