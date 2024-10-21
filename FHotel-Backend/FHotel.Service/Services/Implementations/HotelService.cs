@@ -12,6 +12,7 @@ using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
 using Firebase.Storage;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -77,11 +78,17 @@ namespace FHotel.Services.Services.Implementations
             var validator = new HotelCreateRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
 
-            if (!validationResult.IsValid)
+
+            if (await _unitOfWork.Repository<Repository.Models.User>().FindAsync(u => u.Email == request.OwnerEmail) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
             {
                 throw new ValidationException(validationResult.Errors);
             }
-
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 
@@ -90,6 +97,7 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+
             try
             {
                 var hotel = _mapper.Map<HotelCreateRequest, Hotel>(request);
@@ -106,6 +114,7 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
         public async Task<HotelResponse> Delete(Guid id)
         {
@@ -140,6 +149,15 @@ namespace FHotel.Services.Services.Implementations
                 var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new ValidationException(errors);
             }
+
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
                 Hotel hotel = _unitOfWork.Repository<Hotel>()
@@ -150,14 +168,7 @@ namespace FHotel.Services.Services.Implementations
                 }
                 hotel = _mapper.Map(request, hotel);
 
-                // Set the UTC offset for UTC+7
-                TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-                // Get the current UTC time
-                DateTime utcNow = DateTime.UtcNow;
-
-                // Convert the UTC time to UTC+7
-                DateTime localTime = utcNow + utcOffset;
+              
 
                 hotel.UpdatedDate = localTime; // Ensure you update this field automatically
                 await _unitOfWork.Repository<Hotel>().UpdateDetached(hotel);
