@@ -5,6 +5,7 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.DTOs.Rooms;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.DTOs.Types;
 using FHotel.Service.Validators.HotelValidator;
@@ -95,15 +96,41 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+
             try
             {
+                // Create the RoomType entity
                 var roomType = _mapper.Map<RoomTypeCreateRequest, RoomType>(request);
                 roomType.RoomTypeId = Guid.NewGuid();
                 roomType.IsActive = false;
                 roomType.CreatedDate = localTime;
+                roomType.AvailableRooms = request.TotalRooms;
+
+                // Insert the RoomType into the database
                 await _unitOfWork.Repository<RoomType>().InsertAsync(roomType);
                 await _unitOfWork.CommitAsync();
 
+                // Now create the individual rooms based on the total room count
+                for (int i = 0; i < request.TotalRooms; i++)
+                {
+                    var room = new RoomCreateRequest
+                    {
+                        RoomNumber = i + 1, // Assign room number starting from 1
+                        RoomTypeId = roomType.RoomTypeId,
+                        Status = "Available", // Set default status
+                        CreatedDate = localTime
+                    };
+
+                    // Map and insert the Room into the database
+                    var roomEntity = _mapper.Map<RoomCreateRequest, Room>(room);
+                    roomEntity.RoomId = Guid.NewGuid();
+                    await _unitOfWork.Repository<Room>().InsertAsync(roomEntity);
+                }
+
+                // Commit the transaction after creating all rooms
+                await _unitOfWork.CommitAsync();
+
+                // Return the created RoomType as a response
                 return _mapper.Map<RoomType, RoomTypeResponse>(roomType);
             }
             catch (Exception e)
@@ -111,6 +138,7 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
         public async Task<RoomTypeResponse> Delete(Guid id)
         {

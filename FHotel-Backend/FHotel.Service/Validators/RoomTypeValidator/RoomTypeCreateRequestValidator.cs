@@ -30,10 +30,7 @@ namespace FHotel.Service.Validators.RoomTypeValidator
                 .NotNull().WithMessage("Total rooms are required.")
                 .GreaterThan(0).WithMessage("Total rooms must be greater than 0.");
 
-            RuleFor(r => r.AvailableRooms)
-                .NotNull().WithMessage("Available rooms are required.")
-                .GreaterThanOrEqualTo(0).WithMessage("Available rooms must be at least 0.")
-                .LessThanOrEqualTo(r => r.TotalRooms).WithMessage("Available rooms cannot exceed total rooms.");
+            
 
         }
     }

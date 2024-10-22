@@ -14,6 +14,7 @@ using FHotel.Service.DTOs.LateCheckOutPolicies;
 using FHotel.Service.DTOs.RefundPolicies;
 using FHotel.Service.DTOs.Refunds;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.Rooms;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.DTOs.Services;
@@ -85,6 +86,8 @@ namespace FHotel.Service.Profiles
             CreateMap<Reservation, ReservationUpdateRequest>().ReverseMap();
             CreateMap<Reservation, ReservationResponse>().ReverseMap();
             CreateMap<Room, RoomRequest>().ReverseMap();
+            CreateMap<Room, RoomCreateRequest>().ReverseMap();
+            CreateMap<Room, RoomUpdateRequest>().ReverseMap();
             CreateMap<Room, RoomResponse>().ReverseMap();
             CreateMap<RoomFacility, RoomFacilityRequest>().ReverseMap();
             CreateMap<RoomFacility, RoomFacilityResponse>().ReverseMap();

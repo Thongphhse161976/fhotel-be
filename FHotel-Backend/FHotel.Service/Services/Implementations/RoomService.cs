@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Districts;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.Services.Interfaces;
@@ -117,6 +118,16 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<List<RoomResponse>> GetAllRoomByRoomTypeId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Room>().GetAll()
+                                            .ProjectTo<RoomResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.RoomTypeId == id)
+                                            .ToListAsync();
+            return list;
         }
     }
 }
