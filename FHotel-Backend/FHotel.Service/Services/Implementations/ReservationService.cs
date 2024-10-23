@@ -222,6 +222,20 @@ namespace FHotel.Services.Services.Implementations
             }
             return list;
         }
+        public async Task<List<ReservationResponse>> GetAllByOwnerId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Reservation>().GetAll()
+                                            .Where(r=> r.RoomType.Hotel.OwnerId == id)
+                                            .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            // Check if list is null or empty
+            if (list == null || !list.Any())
+            {
+                throw new Exception("No reservations found.");
+            }
+            return list;
+        }
 
 
         public async Task<List<ReservationResponse>> GetAllReservationByStaffId(Guid staffId)

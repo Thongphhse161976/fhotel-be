@@ -130,6 +130,33 @@ namespace FHotel.API.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// Create more hotel by owner.
+        /// </summary>
+        [HttpPost("owner")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<HotelResponse>> CreateMore([FromBody] HotelRequest request)
+        {
+            try
+            {
+                var result = await _hotelService.CreateMore(request);
+                return CreatedAtAction(nameof(CreateMore), result);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         /// <summary>
         /// Delete hotel by hotel id.

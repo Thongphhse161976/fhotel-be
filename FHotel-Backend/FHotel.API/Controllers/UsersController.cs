@@ -283,5 +283,32 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+        /// <summary>
+        /// Get all reservations by owner id.
+        /// </summary>
+        /// <param name="Id">The ID of the user.</param>
+        /// <returns>A list of hotel room types.</returns>
+        [HttpGet("{id}/owner-reservations")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> GetAllReservationByOwnerId(Guid id)
+        {
+            try
+            {
+                var staffList = await _reservationService.GetAllByOwnerId(id);
+
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No reservation found for this user." });
+                }
+
+                return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 }

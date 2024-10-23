@@ -26,5 +26,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<string> UploadImage(IFormFile file);
 
         public Task<List<HotelAmenityResponse>> GetHotelAmenityByHotel(Guid id);
+
+        public Task<HotelResponse> CreateMore(HotelRequest request);
     }
 }

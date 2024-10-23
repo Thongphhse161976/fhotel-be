@@ -14,8 +14,6 @@ namespace FHotel.Service.Validators.FacilityValidator
         {
             RuleFor(r => r.FacilityName)
                 .NotEmpty().WithMessage("Facility name is required.");
-            RuleFor(r => r.Price)
-                .NotNull().WithMessage("Facility price is required.");
         }
     }
 }

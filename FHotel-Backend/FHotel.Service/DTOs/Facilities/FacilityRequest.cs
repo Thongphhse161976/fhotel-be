@@ -9,6 +9,5 @@ namespace FHotel.Service.DTOs.Facilities
     public class FacilityRequest
     {
         public string? FacilityName { get; set; }
-        public decimal? Price { get; set; }
     }
 }

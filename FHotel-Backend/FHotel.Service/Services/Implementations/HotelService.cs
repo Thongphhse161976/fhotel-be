@@ -23,6 +23,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using User = FHotel.Repository.Models.User;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -103,6 +104,64 @@ namespace FHotel.Services.Services.Implementations
                 var hotel = _mapper.Map<HotelCreateRequest, Hotel>(request);
                 hotel.HotelId = Guid.NewGuid();
                 hotel.CreatedDate = localTime;
+                hotel.IsActive = false;
+                await _unitOfWork.Repository<Hotel>().InsertAsync(hotel);
+                await _unitOfWork.CommitAsync();
+
+                return _mapper.Map<Hotel, HotelResponse>(hotel);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public async Task<HotelResponse> CreateMore(HotelRequest request)
+        {
+            // Validate the create request
+            var validator = new HotelRequestValidate();
+            var validationResult = await validator.ValidateAsync(request);
+
+
+            if (await _unitOfWork.Repository<Hotel>().FindAsync(u => u.Email == request.Email) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+            }
+            if (await _unitOfWork.Repository<Hotel>().FindAsync(u => u.Phone == request.Phone) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Phone", "Phone already exists."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+
+            try
+            {
+                var ownerhotel = await _unitOfWork.Repository<User>().GetAll()
+                     .AsNoTracking()
+                     .Where(x => x.UserId == request.OwnerId)
+                    .FirstOrDefaultAsync();
+                if (ownerhotel == null)
+                {
+                    throw new Exception("Owner of hotel not found");
+                }
+                var hotel = _mapper.Map<HotelRequest, Hotel>(request);
+                hotel.HotelId = Guid.NewGuid();
+                hotel.CreatedDate = localTime;
+                hotel.OwnerName = ownerhotel.Name;
+                hotel.OwnerPhoneNumber = ownerhotel.PhoneNumber;
+                hotel.OwnerEmail = ownerhotel.Email;
+                hotel.OwnerIdentificationNumber = ownerhotel.IdentificationNumber;
                 hotel.IsActive = false;
                 await _unitOfWork.Repository<Hotel>().InsertAsync(hotel);
                 await _unitOfWork.CommitAsync();

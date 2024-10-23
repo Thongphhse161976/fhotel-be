@@ -71,6 +71,7 @@ namespace FHotel.Service.Profiles
             CreateMap<Feedback, FeedbackRequest>().ReverseMap();
             CreateMap<Feedback, FeedbackResponse>().ReverseMap();
             CreateMap<Hotel, HotelCreateRequest>().ReverseMap();
+            CreateMap<Hotel, HotelRequest>().ReverseMap();
             CreateMap<Hotel, HotelUpdateRequest>().ReverseMap();
             CreateMap<Hotel, HotelResponse>().ReverseMap();
             CreateMap<HotelStaff, HotelStaffResponse>().ReverseMap();
