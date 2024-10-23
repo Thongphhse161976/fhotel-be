@@ -223,5 +223,38 @@ namespace FHotel.Services.Services.Implementations
             return list;
         }
 
+
+        public async Task<List<ReservationResponse>> GetAllReservationByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var reservations = await _unitOfWork.Repository<Reservation>()
+                                                .GetAll()
+                                                .Where(r => r.RoomType.HotelId == hotelId) // Assuming RoomTypeID or some other way links to the hotel
+                                                .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                                                .ToListAsync();
+
+            // Check if any reservations were found
+            if (reservations == null || !reservations.Any())
+            {
+                throw new Exception("No reservations found for this staff's hotel.");
+            }
+
+            return reservations;
+        }
+
+
     }
 }
