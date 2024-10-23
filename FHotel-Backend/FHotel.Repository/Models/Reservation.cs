@@ -35,5 +35,7 @@ namespace FHotel.Repository.Models
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
         public virtual ICollection<RoomStayHistory> RoomStayHistories { get; set; }
+        public virtual ICollection<UserDocument> UserDocuments { get; set; }
+
     }
 }

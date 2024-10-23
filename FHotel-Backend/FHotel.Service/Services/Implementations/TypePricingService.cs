@@ -98,7 +98,7 @@ namespace FHotel.Service.Services.Implementations
                 {
                     throw new Exception("TypePricing not found");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(typePricing.TypePricingId);
+                await _unitOfWork.Repository<TypePricing>().HardDeleteGuid(typePricing.TypePricingId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<TypePricing, TypePricingResponse>(typePricing);
             }

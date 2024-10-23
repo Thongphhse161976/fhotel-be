@@ -86,7 +86,7 @@ namespace FHotel.Service.Services.Implementations
                 {
                     throw new Exception("District not found");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(district.DistrictId);
+                await _unitOfWork.Repository<District>().HardDeleteGuid(district.DistrictId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<District, DistrictResponse>(district);
             }

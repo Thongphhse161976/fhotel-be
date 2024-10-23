@@ -97,7 +97,7 @@ namespace FHotel.Service.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(facility.FacilityId);
+                await _unitOfWork.Repository<Facility>().HardDeleteGuid(facility.FacilityId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<Facility, FacilityResponse>(facility);
             }

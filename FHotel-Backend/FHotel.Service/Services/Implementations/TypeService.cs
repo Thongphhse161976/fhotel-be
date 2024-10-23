@@ -94,7 +94,7 @@ namespace FHotel.Service.Services.Implementations
                 {
                     throw new Exception("Type not found");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(type.TypeId);
+                await _unitOfWork.Repository<Type>().HardDeleteGuid(type.TypeId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<Type, TypeResponse>(type);
             }

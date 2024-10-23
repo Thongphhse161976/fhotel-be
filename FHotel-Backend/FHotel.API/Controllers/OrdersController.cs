@@ -2,6 +2,7 @@
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
+using FHotel.Services.DTOs.UserDocuments;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace FHotel.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IOrderDetailService _orderDetailService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IOrderDetailService orderDetailService)
         {
             _orderService = orderService;
+            _orderDetailService = orderDetailService;
         }
 
         /// <summary>
@@ -105,6 +108,32 @@ namespace FHotel.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all order-detail by order id.
+        /// </summary>
+        [HttpGet("{orderId}/order-details")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<OrderDetailResponse>>> GetAllOrderDetailByOrder(Guid orderId)
+        {
+            try
+            {
+                var orderDetails = await _orderDetailService.GetAllOrderDetailByOrder(orderId);
+
+                if (orderDetails == null || !orderDetails.Any())
+                {
+                    return NotFound(new { message = "No order details found for this reservation." });
+                }
+
+                return Ok(orderDetails);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
     }

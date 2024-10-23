@@ -13,11 +13,8 @@ namespace FHotel.Service.Validators.UserValidator
         public UserRegisterRequestValidator()
         {
             // Validate FirstName: must not be empty
-            RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("First name is required.");
-            // Validate LastName: must not be empty
-            RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("Last name is required.");
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Name is required.");
             // Validate Email: must not be empty and should be in a valid email format
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is required.")
@@ -37,9 +34,7 @@ namespace FHotel.Service.Validators.UserValidator
             // Validate Address: must not be empty
             RuleFor(x => x.Address)
                 .NotEmpty().WithMessage("Address is required.");
-            // Validate Sex: must not be null
-            RuleFor(x => x.Sex)
-                .NotNull().WithMessage("Sex is required and must be selected.");
+            
         }
     }
 }

@@ -84,7 +84,7 @@ namespace FHotel.Service.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(refundPolicy.RefundPolicyId);
+                await _unitOfWork.Repository<RefundPolicy>().HardDeleteGuid(refundPolicy.RefundPolicyId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<RefundPolicy, RefundPolicyResponse>(refundPolicy);
             }

@@ -3,9 +3,11 @@ using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.HotelAmenities;
+using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.RoomTypes;
+using FHotel.Services.Interfaces;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
@@ -26,14 +28,19 @@ namespace FHotel.API.Controllers
         private readonly IHotelStaffService _hotelStaffService;
         private readonly IRoomTypeService _roomTypeService;
         private readonly IReservationService _reservationService;
+        private readonly IHotelDocumentService _hotelDocumentService;
+        private readonly IHotelImageService _hotelImageService;
 
-        public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService, IReservationService reservationService)
+        public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService, IReservationService reservationService, IHotelDocumentService hotelDocumentService
+            , IHotelImageService hotelImageService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
             _roomTypeService = roomTypeService;
             _hotelAmenityService = hotelAmenityService;
             _reservationService = reservationService;
+            _hotelDocumentService = hotelDocumentService;
+            _hotelImageService = hotelImageService;
         }
 
         /// <summary>
@@ -276,33 +283,60 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
-        ///// <summary>
-        ///// Get all amenities by hotel ID.
-        ///// </summary>
-        ///// <param name="hotelId">The ID of the hotel.</param>
-        ///// <returns>A list of hotel room types.</returns>
-        //[HttpGet("{hotelId}/amenities")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public async Task<ActionResult<IEnumerable<AmenityResponse>>> GetAllAmenityByHotelId(Guid hotelId)
-        //{
-        //    try
-        //    {
-        //        var amenityList = await _hotelAmenityService.GetAllAmenityByHotelId(hotelId);
 
-        //        if (amenityList == null || !amenityList.Any())
-        //        {
-        //            return NotFound(new { message = "No amenity found for this hotel." });
-        //        }
+        /// <summary>
+        /// Get all hotel documents by hotel id.
+        /// </summary>
+        [HttpGet("{hotelId}/hotel-documents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<HotelDocumentResponse>>> GetAllHotelDocumentByHotelId(Guid hotelId)
+        {
+            try
+            {
+                var hotelDocuments = await _hotelDocumentService.GetAllHotelDocumentByHotelId(hotelId);
 
-        //        return Ok(amenityList);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log the exception if you have logging set up
-        //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
-        //    }
-        //}
+                if (hotelDocuments == null || !hotelDocuments.Any())
+                {
+                    return NotFound(new { message = "No hotel documents found for this hotel." });
+                }
+
+                return Ok(hotelDocuments);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all hotel images by hotel id.
+        /// </summary>
+        [HttpGet("{hotelId}/hotel-images")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<HotelDocumentResponse>>> GetAllHotelImageByHotelId(Guid hotelId)
+        {
+            try
+            {
+                var hotelImages = await _hotelImageService.GetAllHotelImageByHotelId(hotelId);
+
+                if (hotelImages == null || !hotelImages.Any())
+                {
+                    return NotFound(new { message = "No hotel images found for this hotel." });
+                }
+
+                return Ok(hotelImages);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+
 
     }
 }

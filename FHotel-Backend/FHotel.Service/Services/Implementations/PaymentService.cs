@@ -116,7 +116,7 @@ namespace FHotel.Services.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(payment.PaymentId);
+                await _unitOfWork.Repository<Payment>().HardDeleteGuid(payment.PaymentId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<Payment, PaymentResponse>(payment);
             }

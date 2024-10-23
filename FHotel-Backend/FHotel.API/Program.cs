@@ -3,6 +3,7 @@ using FHotel.Repository.Models;
 using FHotel.Service.Profiles;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.Interfaces;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,7 +55,6 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
 builder.Services.AddScoped<ITypeService, TypeService>();
 builder.Services.AddScoped<ITypePricingService, TypePricingService>();
-builder.Services.AddScoped<ITimetableService, TimetableService>();
 builder.Services.AddScoped<IBillService, BillService>();
 builder.Services.AddScoped<IBillOrderService, BillOrderService>();
 builder.Services.AddScoped<IBillLateCheckOutChargeService, BillLateCheckOutChargeService>();
@@ -67,7 +67,12 @@ builder.Services.AddScoped<IRoomStayHistoryService, RoomStayHistoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IWalletHistoryService, WalletHistoryService>();
+//new
 
+builder.Services.AddScoped<IHotelDocumentService, HotelDocumentService>();
+builder.Services.AddScoped<IHotelImageService, HotelImageService>();
+builder.Services.AddScoped<IUserDocumentService, UserDocumentService>();
+builder.Services.AddScoped<IRevenueSharePolicyService, RevenueSharePolicyService>();
 
 
 //mapper

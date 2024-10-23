@@ -14,12 +14,9 @@ namespace FHotel.Service.Validators.UserValidator
         public UserUpdateRequestValidator()
         {
             // Validate FirstName: must not be empty if provided
-            RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("First name cannot be empty if provided.");
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Name cannot be empty if provided.");
 
-            // Validate LastName: must not be empty if provided
-            RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("Last name cannot be empty if provided.");
 
             // Validate Email: must be in a valid format if provided
             RuleFor(x => x.Email)
@@ -44,10 +41,7 @@ namespace FHotel.Service.Validators.UserValidator
             RuleFor(x => x.Address)
                 .NotEmpty().WithMessage("Address cannot be empty if provided.");
 
-            // Validate Sex: must not be null if provided
-            RuleFor(x => x.Sex)
-                .NotNull().WithMessage("Sex is required and must be selected if provided.");
-            // Validate IsActive: must not be null if provided
+         
             RuleFor(x => x.IsActive)
                 .NotNull().WithMessage("IsActive is required and must be selected if provided.");
 

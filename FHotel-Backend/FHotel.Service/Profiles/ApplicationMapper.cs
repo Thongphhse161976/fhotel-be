@@ -28,12 +28,15 @@ using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Documents;
 using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelAmenities;
+using FHotel.Services.DTOs.HotelDocuments;
+using FHotel.Services.DTOs.HotelImages;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.PaymentMethods;
 using FHotel.Services.DTOs.Payments;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.RevenueSharePolicies;
 using FHotel.Services.DTOs.Roles;
 using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.DTOs.RoomImages;
@@ -41,7 +44,7 @@ using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Services;
 using FHotel.Services.DTOs.ServiceTypes;
-using FHotel.Services.DTOs.Timetable;
+using FHotel.Services.DTOs.UserDocuments;
 using FHotel.Services.DTOs.Users;
 
 
@@ -101,8 +104,6 @@ namespace FHotel.Service.Profiles
             CreateMap<Repository.Models.Service, ServiceResponse>().ReverseMap();
             CreateMap<ServiceType, ServiceTypeRequest>().ReverseMap();
             CreateMap<ServiceType, ServiceTypeResponse>().ReverseMap();
-            CreateMap<Timetable, TimetableRequest>().ReverseMap();
-            CreateMap<Timetable, TimetableResponse>().ReverseMap();
             CreateMap<Repository.Models.Type, TypeCreateRequest>().ReverseMap();
             CreateMap<Repository.Models.Type, TypeUpdateRequest>().ReverseMap();
             CreateMap<Repository.Models.Type, TypeResponse>().ReverseMap();
@@ -137,6 +138,15 @@ namespace FHotel.Service.Profiles
             CreateMap<WalletHistory, WalletHistoryRequest>().ReverseMap();
             CreateMap<WalletHistory, WalletHistoryResponse>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
+            //new
+            CreateMap<HotelImage, HotelImageRequest>().ReverseMap();
+            CreateMap<HotelImage, HotelImageResponse>().ReverseMap();
+            CreateMap<HotelDocument, HotelDocumentRequest>().ReverseMap();
+            CreateMap<HotelDocument, HotelDocumentResponse>().ReverseMap();
+            CreateMap<UserDocument, UserDocumentRequest>().ReverseMap();
+            CreateMap<UserDocument, UserDocumentResponse>().ReverseMap();
+            CreateMap<RevenueSharePolicy, RevenueSharePolicyRequest>().ReverseMap();
+            CreateMap<RevenueSharePolicy, RevenueSharePolicyResponse>().ReverseMap();
 
         }
           

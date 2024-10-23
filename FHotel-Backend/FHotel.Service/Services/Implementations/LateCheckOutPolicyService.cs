@@ -93,7 +93,7 @@ namespace FHotel.Service.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(lateCheckOutPolicy.LateCheckOutPolicyId);
+                await _unitOfWork.Repository<LateCheckOutPolicy>().HardDeleteGuid(lateCheckOutPolicy.LateCheckOutPolicyId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<LateCheckOutPolicy, LateCheckOutPolicyResponse>(lateCheckOutPolicy);
             }

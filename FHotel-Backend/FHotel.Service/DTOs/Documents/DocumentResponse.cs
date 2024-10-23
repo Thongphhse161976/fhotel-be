@@ -12,11 +12,5 @@ namespace FHotel.Services.DTOs.Documents
     {
         public Guid DocumentId { get; set; }
         public string? DocumentName { get; set; }
-        public string? Image { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public Guid? UserId { get; set; }
-
-        public virtual UserResponse? User { get; set; }
     }
 }

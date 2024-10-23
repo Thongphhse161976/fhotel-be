@@ -1,5 +1,6 @@
 ﻿using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.OrderDetails;
+using FHotel.Services.DTOs.UserDocuments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<OrderDetailResponse> Delete(Guid id);
 
         public Task<OrderDetailResponse> Update(Guid id, OrderDetailRequest request);
+        public Task<IEnumerable<OrderDetailResponse>> GetAllOrderDetailByOrder(Guid orderId);
+
     }
 }

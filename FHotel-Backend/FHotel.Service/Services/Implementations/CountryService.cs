@@ -85,7 +85,7 @@ namespace FHotel.Services.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(country.CountryId);
+                await _unitOfWork.Repository<Country>().HardDeleteGuid(country.CountryId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<Country, CountryResponse>(country);
             }

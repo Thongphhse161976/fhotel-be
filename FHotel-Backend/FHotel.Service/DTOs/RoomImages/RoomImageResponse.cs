@@ -1,5 +1,4 @@
-﻿using FHotel.Repository.Models;
-using FHotel.Services.DTOs.RoomTypes;
+﻿using FHotel.Services.DTOs.RoomTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

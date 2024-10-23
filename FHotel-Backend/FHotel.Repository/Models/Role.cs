@@ -13,6 +13,7 @@ namespace FHotel.Repository.Models
         public Guid RoleId { get; set; }
         public string? RoleName { get; set; }
 
+        public virtual RevenueSharePolicy? RevenueSharePolicy { get; set; }
         public virtual ICollection<User> Users { get; set; }
     }
 }

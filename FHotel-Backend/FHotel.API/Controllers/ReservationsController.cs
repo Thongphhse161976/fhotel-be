@@ -1,7 +1,11 @@
-﻿using FHotel.Service.DTOs.Bills;
+﻿using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.UserDocuments;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
@@ -19,11 +23,13 @@ namespace FHotel.API.Controllers
     {
         private readonly IReservationService _reservationService;
         private readonly IOrderService _orderService;
+        private readonly IUserDocumentService _userDocumentService;
 
-        public ReservationsController(IReservationService reservationService, IOrderService orderService)
+        public ReservationsController(IReservationService reservationService, IOrderService orderService, IUserDocumentService userDocumentService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
+            _userDocumentService = userDocumentService;
         }
 
         /// <summary>
@@ -163,6 +169,32 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Get all user documents by reservation id.
+        /// </summary>
+        [HttpGet("{reservationId}/user-documents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<UserDocumentResponse>>> GetAllUserDocumentByReservation(Guid reservationId)
+        {
+            try
+            {
+                var userDocuments = await _userDocumentService.GetAllUserDocumentByReservationId(reservationId);
+
+                if (userDocuments == null || !userDocuments.Any())
+                {
+                    return NotFound(new { message = "No user documents found for this reservation." });
+                }
+
+                return Ok(userDocuments);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 
     public class CalculateTotalAmountRequest
@@ -172,6 +204,8 @@ namespace FHotel.API.Controllers
         public DateTime CheckOutDate { get; set; }
         public int NumberOfRooms { get; set; }
     }
+
+
 
     
 }

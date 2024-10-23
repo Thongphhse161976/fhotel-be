@@ -194,7 +194,7 @@ namespace FHotel.Services.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(user.UserId);
+                await _unitOfWork.Repository<User>().HardDeleteGuid(user.UserId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<User, UserResponse>(user);
             }
@@ -567,7 +567,7 @@ namespace FHotel.Services.Services.Implementations
             // Construct the email body with HTML template
             string body = $@"
         <h1>Hotel Registration Confirmation</h1>
-        <p>Dear {user.FirstName},</p>
+        <p>Dear {user.Name},</p>
         <p>Thanks for giving time with us.</p>
         <p>You now can access our system FHotel</p>
         <p>Email: {user.Email}</p>

@@ -8,23 +8,24 @@ namespace FHotel.Repository.Models
         public Hotel()
         {
             HotelAmenities = new HashSet<HotelAmenity>();
+            HotelDocuments = new HashSet<HotelDocument>();
+            HotelImages = new HashSet<HotelImage>();
             HotelStaffs = new HashSet<HotelStaff>();
             RoomTypes = new HashSet<RoomType>();
-            Timetables = new HashSet<Timetable>();
         }
 
         public Guid HotelId { get; set; }
         public string? HotelName { get; set; }
         public string? OwnerName { get; set; }
         public string? OwnerEmail { get; set; }
+        public string? OwnerIdentificationNumber { get; set; }
+        public string? OwnerPhoneNumber { get; set; }
         public string? Address { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
         public int? Star { get; set; }
-        public string? BusinessLicenseNumber { get; set; }
-        public string? TaxIdentificationNumber { get; set; }
         public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -34,8 +35,9 @@ namespace FHotel.Repository.Models
         public virtual District? District { get; set; }
         public virtual User? Owner { get; set; }
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
+        public virtual ICollection<HotelDocument> HotelDocuments { get; set; }
+        public virtual ICollection<HotelImage> HotelImages { get; set; }
         public virtual ICollection<HotelStaff> HotelStaffs { get; set; }
         public virtual ICollection<RoomType> RoomTypes { get; set; }
-        public virtual ICollection<Timetable> Timetables { get; set; }
     }
 }

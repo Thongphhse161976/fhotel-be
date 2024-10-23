@@ -4,6 +4,7 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.OrderDetails;
+using FHotel.Services.DTOs.UserDocuments;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -85,7 +86,7 @@ namespace FHotel.Services.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
-                await _unitOfWork.Repository<Role>().HardDeleteGuid(orderDetail.OrderDetailId);
+                await _unitOfWork.Repository<OrderDetail>().HardDeleteGuid(orderDetail.OrderDetailId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
             }
@@ -118,5 +119,16 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<IEnumerable<OrderDetailResponse>> GetAllOrderDetailByOrder(Guid orderId)
+        {
+            var orderDetails = await _unitOfWork.Repository<OrderDetail>().GetAll()
+                     .AsNoTracking()
+                    .Where(x => x.OrderId == orderId)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<OrderDetail>, IEnumerable<OrderDetailResponse>>(orderDetails);
+        }
+
     }
 }

@@ -5,13 +5,16 @@ namespace FHotel.Repository.Models
 {
     public partial class Document
     {
+        public Document()
+        {
+            HotelDocuments = new HashSet<HotelDocument>();
+        }
+
         public Guid DocumentId { get; set; }
         public string? DocumentName { get; set; }
-        public string? Image { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public Guid? UserId { get; set; }
 
-        public virtual User? User { get; set; }
+        public virtual ICollection<HotelDocument> HotelDocuments { get; set; }
+        public virtual ICollection<UserDocument> UserDocuments { get; set; }
+
     }
 }
