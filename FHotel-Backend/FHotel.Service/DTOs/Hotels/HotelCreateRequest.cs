@@ -18,8 +18,6 @@ namespace FHotel.Service.DTOs.Hotels
         public string? Email { get; set; }
         public string? Description { get; set; }
         public int? Star { get; set; }
-        public string? BusinessLicenseNumber { get; set; }
-        public string? TaxIdentificationNumber { get; set; }
         public Guid? DistrictId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool? IsActive { get; set; }

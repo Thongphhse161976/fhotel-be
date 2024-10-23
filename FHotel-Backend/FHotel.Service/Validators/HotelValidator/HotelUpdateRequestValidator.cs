@@ -49,13 +49,6 @@ namespace FHotel.Service.Validators.HotelValidator
                 .NotNull().WithMessage("District is required.");
 
 
-            RuleFor(x => x.BusinessLicenseNumber)
-                .NotEmpty().WithMessage("Business license number is required.")
-                .MaximumLength(20).WithMessage("Business license number cannot exceed 20 characters.");
-
-            RuleFor(x => x.TaxIdentificationNumber)
-                .NotEmpty().WithMessage("Tax identification number is required.")
-                .MaximumLength(15).WithMessage("Tax identification number cannot exceed 15 characters.");
         }
     }
 }
