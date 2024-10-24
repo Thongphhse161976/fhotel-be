@@ -115,6 +115,9 @@ namespace FHotel.API.Controllers
         /// Update reservation by reservation id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReservationResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ReservationResponse>> Update(Guid id, [FromBody] ReservationUpdateRequest request)
         {
             try
@@ -137,7 +140,9 @@ namespace FHotel.API.Controllers
             }
         }
 
-        // POST: api/reservations/calculate
+        /// <summary>
+        /// Calculate total reservation amount.
+        /// </summary>
         [HttpPost("calculate")]
         public async Task<IActionResult> CalculateTotalAmount([FromBody] CalculateTotalAmountRequest request)
         {
