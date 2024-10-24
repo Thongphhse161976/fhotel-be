@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Services.DTOs.Countries;
@@ -92,11 +93,48 @@ namespace FHotel.Services.Services.Implementations
 
             try
             {
+                // Fetch the RoomType entity
+                var roomType = await _roomTypeService.Get(request.RoomTypeId.Value);
+
+                if (roomType == null)
+                {
+                    throw new Exception("Room type not found.");
+                }
+
+                // Check if there are enough available rooms
+                if (roomType.AvailableRooms < request.NumberOfRooms)
+                {
+                    throw new Exception("Not enough available rooms.");
+                }
+
+                // Reduce the available rooms
+                roomType.AvailableRooms -= request.NumberOfRooms;
+
+                var updateRoomType = new RoomTypeUpdateRequest()
+                {
+                    RoomTypeId = roomType.RoomTypeId,
+                    AvailableRooms = roomType.AvailableRooms,
+                    TotalRooms = roomType.TotalRooms,
+                    HotelId = roomType.HotelId,
+                    TypeId = roomType.TypeId,
+                    Description = roomType.Description,
+                    RoomSize = roomType.RoomSize,
+                    IsActive = roomType.IsActive,
+                    Note = roomType.Note,
+                };
+
+                // Update the RoomType in the database using RoomTypeUpdateRequest
+                await _roomTypeService.Update(request.RoomTypeId.Value, updateRoomType);
+
+                // Proceed with creating the reservation
                 var reservation = _mapper.Map<ReservationCreateRequest, Reservation>(request);
                 reservation.ReservationId = Guid.NewGuid();
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
+
                 await _unitOfWork.Repository<Reservation>().InsertAsync(reservation);
+
+                // Commit both changes: the room type update and the new reservation
                 await _unitOfWork.CommitAsync();
 
                 return _mapper.Map<Reservation, ReservationResponse>(reservation);
@@ -105,7 +143,11 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(e.Message);
             }
+
         }
+
+
+
 
         public async Task<ReservationResponse> Delete(Guid id)
         {
