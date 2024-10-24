@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Orders;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
@@ -64,7 +65,7 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<OrderResponse> Create(OrderRequest request, List<OrderDetailRequest> orderDetailRequests)
+        public async Task<OrderResponse> Create(OrderCreateRequest request)
         {
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
@@ -76,17 +77,12 @@ namespace FHotel.Services.Services.Implementations
             DateTime localTime = utcNow + utcOffset;
             try
             {
-                var order = _mapper.Map<OrderRequest, Order>(request);
+                var order = _mapper.Map<OrderCreateRequest, Order>(request);
                 order.OrderId = Guid.NewGuid();
                 order.OrderedDate = localTime;
                 order.OrderStatus = "Pending";
                 await _unitOfWork.Repository<Order>().InsertAsync(order);
                 await _unitOfWork.CommitAsync();
-                foreach (var detailRequest in orderDetailRequests)
-                {
-                    detailRequest.OrderId = order.OrderId; // Link the OrderDetail to the Order
-                    await _orderDetailService.Create(detailRequest);
-                }
                 
                 return _mapper.Map<Order, OrderResponse>(order);
             }

@@ -10,7 +10,9 @@ namespace FHotel.Service.DTOs.Orders
 {
     public class OrderCreateRequest
     {
-        public OrderRequest Order { get; set; }
-        public List<OrderDetailRequest> OrderDetails { get; set; }
+        public Guid OrderId { get; set; }
+        public Guid? ReservationId { get; set; }
+        public DateTime? OrderedDate { get; set; }
+        public string? OrderStatus { get; set; }
     }
 }

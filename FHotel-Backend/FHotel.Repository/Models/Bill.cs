@@ -9,7 +9,7 @@ namespace FHotel.Repository.Models
         {
             BillLateCheckOutCharges = new HashSet<BillLateCheckOutCharge>();
             BillOrders = new HashSet<BillOrder>();
-            BillPayments = new HashSet<BillPayment>();
+            BillReservations = new HashSet<BillReservation>();
         }
 
         public Guid BillId { get; set; }
@@ -23,6 +23,6 @@ namespace FHotel.Repository.Models
         public virtual Reservation? Reservation { get; set; }
         public virtual ICollection<BillLateCheckOutCharge> BillLateCheckOutCharges { get; set; }
         public virtual ICollection<BillOrder> BillOrders { get; set; }
-        public virtual ICollection<BillPayment> BillPayments { get; set; }
+        public virtual ICollection<BillReservation> BillReservations { get; set; }
     }
 }

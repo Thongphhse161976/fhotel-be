@@ -1,3 +1,4 @@
+using FHotel.API.VnPay;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.Profiles;
@@ -44,7 +45,6 @@ builder.Services.AddScoped<IHotelStaffService, HotelStaffService>();
 builder.Services.AddScoped<IHotelAmenityService, HotelAmenityService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
@@ -58,7 +58,6 @@ builder.Services.AddScoped<ITypePricingService, TypePricingService>();
 builder.Services.AddScoped<IBillService, BillService>();
 builder.Services.AddScoped<IBillOrderService, BillOrderService>();
 builder.Services.AddScoped<IBillLateCheckOutChargeService, BillLateCheckOutChargeService>();
-builder.Services.AddScoped<IBillPaymentService, BillPaymentService>();
 builder.Services.AddScoped<ILateCheckOutChargeService, LateCheckOutChargeService>();
 builder.Services.AddScoped<ILateCheckOutPolicyService, LateCheckOutPolicyService>();
 builder.Services.AddScoped<IRefundService, RefundService>();
@@ -73,6 +72,9 @@ builder.Services.AddScoped<IHotelDocumentService, HotelDocumentService>();
 builder.Services.AddScoped<IHotelImageService, HotelImageService>();
 builder.Services.AddScoped<IUserDocumentService, UserDocumentService>();
 builder.Services.AddScoped<IRevenueSharePolicyService, RevenueSharePolicyService>();
+
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
 
 
 //mapper

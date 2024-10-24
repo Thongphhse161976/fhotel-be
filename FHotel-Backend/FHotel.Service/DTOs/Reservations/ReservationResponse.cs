@@ -22,8 +22,11 @@ namespace FHotel.Services.DTOs.Reservations
         public DateTime? CreatedDate { get; set; }
         public DateTime? ActualCheckInTime { get; set; }
         public DateTime? ActualCheckOutDate { get; set; }
+        public string? PaymentStatus { get; set; }
+        public Guid? PaymentMethodId { get; set; }
 
         public virtual UserResponse? Customer { get; set; }
         public virtual RoomTypeResponse? RoomType { get; set; }
+        public virtual PaymentMethod? PaymentMethod { get; set; }
     }
 }

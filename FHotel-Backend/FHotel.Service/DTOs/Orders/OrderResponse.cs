@@ -13,11 +13,9 @@ namespace FHotel.Services.DTOs.Orders
     {
         public Guid OrderId { get; set; }
         public Guid? ReservationId { get; set; }
-        public Guid? PaymentMethodId { get; set; }
         public DateTime? OrderedDate { get; set; }
         public string? OrderStatus { get; set; }
 
-        public virtual PaymentMethodResponse? PaymentMethod { get; set; }
         public virtual ReservationResponse? Reservation { get; set; }
     }
 }

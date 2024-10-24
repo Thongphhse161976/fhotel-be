@@ -6,7 +6,7 @@ namespace FHotel.Repository.Models
     public partial class Refund
     {
         public Guid RefundId { get; set; }
-        public Guid? PaymentId { get; set; }
+        public Guid? ReservationId { get; set; }
         public decimal? RefundAmount { get; set; }
         public string? RefundStatus { get; set; }
         public DateTime? RefundDate { get; set; }
@@ -15,7 +15,7 @@ namespace FHotel.Repository.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-        public virtual Payment? Payment { get; set; }
         public virtual RefundPolicy? RefundPolicy { get; set; }
+        public virtual Reservation? Reservation { get; set; }
     }
 }

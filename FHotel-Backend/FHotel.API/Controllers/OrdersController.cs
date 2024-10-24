@@ -75,7 +75,7 @@ namespace FHotel.API.Controllers
         {
             try
             {
-                var result = await _orderService.Create(request.Order, request.OrderDetails);
+                var result = await _orderService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
             catch (Exception ex)

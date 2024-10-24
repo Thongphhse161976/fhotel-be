@@ -8,7 +8,7 @@ namespace FHotel.Service.DTOs.Refunds
 {
     public class RefundRequest
     {
-        public Guid? PaymentId { get; set; }
+        public Guid? ReservationId { get; set; }
         public decimal? RefundAmount { get; set; }
         public string? RefundStatus { get; set; }
         public DateTime? RefundDate { get; set; }

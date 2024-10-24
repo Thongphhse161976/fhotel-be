@@ -1,6 +1,8 @@
-﻿using FHotel.Repository.Models;
+﻿using FHotel.API.VnPay;
+using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Orders;
@@ -24,12 +26,17 @@ namespace FHotel.API.Controllers
         private readonly IReservationService _reservationService;
         private readonly IOrderService _orderService;
         private readonly IUserDocumentService _userDocumentService;
+        private readonly IVnPayService _vnPayService;
+        private readonly IUserService _userService;
 
-        public ReservationsController(IReservationService reservationService, IOrderService orderService, IUserDocumentService userDocumentService)
+        public ReservationsController(IReservationService reservationService, IOrderService orderService,
+            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
             _userDocumentService = userDocumentService;
+            _vnPayService = vnPayService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -195,6 +202,42 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Pay through VnPay by reservation id.
+        /// </summary>
+        [HttpPost("{id}/pay")]
+        public async Task<ActionResult<string>> Pay(Guid id)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+
+            var reservation = await _reservationService.Get(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var customer = await _userService.Get(reservation.CustomerId.Value);
+                var vnPayModel = new VnPaymentRequestModel
+                {
+                    Amount = reservation.TotalAmount,
+                    CreatedDate = localTime,
+                    Description = "Payment-For-Reservation:",
+                    FullName = customer.Name,
+                    OrderId = id
+                };
+                return _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
+            }
+
+        }
     }
 
     public class CalculateTotalAmountRequest
@@ -205,7 +248,9 @@ namespace FHotel.API.Controllers
         public int NumberOfRooms { get; set; }
     }
 
+   
 
 
-    
+
+
 }
