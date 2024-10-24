@@ -52,9 +52,10 @@ namespace FHotel.Services.Services.Implementations
         {
             try
             {
-                Reservation reservation = null;
+                ReservationResponse reservation = null;
                 reservation = await _unitOfWork.Repository<Reservation>().GetAll()
                      .AsNoTracking()
+                     .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
                     .Where(x => x.ReservationId == id)
                     .FirstOrDefaultAsync();
 
@@ -63,7 +64,7 @@ namespace FHotel.Services.Services.Implementations
                     throw new Exception("Reservation not found");
                 }
 
-                return _mapper.Map<Reservation, ReservationResponse>(reservation);
+                return reservation;
             }
 
             catch (Exception e)
