@@ -256,7 +256,7 @@ namespace FHotel.API.Controllers
                 var customer = await _userService.Get(reservation.CustomerId.Value);
                 var vnPayModel = new VnPaymentRequestModel
                 {
-                    Amount = reservation.TotalAmount,
+                    Amount = (int)(reservation.TotalAmount),
                     CreatedDate = localTime,
                     Description = "Payment-For-Reservation:",
                     FullName = customer.Name,
