@@ -64,7 +64,7 @@
               "RelativeDocumentMoniker": "FHotel.Repository\\Models\\Hotel.cs",
               "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\Hotel.cs",
               "RelativeToolTip": "FHotel.Repository\\Models\\Hotel.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAkwBoAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAA5wBoAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-23T03:34:10.355Z",
               "EditorCaption": ""
@@ -79,8 +79,7 @@
               "RelativeToolTip": "FHotel.Service\\DTOs\\Hotels\\HotelUpdateRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:29:37.555Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:29:37.555Z"
             },
             {
               "$type": "Document",
@@ -92,8 +91,7 @@
               "RelativeToolTip": "FHotel.Service\\DTOs\\Hotels\\HotelResponse.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:29:18.988Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:29:18.988Z"
             },
             {
               "$type": "Document",
@@ -105,8 +103,7 @@
               "RelativeToolTip": "FHotel.Service\\DTOs\\Hotels\\HotelRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:29:15.627Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:29:15.627Z"
             },
             {
               "$type": "Document",
@@ -118,8 +115,7 @@
               "RelativeToolTip": "FHotel.Service\\DTOs\\Hotels\\HotelCreateRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:29:07.593Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:29:07.593Z"
             },
             {
               "$type": "Document",
@@ -131,8 +127,7 @@
               "RelativeToolTip": "FHotel.Service\\Validators\\HotelValidator\\HotelUpdateRequestValidator.cs",
               "ViewState": "AgIAAB8AAAAAAAAAAAAQwDAAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:27:58.441Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:27:58.441Z"
             },
             {
               "$type": "Document",
@@ -144,8 +139,7 @@
               "RelativeToolTip": "FHotel.Service\\Validators\\HotelValidator\\HotelCreateRequestValidator.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAADMAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:27:43.714Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:27:43.714Z"
             },
             {
               "$type": "Document",
@@ -157,8 +151,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\DocumentService.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAgwEIAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:20:09.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:20:09.563Z"
             },
             {
               "$type": "Document",
@@ -170,8 +163,7 @@
               "RelativeToolTip": "FHotel.API\\Controllers\\OrdersController.cs",
               "ViewState": "AgIAAGkAAAAAAAAAAAAwwIIAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:09:07.715Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:09:07.715Z"
             },
             {
               "$type": "Document",
@@ -183,8 +175,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
               "ViewState": "AgIAAGwAAAAAAAAAAAAcwIAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:06:32.329Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:06:32.329Z"
             },
             {
               "$type": "Document",
@@ -196,8 +187,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Interfaces\\IOrderDetailService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwBYAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T03:05:48.675Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-23T03:05:48.675Z"
             }
           ]
         }
