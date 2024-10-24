@@ -22,7 +22,6 @@ using FHotel.Service.DTOs.Types;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.WalletHistories;
 using FHotel.Service.DTOs.Wallets;
-using FHotel.Services.DTOs.BillReservations;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Documents;
@@ -119,8 +118,6 @@ namespace FHotel.Service.Profiles
             CreateMap<BillOrder, BillOrderResponse>().ReverseMap();
             CreateMap<BillLateCheckOutCharge, BillLateCheckOutChargeRequest>().ReverseMap();
             CreateMap<BillLateCheckOutCharge, BillLateCheckOutChargeResponse>().ReverseMap();
-            CreateMap<BillReservation, BillReservationRequest>().ReverseMap();
-            CreateMap<BillReservation, BillReservationResponse>().ReverseMap();
             CreateMap<LateCheckOutCharge, LateCheckOutChargeRequest>().ReverseMap();
             CreateMap<LateCheckOutCharge, LateCheckOutChargeResponse>().ReverseMap();
             CreateMap<LateCheckOutPolicy, LateCheckOutPolicyRequest>().ReverseMap();

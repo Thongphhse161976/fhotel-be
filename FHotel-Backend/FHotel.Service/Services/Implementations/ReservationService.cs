@@ -131,6 +131,7 @@ namespace FHotel.Services.Services.Implementations
                 reservation.ReservationId = Guid.NewGuid();
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
+                reservation.PaymentStatus = "Not Paid";
 
                 await _unitOfWork.Repository<Reservation>().InsertAsync(reservation);
 

@@ -1,4 +1,6 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.PaymentMethods;
+using FHotel.Services.DTOs.Reservations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +14,15 @@ namespace FHotel.Service.DTOs.Bills
         public Guid BillId { get; set; }
         public Guid? ReservationId { get; set; }
         public decimal? TotalAmount { get; set; }
+        public decimal? PrepaidAmount { get; set; }
+        public decimal? RemainingAmount { get; set; }
         public DateTime? BillDate { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
         public string? BillStatus { get; set; }
+        public Guid? PaymentMethodId { get; set; }
+        public DateTime? LastUpdated { get; set; }
 
-        public virtual Reservation? Reservation { get; set; }
+        public virtual PaymentMethodResponse? PaymentMethod { get; set; }
+        public virtual ReservationResponse? Reservation { get; set; }
     }
 }
