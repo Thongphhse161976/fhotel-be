@@ -35,9 +35,9 @@ namespace FHotel.Service.Validators.ReservationValidator
                 .Must(status => status == "Pending" || status == "Confirmed" || status == "Cancelled")
                 .WithMessage("Reservation status must be either 'Pending', 'Confirmed', or 'Cancelled'.");
             // Allow ActualCheckInTime to be equal to CheckInDate
-            RuleFor(x => x.ActualCheckInTime)
-                .GreaterThanOrEqualTo(x => x.CheckInDate).When(x => x.ActualCheckInTime.HasValue && x.CheckInDate.HasValue)
-                .WithMessage("Actual check-in time must be later than the check-in date.");
+            //RuleFor(x => x.ActualCheckInTime)
+            //    .GreaterThanOrEqualTo(x => x.CheckInDate).When(x => x.ActualCheckInTime.HasValue && x.CheckInDate.HasValue)
+            //    .WithMessage("Actual check-in time must be later than the check-in date.");
             // Allow ActualCheckOutDate to be equal to CheckOutDate
             RuleFor(x => x.ActualCheckOutDate)
                 .GreaterThanOrEqualTo(x => x.ActualCheckInTime).When(x => x.ActualCheckInTime.HasValue)

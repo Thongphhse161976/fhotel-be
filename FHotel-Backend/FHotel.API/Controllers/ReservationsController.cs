@@ -2,6 +2,7 @@
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.HotelDocuments;
@@ -28,15 +29,17 @@ namespace FHotel.API.Controllers
         private readonly IUserDocumentService _userDocumentService;
         private readonly IVnPayService _vnPayService;
         private readonly IUserService _userService;
+        private readonly IRoomStayHistoryService _roomStayHistoryService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
-            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService)
+            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, IRoomStayHistoryService roomStayHistoryService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
             _userDocumentService = userDocumentService;
             _vnPayService = vnPayService;
             _userService = userService;
+            _roomStayHistoryService = roomStayHistoryService;
         }
 
         /// <summary>
@@ -195,6 +198,31 @@ namespace FHotel.API.Controllers
                 }
 
                 return Ok(userDocuments);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Get all room stay histories by reservation id.
+        /// </summary>
+        [HttpGet("{reservationId}/room-stay-histories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomStayHistoryResponse>>> GetAllRoomStayHistoryByReservation(Guid reservationId)
+        {
+            try
+            {
+                var roomStayHistories = await _roomStayHistoryService.GetAllByReservationId(reservationId);
+
+                if (roomStayHistories == null || !roomStayHistories.Any())
+                {
+                    return NotFound(new { message = "No Room stay history found for this reservation." });
+                }
+
+                return Ok(roomStayHistories);
             }
             catch (Exception ex)
             {

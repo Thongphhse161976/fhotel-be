@@ -1,4 +1,6 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.Rooms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace FHotel.Service.DTOs.RoomStayHistories
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-        public virtual Reservation? Reservation { get; set; }
-        public virtual Room? Room { get; set; }
+        public virtual ReservationResponse? Reservation { get; set; }
+        public virtual RoomResponse? Room { get; set; }
     }
 }
