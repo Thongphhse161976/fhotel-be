@@ -21,5 +21,6 @@ namespace FHotel.Service.Services.Interfaces
         public Task<HotelVerificationResponse> Update(Guid id, HotelVerificationRequest request);
 
         public Task<List<HotelVerificationResponse>> GetAllByHotelId(Guid id);
+        public Task<List<HotelVerificationResponse>> GetAllByAssignManagerId(Guid id);
     }
 }

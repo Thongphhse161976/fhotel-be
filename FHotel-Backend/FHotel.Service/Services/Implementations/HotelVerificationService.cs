@@ -59,10 +59,20 @@ namespace FHotel.Service.Services.Implementations
 
         public async Task<HotelVerificationResponse> Create(HotelVerificationRequest request)
         {
-            try
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            try 
             {
                 var hotelVerification = _mapper.Map<HotelVerificationRequest, HotelVerification>(request);
                 hotelVerification.HotelVerificationId = Guid.NewGuid();
+                hotelVerification.CreatedDate = localTime; 
+                hotelVerification.VerificationStatus = "Pending";
                 await _unitOfWork.Repository<HotelVerification>().InsertAsync(hotelVerification);
                 await _unitOfWork.CommitAsync();
 
@@ -125,6 +135,17 @@ namespace FHotel.Service.Services.Implementations
             var list = await _unitOfWork.Repository<HotelVerification>().GetAll()
                                             .ProjectTo<HotelVerificationResponse>(_mapper.ConfigurationProvider)
                                             .Where(h=> h.HotelId == id)
+                                            .ToListAsync();
+            return list;
+        }
+
+
+        public async Task<List<HotelVerificationResponse>> GetAllByAssignManagerId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<HotelVerification>().GetAll()
+                                            .ProjectTo<HotelVerificationResponse>(_mapper.ConfigurationProvider)
+                                            .Where(h => h.AssignedManagerId == id)
                                             .ToListAsync();
             return list;
         }

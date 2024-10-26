@@ -1,9 +1,11 @@
 ﻿using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.Profiles;
+using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelAmenities;
+using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.Users;
@@ -30,11 +32,13 @@ namespace FHotel.API.Controllers
         private readonly IUserService _userService;
         private readonly IReservationService _reservationService;
         private readonly IHotelStaffService _hotelStaffService;
-        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService)
+        private readonly IHotelVerificationService _hotelVerificationService;
+        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService)
         {
             _userService = userService;
             _reservationService = reservationService;
             _hotelStaffService = hotelStaffService;
+            _hotelVerificationService = hotelVerificationService;
         }
 
         /// <summary>
@@ -303,6 +307,32 @@ namespace FHotel.API.Controllers
                 }
 
                 return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all hotel verifications by assign manager id.
+        /// </summary>
+        [HttpGet("{id}/hotel-verifications")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<HotelDocumentResponse>>> GetAllHotelVerificationByAssignManagerId(Guid id)
+        {
+            try
+            {
+                var hotelVerification = await _hotelVerificationService.GetAllByAssignManagerId(id);
+
+                if (hotelVerification == null || !hotelVerification.Any())
+                {
+                    return NotFound(new { message = "No hotel verifications found for this manager." });
+                }
+
+                return Ok(hotelVerification);
             }
             catch (Exception ex)
             {
