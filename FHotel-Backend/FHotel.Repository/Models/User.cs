@@ -8,8 +8,12 @@ namespace FHotel.Repository.Models
         public User()
         {
             HotelStaffs = new HashSet<HotelStaff>();
+            HotelVerifications = new HashSet<HotelVerification>();
             Hotels = new HashSet<Hotel>();
             Reservations = new HashSet<Reservation>();
+            WalletHistoryPayeeNavigations = new HashSet<WalletHistory>();
+            WalletHistoryPayerNavigations = new HashSet<WalletHistory>();
+            Wallets = new HashSet<Wallet>();
         }
 
         public Guid UserId { get; set; }
@@ -26,9 +30,12 @@ namespace FHotel.Repository.Models
         public bool? IsActive { get; set; }
 
         public virtual Role? Role { get; set; }
-        public virtual Wallet? Wallet { get; set; }
         public virtual ICollection<HotelStaff> HotelStaffs { get; set; }
+        public virtual ICollection<HotelVerification> HotelVerifications { get; set; }
         public virtual ICollection<Hotel> Hotels { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual ICollection<WalletHistory> WalletHistoryPayeeNavigations { get; set; }
+        public virtual ICollection<WalletHistory> WalletHistoryPayerNavigations { get; set; }
+        public virtual ICollection<Wallet> Wallets { get; set; }
     }
 }

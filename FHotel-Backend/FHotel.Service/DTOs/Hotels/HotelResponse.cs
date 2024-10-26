@@ -23,13 +23,11 @@ namespace FHotel.Services.DTOs.Hotels
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
-        public int? Star { get; set; }
-        public string? BusinessLicenseNumber { get; set; }
-        public string? TaxIdentificationNumber { get; set; }
         public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string? VerifyStatus { get; set; }
         public bool? IsActive { get; set; }
 
         public virtual DistrictResponse? District { get; set; }

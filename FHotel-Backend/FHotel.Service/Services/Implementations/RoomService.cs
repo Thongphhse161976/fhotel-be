@@ -5,7 +5,6 @@ using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Service.Validators.RoomValidator;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;

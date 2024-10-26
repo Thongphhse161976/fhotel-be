@@ -1,4 +1,5 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace FHotel.Service.DTOs.Wallets
     {
         public Guid WalletId { get; set; }
         public Guid? UserId { get; set; }
-        public decimal? Balance { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public int? BankAccountNumber { get; set; }
+        public string? BankName { get; set; }
 
-        public virtual User? User { get; set; }
+        public virtual UserResponse? User { get; set; }
     }
 }

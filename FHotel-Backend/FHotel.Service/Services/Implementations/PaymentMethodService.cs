@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.PaymentMethods;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

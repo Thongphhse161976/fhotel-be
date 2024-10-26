@@ -5,7 +5,6 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.Validators.HotelValidator;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.Services.Interfaces;
@@ -105,6 +104,7 @@ namespace FHotel.Services.Services.Implementations
                 hotel.HotelId = Guid.NewGuid();
                 hotel.CreatedDate = localTime;
                 hotel.IsActive = false;
+                hotel.VerifyStatus = "Pending";
                 await _unitOfWork.Repository<Hotel>().InsertAsync(hotel);
                 await _unitOfWork.CommitAsync();
 
@@ -163,6 +163,7 @@ namespace FHotel.Services.Services.Implementations
                 hotel.OwnerEmail = ownerhotel.Email;
                 hotel.OwnerIdentificationNumber = ownerhotel.IdentificationNumber;
                 hotel.IsActive = false;
+                hotel.VerifyStatus = "Pending";
                 await _unitOfWork.Repository<Hotel>().InsertAsync(hotel);
                 await _unitOfWork.CommitAsync();
 

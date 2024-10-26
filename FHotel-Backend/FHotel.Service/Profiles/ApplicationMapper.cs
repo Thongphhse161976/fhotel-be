@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Amenities;
+using FHotel.Service.DTOs.Areas;
 using FHotel.Service.DTOs.BillLateCheckOutCharges;
 using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.Bills;
@@ -8,6 +9,7 @@ using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.Facilities;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.DTOs.HotelVerifications;
 using FHotel.Service.DTOs.LateCheckOutCharges;
 using FHotel.Service.DTOs.LateCheckOutPolicies;
 using FHotel.Service.DTOs.RefundPolicies;
@@ -23,7 +25,6 @@ using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.WalletHistories;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Services.DTOs.Cities;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Documents;
 using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelAmenities;
@@ -54,12 +55,12 @@ namespace FHotel.Service.Profiles
         {
             CreateMap<Amenity, AmenityRequest>().ReverseMap();
             CreateMap<Amenity, AmenityResponse>().ReverseMap();
+            CreateMap<Area, AreaRequest>().ReverseMap();
+            CreateMap<Area, AreaResponse>().ReverseMap();
             CreateMap<Role, RoleRequest>().ReverseMap();
             CreateMap<Role, RoleResponse>().ReverseMap();
             CreateMap<City, CityRequest>().ReverseMap();
             CreateMap<City, CityResponse>().ReverseMap();
-            CreateMap<Country, CountryRequest>().ReverseMap();
-            CreateMap<Country, CountryResponse>().ReverseMap();
             CreateMap<District, DistrictRequest>().ReverseMap();
             CreateMap<District, DistrictResponse>().ReverseMap();
             CreateMap<Document, DocumentRequest>().ReverseMap();
@@ -72,6 +73,8 @@ namespace FHotel.Service.Profiles
             CreateMap<Hotel, HotelRequest>().ReverseMap();
             CreateMap<Hotel, HotelUpdateRequest>().ReverseMap();
             CreateMap<Hotel, HotelResponse>().ReverseMap();
+            CreateMap<HotelVerification, HotelVerificationRequest>().ReverseMap();
+            CreateMap<HotelVerification, HotelVerificationResponse>().ReverseMap();
             CreateMap<HotelStaff, HotelStaffResponse>().ReverseMap();
             CreateMap<HotelStaff, HotelStaffCreateRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityRequest>().ReverseMap();

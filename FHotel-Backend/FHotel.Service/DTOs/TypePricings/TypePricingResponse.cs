@@ -2,7 +2,6 @@
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.Types;
 using FHotel.Services.DTOs.Cities;
-using FHotel.Services.DTOs.Countries;
 using System;
 using System.Collections.Generic;
 using System.Linq;

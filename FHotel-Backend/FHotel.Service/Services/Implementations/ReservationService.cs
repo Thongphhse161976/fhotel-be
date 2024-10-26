@@ -6,7 +6,6 @@ using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.ReservationValidator;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
@@ -194,7 +193,24 @@ namespace FHotel.Services.Services.Implementations
             try
             {
                 var updatereservation = _mapper.Map(request, reservation);
-
+                
+                if (updatereservation.ReservationStatus == "Cancelled")
+                {
+                    var roomType = await _roomTypeService.Get(updatereservation.RoomTypeId.Value);
+                    roomType.AvailableRooms += updatereservation.NumberOfRooms;
+                    await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
+                    {
+                        RoomTypeId = roomType.RoomTypeId,
+                        AvailableRooms = roomType.AvailableRooms,
+                        TotalRooms = roomType.TotalRooms,
+                        HotelId = roomType.HotelId,
+                        TypeId = roomType.TypeId,
+                        Description = roomType.Description,
+                        RoomSize = roomType.RoomSize,
+                        IsActive = roomType.IsActive,
+                        Note = roomType.Note,
+                    });
+                }
                 await _unitOfWork.Repository<Reservation>().UpdateDetached(updatereservation);
                 await _unitOfWork.CommitAsync();
 

@@ -8,6 +8,7 @@ namespace FHotel.Service.DTOs.Hotels
 {
     public class HotelUpdateRequest
     {
+        public Guid HotelId { get; set; }
         public string? HotelName { get; set; }
         public string? OwnerName { get; set; }
         public string? OwnerEmail { get; set; }
@@ -17,10 +18,10 @@ namespace FHotel.Service.DTOs.Hotels
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
-        public int? Star { get; set; }
         public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string? VerifyStatus { get; set; }
         public bool? IsActive { get; set; }
     }
 }

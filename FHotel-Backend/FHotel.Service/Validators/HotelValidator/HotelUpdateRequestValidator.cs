@@ -42,8 +42,6 @@ namespace FHotel.Service.Validators.HotelValidator
 
            
 
-            RuleFor(h => h.Star)
-                .InclusiveBetween(1, 5).WithMessage("Star rating must be between 1 and 5.");
 
             RuleFor(h => h.DistrictId)
                 .NotNull().WithMessage("District is required.");

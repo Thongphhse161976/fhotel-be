@@ -10,6 +10,5 @@ namespace FHotel.Services.DTOs.Cities
     {
         public string? CityName { get; set; }
         public string? PostalCode { get; set; }
-        public Guid? CountryId { get; set; }
     }
 }

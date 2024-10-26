@@ -11,7 +11,6 @@ using FHotel.Service.DTOs.Types;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Service.Validators.RoomTypeValidator;
 using FHotel.Services.DTOs.Cities;
-using FHotel.Services.DTOs.Countries;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.RoomTypes;

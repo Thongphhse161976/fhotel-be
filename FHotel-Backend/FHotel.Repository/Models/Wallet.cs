@@ -12,8 +12,8 @@ namespace FHotel.Repository.Models
 
         public Guid WalletId { get; set; }
         public Guid? UserId { get; set; }
-        public decimal? Balance { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public int? BankAccountNumber { get; set; }
+        public string? BankName { get; set; }
 
         public virtual User? User { get; set; }
         public virtual ICollection<WalletHistory> WalletHistories { get; set; }

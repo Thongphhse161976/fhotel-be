@@ -30,9 +30,10 @@ namespace FHotel.API.Controllers
         private readonly IReservationService _reservationService;
         private readonly IHotelDocumentService _hotelDocumentService;
         private readonly IHotelImageService _hotelImageService;
+        private readonly IHotelVerificationService _hotelVerificationService;
 
         public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService, IReservationService reservationService, IHotelDocumentService hotelDocumentService
-            , IHotelImageService hotelImageService)
+            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
@@ -41,6 +42,7 @@ namespace FHotel.API.Controllers
             _reservationService = reservationService;
             _hotelDocumentService = hotelDocumentService;
             _hotelImageService = hotelImageService;
+            _hotelVerificationService = hotelVerificationService;
         }
 
         /// <summary>
@@ -352,6 +354,31 @@ namespace FHotel.API.Controllers
                 if (hotelImages == null || !hotelImages.Any())
                 {
                     return NotFound(new { message = "No hotel images found for this hotel." });
+                }
+
+                return Ok(hotelImages);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Get all hotel verifications by hotel id.
+        /// </summary>
+        [HttpGet("{hotelId}/hotel-verifications")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<HotelDocumentResponse>>> GetAllHotelVerificationByHotelId(Guid hotelId)
+        {
+            try
+            {
+                var hotelImages = await _hotelVerificationService.GetAllByHotelId(hotelId);
+
+                if (hotelImages == null || !hotelImages.Any())
+                {
+                    return NotFound(new { message = "No hotel verifications found for this hotel." });
                 }
 
                 return Ok(hotelImages);

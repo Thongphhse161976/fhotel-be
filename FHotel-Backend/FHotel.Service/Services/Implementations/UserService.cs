@@ -158,7 +158,6 @@ namespace FHotel.Services.Services.Implementations
                     var wallet = new WalletRequest
                     {
                         UserId = user.UserId,
-                        Balance = 0
                     };
                     await _walletService.Create(wallet);
                 }
@@ -420,7 +419,6 @@ namespace FHotel.Services.Services.Implementations
                     var wallet = new WalletRequest
                     {
                         UserId = user.UserId,
-                        Balance = 0
                     };
                     await _walletService.Create(wallet);
                 }

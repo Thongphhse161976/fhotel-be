@@ -22,8 +22,8 @@ namespace FHotel.Service.Validators.ReservationValidator
 
             RuleFor(x => x.ReservationStatus)
                 .NotEmpty().WithMessage("Reservation status is required.")
-                .Must(status => status == "Pending" || status == "Confirmed" || status == "Cancelled")
-                .WithMessage("Reservation status must be either 'Pending', 'Confirmed', or 'Cancelled'.");
+                .Must(status => status == "Pending" || status == "CheckIn" || status == "CheckOut" || status == "Cancelled")
+                .WithMessage("Reservation status must be either 'Pending', 'CheckIn', 'CheckOut', or 'Cancelled'.");
             //// Allow ActualCheckInTime to be equal to CheckInDate
             //RuleFor(x => x.ActualCheckInTime)
             //    .GreaterThanOrEqualTo(x => x.CheckInDate).When(x => x.ActualCheckInTime.HasValue && x.CheckInDate.HasValue)

@@ -13,9 +13,7 @@ namespace FHotel.Repository.Models
         public Guid CityId { get; set; }
         public string? CityName { get; set; }
         public string? PostalCode { get; set; }
-        public Guid? CountryId { get; set; }
 
-        public virtual Country? Country { get; set; }
         public virtual ICollection<District> Districts { get; set; }
     }
 }

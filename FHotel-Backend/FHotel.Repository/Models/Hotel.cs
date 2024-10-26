@@ -11,6 +11,7 @@ namespace FHotel.Repository.Models
             HotelDocuments = new HashSet<HotelDocument>();
             HotelImages = new HashSet<HotelImage>();
             HotelStaffs = new HashSet<HotelStaff>();
+            HotelVerifications = new HashSet<HotelVerification>();
             RoomTypes = new HashSet<RoomType>();
         }
 
@@ -24,11 +25,11 @@ namespace FHotel.Repository.Models
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
-        public int? Star { get; set; }
         public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string? VerifyStatus { get; set; }
         public bool? IsActive { get; set; }
 
         public virtual District? District { get; set; }
@@ -37,6 +38,7 @@ namespace FHotel.Repository.Models
         public virtual ICollection<HotelDocument> HotelDocuments { get; set; }
         public virtual ICollection<HotelImage> HotelImages { get; set; }
         public virtual ICollection<HotelStaff> HotelStaffs { get; set; }
+        public virtual ICollection<HotelVerification> HotelVerifications { get; set; }
         public virtual ICollection<RoomType> RoomTypes { get; set; }
     }
 }

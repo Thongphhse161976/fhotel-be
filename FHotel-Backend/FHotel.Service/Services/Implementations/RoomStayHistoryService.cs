@@ -112,14 +112,18 @@ namespace FHotel.Service.Services.Implementations
             try
             {
                 var roomStayHistory = _mapper.Map<RoomStayHistoryRequest, RoomStayHistory>(request);
-                var roomUpdateRequest = _mapper.Map<Room, RoomRequest>(room);
-                room.Status = "Occupied";
-                await _roomService.Update(room.RoomId, roomUpdateRequest);
+                
                 roomStayHistory.RoomStayHistoryId = Guid.NewGuid();
                 roomStayHistory.CreatedDate = localTime;
                 roomStayHistory.CheckInDate = localTime;
                 await _unitOfWork.Repository<RoomStayHistory>().InsertAsync(roomStayHistory);
                 await _unitOfWork.CommitAsync();
+                if(room.RoomId == roomStayHistory.RoomId)
+                {
+                    var roomUpdateRequest = _mapper.Map<Room, RoomRequest>(room);
+                    room.Status = "Occupied";
+                    await _roomService.Update(room.RoomId, roomUpdateRequest);
+                }
                 // Get the total number of RoomStayHistory entries for this reservation
                 var roomAlreadyStayed = await _unitOfWork.Repository<RoomStayHistory>()
                                             .AsNoTracking()
@@ -130,7 +134,7 @@ namespace FHotel.Service.Services.Implementations
                 if (roomAlreadyStayed == reservation.NumberOfRooms)
                 {
                     var reservationUpdateRequest = _mapper.Map<Reservation, ReservationUpdateRequest>(reservation);
-                    reservationUpdateRequest.ReservationStatus = "Confirmed";
+                    reservationUpdateRequest.ReservationStatus = "CheckIn";
                     reservationUpdateRequest.ActualCheckInTime = localTime;
                     await _reservationService.Update(reservation.ReservationId, reservationUpdateRequest);
                 }
