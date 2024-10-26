@@ -20,6 +20,7 @@ namespace FHotel.Service.DTOs.Hotels
         public string? Description { get; set; }
         public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? VerifyStatus { get; set; }
         public bool? IsActive { get; set; }

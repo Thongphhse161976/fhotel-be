@@ -94,6 +94,9 @@ namespace FHotel.API.Controllers
         /// Update hotel-verification by hotel-verification id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelVerificationResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<HotelVerificationResponse>> Update(Guid id, [FromBody] HotelVerificationRequest request)
         {
             try
