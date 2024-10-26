@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Amenities;
-using FHotel.Service.DTOs.Areas;
 using FHotel.Service.DTOs.BillLateCheckOutCharges;
 using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.Facilities;
 using FHotel.Service.DTOs.Hotels;
@@ -55,8 +55,6 @@ namespace FHotel.Service.Profiles
         {
             CreateMap<Amenity, AmenityRequest>().ReverseMap();
             CreateMap<Amenity, AmenityResponse>().ReverseMap();
-            CreateMap<Area, AreaRequest>().ReverseMap();
-            CreateMap<Area, AreaResponse>().ReverseMap();
             CreateMap<Role, RoleRequest>().ReverseMap();
             CreateMap<Role, RoleResponse>().ReverseMap();
             CreateMap<City, CityRequest>().ReverseMap();
@@ -117,6 +115,8 @@ namespace FHotel.Service.Profiles
             CreateMap<User, UserResponse>().ReverseMap();
             CreateMap<Bill, BillRequest>().ReverseMap();
             CreateMap<Bill, BillResponse>().ReverseMap();
+            CreateMap<BillTransactionImage, BillTransactionImageRequest>().ReverseMap();
+            CreateMap<BillTransactionImage, BillTransactionImageResponse>().ReverseMap();
             CreateMap<BillOrder, BillOrderRequest>().ReverseMap();
             CreateMap<BillOrder, BillOrderResponse>().ReverseMap();
             CreateMap<BillLateCheckOutCharge, BillLateCheckOutChargeRequest>().ReverseMap();

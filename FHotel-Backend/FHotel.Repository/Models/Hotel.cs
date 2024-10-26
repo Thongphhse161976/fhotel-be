@@ -25,6 +25,7 @@ namespace FHotel.Repository.Models
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
+        public int? Star { get; set; }
         public Guid? DistrictId { get; set; }
         public Guid? OwnerId { get; set; }
         public DateTime? CreatedDate { get; set; }

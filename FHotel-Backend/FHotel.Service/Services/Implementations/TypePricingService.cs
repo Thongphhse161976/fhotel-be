@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FHotel.Service.Services.Implementations
 {
-    public class TypePricingService: ITypePricingService
+    public class TypePricingService : ITypePricingService
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
@@ -143,7 +143,7 @@ namespace FHotel.Service.Services.Implementations
         {
             var list = await _unitOfWork.Repository<TypePricing>().GetAll()
                                             .ProjectTo<TypePricingResponse>(_mapper.ConfigurationProvider)
-                                            .Where(x=> x.TypeId == id)
+                                            .Where(x => x.TypeId == id)
                                             .ToListAsync();
             if (list == null)
             {
@@ -158,7 +158,7 @@ namespace FHotel.Service.Services.Implementations
 
             var typePricings = await _unitOfWork.Repository<TypePricing>()
                                         .GetAll()
-                                        .Where(tp => tp.TypeId == roomType.TypeId && tp.Area.DistrictId == roomType.Hotel.DistrictId)
+                                        .Where(tp => tp.TypeId == roomType.TypeId && tp.DistrictId == roomType.Hotel.DistrictId)
                                         .ProjectTo<TypePricingResponse>(_mapper.ConfigurationProvider)
                                         .ToListAsync();
 
@@ -176,7 +176,7 @@ namespace FHotel.Service.Services.Implementations
             {
                 var pricing = await _unitOfWork.Repository<TypePricing>()
                     .GetAll()
-                    .Where(tp => tp.TypeId == typeId && tp.Area.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
+                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
                     .FirstOrDefaultAsync();
 
                 if (pricing == null)

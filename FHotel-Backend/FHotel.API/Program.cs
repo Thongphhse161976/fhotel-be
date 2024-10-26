@@ -33,7 +33,6 @@ builder.Services.AddDbContext<FHotelContext>(options =>
 // Add other services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
-builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IDistrictService, DistrictService>();
@@ -57,6 +56,7 @@ builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
 builder.Services.AddScoped<ITypeService, TypeService>();
 builder.Services.AddScoped<ITypePricingService, TypePricingService>();
 builder.Services.AddScoped<IBillService, BillService>();
+builder.Services.AddScoped<IBillTransactionImageService, BillTransactionImageService>();
 builder.Services.AddScoped<IBillOrderService, BillOrderService>();
 builder.Services.AddScoped<IBillLateCheckOutChargeService, BillLateCheckOutChargeService>();
 builder.Services.AddScoped<ILateCheckOutChargeService, LateCheckOutChargeService>();
