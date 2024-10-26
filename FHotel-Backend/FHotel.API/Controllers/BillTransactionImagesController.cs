@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.HotelAmenities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -104,5 +105,8 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        
+
     }
 }

@@ -4,6 +4,7 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.HotelAmenities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -115,6 +116,30 @@ namespace FHotel.Service.Services.Implementations
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<BillTransactionImageResponse>> GetBillTransactionImageByBill(Guid id)
+        {
+            var bill = await _unitOfWork.Repository<Bill>().GetAll()
+                .Where(x => x.BillId == id)
+                .FirstOrDefaultAsync();
+            if (bill == null)
+            {
+                return null;
+            }
+            try
+            {
+                var billTransactionImage = _unitOfWork.Repository<BillTransactionImage>().GetAll()
+                    .Where(a => a.BillId == id)
+                    .ProjectTo<BillTransactionImageResponse>(_mapper.ConfigurationProvider)
+                    .ToList();
+
+                return billTransactionImage;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 

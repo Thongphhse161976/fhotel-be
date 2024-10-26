@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -14,10 +15,12 @@ namespace FHotel.API.Controllers
     public class BillsController : ControllerBase
     {
         private readonly IBillService _billService;
+        private readonly IBillTransactionImageService _billTransactionImageService;
 
-        public BillsController(IBillService billService)
+        public BillsController(IBillService billService, IBillTransactionImageService billTransactionImageService)
         {
             _billService = billService;
+            _billTransactionImageService = billTransactionImageService;
         }
 
         /// <summary>
@@ -103,6 +106,26 @@ namespace FHotel.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all bill transaction images by bill id.
+        /// </summary>
+        [HttpGet("{id}/bill-transaction-images")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillTransactionImageResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<BillTransactionImageResponse>>> GetBillTransactionImageByBill(Guid id)
+        {
+            try
+            {
+                var amenities = await _billTransactionImageService.GetBillTransactionImageByBill(id);
+                return Ok(amenities);
+            }
+            catch
+            {
+                return NotFound();
             }
         }
     }
