@@ -181,5 +181,19 @@ namespace FHotel.Services.Services.Implementations
 
             return orders;
         }
+
+        public async Task<List<OrderResponse>> GetAllOrderByCustomerId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Order>().GetAll()
+                                            .Where(o => o.Reservation.CustomerId == id)
+                                            .ProjectTo<OrderResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            if (list == null)
+            {
+                throw new Exception("Order not found");
+            }
+            return list;
+        }
     }
 }

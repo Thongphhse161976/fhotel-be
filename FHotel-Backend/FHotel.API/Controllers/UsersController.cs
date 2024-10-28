@@ -370,5 +370,32 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Get all orders by customer ID.
+        /// </summary>
+        [HttpGet("{customerId}/orders")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetAllOrderByCustomerId(Guid customerId)
+        {
+            try
+            {
+                var orderList = await _orderService.GetAllOrderByCustomerId(customerId);
+
+                if (orderList == null || !orderList.Any())
+                {
+                    return NotFound(new { message = "No orders found for this staff." });
+                }
+
+                return Ok(orderList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 }
