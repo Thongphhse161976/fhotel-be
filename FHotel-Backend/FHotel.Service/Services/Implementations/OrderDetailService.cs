@@ -28,6 +28,8 @@ namespace FHotel.Services.Services.Implementations
         {
 
             var list = await _unitOfWork.Repository<OrderDetail>().GetAll()
+                 .Include(x => x.Service)
+                     .Include(x => x.Order)
                                             .ProjectTo<OrderDetailResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
             return list;
@@ -40,6 +42,8 @@ namespace FHotel.Services.Services.Implementations
                 OrderDetail orderDetail = null;
                 orderDetail = await _unitOfWork.Repository<OrderDetail>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Service)
+                     .Include(x => x.Order)
                     .Where(x => x.OrderDetailId == id)
                     .FirstOrDefaultAsync();
 
@@ -123,6 +127,9 @@ namespace FHotel.Services.Services.Implementations
         {
             var orderDetails = await _unitOfWork.Repository<OrderDetail>().GetAll()
                      .AsNoTracking()
+                      .Include(x => x.Service)
+                            .ThenInclude(x => x.ServiceType)
+                        .Include(x => x.Order)
                     .Where(x => x.OrderId == orderId)
                     .ToListAsync();
 

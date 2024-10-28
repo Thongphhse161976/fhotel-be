@@ -5,6 +5,7 @@ using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Orders;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
+using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -148,6 +149,37 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception("Order not found");
             }
             return list;
+        }
+
+        public async Task<List<OrderResponse>> GetAllOrderByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var orders = await _unitOfWork.Repository<Order>()
+                                                .GetAll()
+                                                .Where(r => r.Reservation.RoomType.HotelId == hotelId) // Assuming RoomTypeID or some other way links to the hotel
+                                                .ProjectTo<OrderResponse>(_mapper.ConfigurationProvider)
+                                                .ToListAsync();
+
+            // Check if any reservations were found
+            if (orders == null || !orders.Any())
+            {
+                throw new Exception("No orders found for this staff's hotel.");
+            }
+
+            return orders;
         }
     }
 }

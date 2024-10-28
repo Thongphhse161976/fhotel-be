@@ -11,7 +11,6 @@ namespace FHotel.Services.DTOs.OrderDetails
     {
         public Guid? OrderId { get; set; }
         public Guid? ServiceId { get; set; }
-        public Guid? RoomFacilityId { get; set; }
         public int? Quantity { get; set; }
 
     }

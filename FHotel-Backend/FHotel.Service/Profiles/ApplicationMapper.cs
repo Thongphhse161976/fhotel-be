@@ -12,6 +12,7 @@ using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.HotelVerifications;
 using FHotel.Service.DTOs.LateCheckOutCharges;
 using FHotel.Service.DTOs.LateCheckOutPolicies;
+using FHotel.Service.DTOs.Orders;
 using FHotel.Service.DTOs.RefundPolicies;
 using FHotel.Service.DTOs.Refunds;
 using FHotel.Service.DTOs.Reservations;
@@ -77,6 +78,7 @@ namespace FHotel.Service.Profiles
             CreateMap<HotelStaff, HotelStaffCreateRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityRequest>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
+            CreateMap<Order, OrderCreateRequest>().ReverseMap();
             CreateMap<Order, OrderRequest>().ReverseMap();
             CreateMap<Order, OrderResponse>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailRequest>().ReverseMap();

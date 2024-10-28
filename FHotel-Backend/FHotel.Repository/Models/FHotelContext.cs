@@ -503,7 +503,6 @@ namespace FHotel.Repository.Models
 
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
-                entity.Property(e => e.RoomFacilityId).HasColumnName("RoomFacilityID");
 
                 entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
 
