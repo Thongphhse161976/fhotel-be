@@ -1,4 +1,5 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.PaymentMethods;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Users;
 using System;
@@ -27,6 +28,6 @@ namespace FHotel.Services.DTOs.Reservations
 
         public virtual UserResponse? Customer { get; set; }
         public virtual RoomTypeResponse? RoomType { get; set; }
-        public virtual PaymentMethod? PaymentMethod { get; set; }
+        public virtual PaymentMethodResponse? PaymentMethod { get; set; }
     }
 }

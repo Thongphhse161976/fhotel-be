@@ -121,7 +121,7 @@ namespace FHotel.Services.Services.Implementations
                             .Find(x => x.OrderId == id);
                 if (order == null)
                 {
-                    throw new Exception();
+                    throw new Exception("Not Found");
                 }
                 order = _mapper.Map(request, order);
 

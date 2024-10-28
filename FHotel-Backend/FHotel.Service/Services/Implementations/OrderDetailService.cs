@@ -3,9 +3,11 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Services.DTOs.OrderDetails;
+using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.UserDocuments;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +20,13 @@ namespace FHotel.Services.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public OrderDetailService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IServiceProvider _serviceProvider;
+
+        public OrderDetailService(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<List<OrderDetailResponse>> GetAll()
@@ -43,7 +48,6 @@ namespace FHotel.Services.Services.Implementations
                 orderDetail = await _unitOfWork.Repository<OrderDetail>().GetAll()
                      .AsNoTracking()
                      .Include(x => x.Service)
-                     .Include(x => x.Order)
                     .Where(x => x.OrderDetailId == id)
                     .FirstOrDefaultAsync();
 
@@ -61,15 +65,62 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
+        //public async Task<OrderDetailResponse> Create(OrderDetailRequest request)
+        //{
+        //    try
+        //    {
+        //        var orderDetail = _mapper.Map<OrderDetailRequest, OrderDetail>(request);
+        //        orderDetail.OrderDetailId = Guid.NewGuid();
+        //        var order = await _orderService.Get(request.OrderId.Value);
+        //        await _unitOfWork.Repository<OrderDetail>().InsertAsync(orderDetail);
+        //        await _unitOfWork.CommitAsync();
+        //        var orderDetailResponse = await Get(orderDetail.OrderDetailId);
+        //        var updateOrder = new OrderRequest
+        //        {
+        //            OrderId = order.OrderId,
+        //            ReservationId = order.OrderId,
+        //            OrderedDate = order.OrderedDate,
+        //            OrderStatus = order.OrderStatus,
+        //            TotalAmount = orderDetailResponse.Service.Price * request.Quantity
+        //        };
+        //        await _orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
+        //        return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw new Exception(e.Message);
+        //    }
+        //}
+
         public async Task<OrderDetailResponse> Create(OrderDetailRequest request)
         {
             try
             {
                 var orderDetail = _mapper.Map<OrderDetailRequest, OrderDetail>(request);
                 orderDetail.OrderDetailId = Guid.NewGuid();
+
+                // Resolve IOrderService dynamically at runtime
+                var orderService = _serviceProvider.GetService<IOrderService>();
+
+                var order = await orderService.Get(request.OrderId.Value);
                 await _unitOfWork.Repository<OrderDetail>().InsertAsync(orderDetail);
                 await _unitOfWork.CommitAsync();
 
+                var orderDetailResponse = await Get(orderDetail.OrderDetailId);
+
+                // Use the calculation service for TotalAmount calculation
+                var totalAmount = orderDetailResponse.Service.Price * request.Quantity;
+
+                var updateOrder = new OrderRequest
+                {
+                    OrderId = order.OrderId,
+                    ReservationId = order.ReservationId,
+                    OrderedDate = order.OrderedDate,
+                    OrderStatus = order.OrderStatus,
+                    TotalAmount = totalAmount
+                };
+
+                await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
                 return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
             }
             catch (Exception e)
@@ -77,6 +128,7 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
         public async Task<OrderDetailResponse> Delete(Guid id)
         {
