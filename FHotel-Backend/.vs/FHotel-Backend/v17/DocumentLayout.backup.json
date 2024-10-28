@@ -3,44 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\orderdetailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\orderdetailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\typepricingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\typepricingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\dtos\\orderdetails\\orderdetailresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\dtos\\orderdetails\\orderdetailresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\dtos\\typepricings\\typepricingcreaterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\dtos\\typepricings\\typepricingcreaterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.repository\\models\\fhotelcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|solutionrelative:fhotel.repository\\models\\fhotelcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\validators\\typepricingvalidator\\typepricingcreaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\validators\\typepricingvalidator\\typepricingcreaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\profiles\\applicationmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\profiles\\applicationmapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.repository\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B3FDAD41-89AE-457E-A4CC-685A79DC5271}|FHotel.Repository\\FHotel.Repository.csproj|solutionrelative:fhotel.repository\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\validators\\uservalidator\\usercreaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\validators\\uservalidator\\usercreaterequestvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\orderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.api\\controllers\\typepricingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|solutionrelative:fhotel.api\\controllers\\typepricingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{65554207-5DF2-4A45-A11F-ECEE8ECC282A}|FHotel.API\\FHotel.API.csproj|solutionrelative:fhotel.api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\interfaces\\iorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\interfaces\\iorderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\dtos\\orders\\ordercreaterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\dtos\\orders\\ordercreaterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|c:\\users\\nhattpam\\documents\\uni\\code\\fhotel-be\\fhotel-backend\\fhotel.service\\services\\implementations\\reservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34F65AE5-095C-4CB8-B34F-C2178911F547}|FHotel.Service\\FHotel.Service.csproj|solutionrelative:fhotel.service\\services\\implementations\\reservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,84 +38,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "FHotelContext.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\FHotelContext.cs",
-              "RelativeDocumentMoniker": "FHotel.Repository\\Models\\FHotelContext.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\FHotelContext.cs",
-              "RelativeToolTip": "FHotel.Repository\\Models\\FHotelContext.cs",
-              "ViewState": "AgIAAOcBAAAAAAAAAAAewPkBAAAAAAAAAAAAAA==",
+              "Title": "TypePricingCreateRequestValidator.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\TypePricingValidator\\TypePricingCreateRequestValidator.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Validators\\TypePricingValidator\\TypePricingCreateRequestValidator.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\TypePricingValidator\\TypePricingCreateRequestValidator.cs",
+              "RelativeToolTip": "FHotel.Service\\Validators\\TypePricingValidator\\TypePricingCreateRequestValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T02:02:41.281Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OrderDetailResponse.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\OrderDetails\\OrderDetailResponse.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\DTOs\\OrderDetails\\OrderDetailResponse.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\OrderDetails\\OrderDetailResponse.cs",
-              "RelativeToolTip": "FHotel.Service\\DTOs\\OrderDetails\\OrderDetailResponse.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T02:02:17.38Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "OrderDetailService.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
-              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
-              "ViewState": "AgIAAG4AAAAAAAAAAAAswIIAAAA7AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T02:01:57.251Z",
+              "WhenOpened": "2024-10-28T06:04:21.607Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "OrderDetail.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\OrderDetail.cs",
-              "RelativeDocumentMoniker": "FHotel.Repository\\Models\\OrderDetail.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Repository\\Models\\OrderDetail.cs",
-              "RelativeToolTip": "FHotel.Repository\\Models\\OrderDetail.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAqAAAAAAAAAA==",
+              "Title": "UserCreateRequestValidator.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\UserValidator\\UserCreateRequestValidator.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Validators\\UserValidator\\UserCreateRequestValidator.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Validators\\UserValidator\\UserCreateRequestValidator.cs",
+              "RelativeToolTip": "FHotel.Service\\Validators\\UserValidator\\UserCreateRequestValidator.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAoAAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T02:00:48.275Z",
+              "WhenOpened": "2024-10-28T06:04:29.994Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "ApplicationMapper.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Profiles\\ApplicationMapper.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\Profiles\\ApplicationMapper.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Profiles\\ApplicationMapper.cs",
-              "RelativeToolTip": "FHotel.Service\\Profiles\\ApplicationMapper.cs",
-              "ViewState": "AgIAADsAAAAAAAAAAAAwwFMAAABGAAAAAAAAAA==",
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\UserService.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\UserService.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\UserService.cs",
+              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\UserService.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAswHEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T01:42:05.493Z",
+              "WhenOpened": "2024-10-28T06:03:15.914Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "OrderCreateRequest.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\Orders\\OrderCreateRequest.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\DTOs\\Orders\\OrderCreateRequest.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\Orders\\OrderCreateRequest.cs",
-              "RelativeToolTip": "FHotel.Service\\DTOs\\Orders\\OrderCreateRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAApAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "TypePricingService.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\TypePricingService.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\TypePricingService.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\TypePricingService.cs",
+              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\TypePricingService.cs",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAqwE8AAAB9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T01:40:25.581Z",
+              "WhenOpened": "2024-10-28T05:49:16.598Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TypePricingCreateRequest.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\TypePricings\\TypePricingCreateRequest.cs",
+              "RelativeDocumentMoniker": "FHotel.Service\\DTOs\\TypePricings\\TypePricingCreateRequest.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\DTOs\\TypePricings\\TypePricingCreateRequest.cs",
+              "RelativeToolTip": "FHotel.Service\\DTOs\\TypePricings\\TypePricingCreateRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-28T05:47:24.945Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "TypePricingsController.cs",
+              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.API\\Controllers\\TypePricingsController.cs",
+              "RelativeDocumentMoniker": "FHotel.API\\Controllers\\TypePricingsController.cs",
+              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.API\\Controllers\\TypePricingsController.cs",
+              "RelativeToolTip": "FHotel.API\\Controllers\\TypePricingsController.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAgwEsAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-28T06:11:21.9Z",
               "EditorCaption": ""
             },
             {
@@ -138,48 +126,9 @@
               "RelativeDocumentMoniker": "FHotel.API\\Controllers\\UsersController.cs",
               "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.API\\Controllers\\UsersController.cs",
               "RelativeToolTip": "FHotel.API\\Controllers\\UsersController.cs",
-              "ViewState": "AgIAAEEBAAAAAAAAAAAqwGkBAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAAFUAAAAAAAAAAAApwHgAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T01:36:31.412Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "IOrderService.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Interfaces\\IOrderService.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Interfaces\\IOrderService.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Interfaces\\IOrderService.cs",
-              "RelativeToolTip": "FHotel.Service\\Services\\Interfaces\\IOrderService.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABkAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T01:36:04.564Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "OrderService.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\OrderService.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\OrderService.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\OrderService.cs",
-              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\OrderService.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAwwEMAAAA7AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T01:34:58.738Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ReservationService.cs",
-              "DocumentMoniker": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\ReservationService.cs",
-              "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\ReservationService.cs",
-              "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\ReservationService.cs",
-              "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\ReservationService.cs",
-              "ViewState": "AgIAACUBAAAAAAAAAAAwwEkBAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-28T01:33:08.008Z",
+              "WhenOpened": "2024-10-28T06:11:37.236Z",
               "EditorCaption": ""
             }
           ]

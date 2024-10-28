@@ -6,7 +6,11 @@ using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.TypePricings;
 using FHotel.Service.DTOs.Types;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Service.Validators.TypePricingValidator;
+using FHotel.Service.Validators.UserValidator;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -63,14 +67,29 @@ namespace FHotel.Service.Services.Implementations
 
         public async Task<TypePricingResponse> Create(TypePricingCreateRequest request)
         {
+            var validator = new TypePricingCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // Use GetAll with a LINQ filter to check for duplicates
+            var existingPricing = (await GetAll())
+                .Where(u => u.DistrictId == request.DistrictId && u.TypeId == request.TypeId)
+                .ToList();
+
+            if (existingPricing.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("DistrictId and TypeId", "Giá Của Loại Phòng Này Đã Tồn Tại."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
+            DateTime localTime = DateTime.UtcNow + utcOffset;
 
-            // Get the current UTC time
-            DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
-            DateTime localTime = utcNow + utcOffset;
             try
             {
                 var typePricing = _mapper.Map<TypePricingCreateRequest, TypePricing>(request);
@@ -86,6 +105,7 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
         public async Task<TypePricingResponse> Delete(Guid id)
         {

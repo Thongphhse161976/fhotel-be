@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.TypePricings;
 using FHotel.Service.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -72,10 +73,18 @@ namespace FHotel.API.Controllers
                 var result = await _typePricingService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException?.Message);
-                throw new Exception(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
