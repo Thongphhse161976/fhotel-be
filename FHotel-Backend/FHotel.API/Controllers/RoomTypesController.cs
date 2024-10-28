@@ -203,12 +203,12 @@ namespace FHotel.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<HotelResponse>>> SearchRoomTypesWithQuantities([FromBody] List<RoomSearchRequest> searchRequests, [FromQuery] string? cityName)
+        public async Task<ActionResult<IEnumerable<HotelResponse>>> SearchRoomTypesWithQuantities([FromBody] List<RoomSearchRequest> searchRequests, [FromQuery] string? query)
         {
             try
             {
                 // Call the service to search with multiple room types and quantities
-                var result = await _roomTypeService.SearchHotelsWithRoomTypes(searchRequests, cityName);
+                var result = await _roomTypeService.SearchHotelsWithRoomTypes(searchRequests, query);
 
                 if (result == null || !result.Any())
                 {

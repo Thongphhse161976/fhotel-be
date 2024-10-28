@@ -363,26 +363,33 @@ namespace FHotel.Services.Services.Implementations
                 .Where(rt => rt.IsActive == true)
                 .ToListAsync();
 
-            // Apply the single query filter across city, district, and address fields if provided
+            // Combine address, district name, and city name into a single string for each hotel
+            var hotelDetails = roomTypesQuery
+                .Select(rt => new
+                {
+                    Hotel = rt.Hotel,
+                    CombinedAddress = $"{rt.Hotel.Address} {rt.Hotel.District.DistrictName} {rt.Hotel.District.City.CityName}".Trim()
+                })
+                .ToList();
+
+            // Apply the single query filter across the combined address if provided
             if (!string.IsNullOrEmpty(query))
             {
-                roomTypesQuery = roomTypesQuery.Where(rt =>
-                    (rt.Hotel.District.City != null && rt.Hotel.District.City.CityName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
-                    (rt.Hotel.District != null && rt.Hotel.District.DistrictName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
-                    rt.Hotel.Address.Contains(query, StringComparison.OrdinalIgnoreCase)
-                ).ToList();
+                hotelDetails = hotelDetails.Where(h =>
+                    h.CombinedAddress.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
 
             var hotels = new List<HotelResponse>();
             var hotelIds = new HashSet<Guid>();
 
             // Group room types by hotel
-            var hotelRoomTypes = roomTypesQuery
-                .GroupBy(rt => rt.Hotel.HotelId) // Group by HotelId to avoid duplicates
+            var hotelRoomTypes = hotelDetails
+                .GroupBy(h => h.Hotel.HotelId) // Group by HotelId to avoid duplicates
                 .Select(g => new
                 {
                     Hotel = g.First().Hotel, // Get the hotel from the first room type
-                    RoomTypes = g.ToList()
+                    RoomTypes = g.SelectMany(h => roomTypesQuery.Where(rt => rt.Hotel.HotelId == h.Hotel.HotelId)).ToList()
                 })
                 .ToList();
 
@@ -422,6 +429,7 @@ namespace FHotel.Services.Services.Implementations
 
             return hotels;
         }
+
 
 
     }
