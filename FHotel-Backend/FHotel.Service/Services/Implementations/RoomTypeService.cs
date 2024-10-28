@@ -281,32 +281,103 @@ namespace FHotel.Services.Services.Implementations
             return _mapper.Map<IEnumerable<RoomType>, IEnumerable<RoomTypeResponse>>(roomTypeList);
         }
 
-        public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? cityName)
+        //public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? cityName)
+        //{
+        //    var roomTypeList = await _unitOfWork.Repository<RoomType>()
+        //        .GetAll()
+        //        .AsNoTracking()
+        //        .Include(rt => rt.Hotel)
+        //            .ThenInclude(hotel => hotel.District)
+        //                .ThenInclude(district => district.City)
+        //        .Include(rt => rt.Type)
+        //        .Where(rt => rt.IsActive == true)
+        //        .ToListAsync();
+
+        //    // Filter by city if provided
+        //    if (!string.IsNullOrEmpty(cityName))
+        //    {
+        //        roomTypeList = roomTypeList
+        //            .Where(rt => rt.Hotel.District.City != null &&
+        //                         rt.Hotel.District.City.CityName.Contains(cityName, StringComparison.OrdinalIgnoreCase))
+        //            .ToList();
+        //    }
+
+        //    var hotels = new List<HotelResponse>();
+        //    var hotelIds = new HashSet<Guid>();
+
+        //    // Group room types by hotel
+        //    var hotelRoomTypes = roomTypeList
+        //        .GroupBy(rt => rt.Hotel.HotelId) // Group by HotelId to avoid duplicates
+        //        .Select(g => new
+        //        {
+        //            Hotel = g.First().Hotel, // Get the hotel from the first room type
+        //            RoomTypes = g.ToList()
+        //        })
+        //        .ToList();
+
+        //    // Log after grouping
+        //    Console.WriteLine($"Grouped Hotels Count After Grouping: {hotelRoomTypes.Count}");
+        //    foreach (var hotelGroup in hotelRoomTypes)
+        //    {
+        //        Console.WriteLine($"Hotel: {hotelGroup.Hotel.HotelName}, Room Types Count: {hotelGroup.RoomTypes.Count}");
+        //        foreach (var roomType in hotelGroup.RoomTypes)
+        //        {
+        //            Console.WriteLine($"- Room Type ID: {roomType.TypeId}, Available: {roomType.AvailableRooms}");
+        //        }
+        //    }
+
+        //    // Check each hotel against all search requests
+        //    foreach (var searchRequest in searchRequests)
+        //    {
+        //        // Iterate over the hotels
+        //        foreach (var hotelGroup in hotelRoomTypes)
+        //        {
+        //            // Check if the hotel has all required room types with sufficient availability
+        //            bool hasAllRequiredRoomTypes = searchRequests.All(sr =>
+        //                hotelGroup.RoomTypes.Any(rt => rt.TypeId == sr.TypeId
+        //                                                && rt.AvailableRooms >= sr.Quantity));
+
+        //            if (hasAllRequiredRoomTypes)
+        //            {
+        //                // Directly check HotelId without using Value
+        //                if (!hotelIds.Contains(hotelGroup.Hotel.HotelId))
+        //                {
+        //                    hotels.Add(_mapper.Map<HotelResponse>(hotelGroup.Hotel));
+        //                    hotelIds.Add(hotelGroup.Hotel.HotelId); // Directly use HotelId
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return hotels;
+        //}
+
+        public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? query)
         {
-            var roomTypeList = await _unitOfWork.Repository<RoomType>()
+            var roomTypesQuery = await _unitOfWork.Repository<RoomType>()
                 .GetAll()
                 .AsNoTracking()
                 .Include(rt => rt.Hotel)
-                    .ThenInclude(hotel => hotel.District)
-                        .ThenInclude(district => district.City)
-                .Include(rt => rt.Type)
+                    .ThenInclude(h => h.District)
+                        .ThenInclude(d => d.City)
                 .Where(rt => rt.IsActive == true)
                 .ToListAsync();
 
-            // Filter by city if provided
-            if (!string.IsNullOrEmpty(cityName))
+            // Apply the single query filter across city, district, and address fields if provided
+            if (!string.IsNullOrEmpty(query))
             {
-                roomTypeList = roomTypeList
-                    .Where(rt => rt.Hotel.District.City != null &&
-                                 rt.Hotel.District.City.CityName.Contains(cityName, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                roomTypesQuery = roomTypesQuery.Where(rt =>
+                    (rt.Hotel.District.City != null && rt.Hotel.District.City.CityName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                    (rt.Hotel.District != null && rt.Hotel.District.DistrictName.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                    rt.Hotel.Address.Contains(query, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
             }
 
             var hotels = new List<HotelResponse>();
             var hotelIds = new HashSet<Guid>();
 
             // Group room types by hotel
-            var hotelRoomTypes = roomTypeList
+            var hotelRoomTypes = roomTypesQuery
                 .GroupBy(rt => rt.Hotel.HotelId) // Group by HotelId to avoid duplicates
                 .Select(g => new
                 {
@@ -351,7 +422,6 @@ namespace FHotel.Services.Services.Implementations
 
             return hotels;
         }
-
 
 
     }
