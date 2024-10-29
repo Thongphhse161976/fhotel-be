@@ -1,6 +1,7 @@
 using FHotel.API.VnPay;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Repository.SMS;
 using FHotel.Service.Profiles;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
@@ -69,6 +70,7 @@ builder.Services.AddScoped<IRoomStayHistoryService, RoomStayHistoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IWalletHistoryService, WalletHistoryService>();
+builder.Services.AddScoped<ISpeedSMSAPI, SpeedSMSAPI>();
 //new
 
 builder.Services.AddScoped<IHotelDocumentService, HotelDocumentService>();

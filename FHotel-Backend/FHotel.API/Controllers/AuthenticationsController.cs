@@ -162,6 +162,23 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+        /// <summary>
+        /// send sms.
+        /// </summary>
+        [HttpGet("SMS")]
+        public async Task<IActionResult> SendSMS(string phone)
+        {
+            try
+            {
+                // Call the service method to activate the user
+                await _userService.SendSMS(phone);
+                return Redirect("https://fhotel-web.web.app/success-register");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
 
 
     }

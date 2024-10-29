@@ -35,5 +35,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task ActivateUser(string email);
 
         public Task<List<HotelResponse>> GetHotelByUser(Guid id);
+
+        public Task SendSMS(string phonenumber);
     }
 }

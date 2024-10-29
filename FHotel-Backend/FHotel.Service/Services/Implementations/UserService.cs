@@ -29,6 +29,7 @@ using User = FHotel.Repository.Models.User;
 using FHotel.Repository.SMTPs.Models;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.HotelAmenities;
+using FHotel.Repository.SMS;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -38,12 +39,15 @@ namespace FHotel.Services.Services.Implementations
         private IMapper _mapper;
         private readonly IRoleService _roleService;
         private readonly IWalletService _walletService;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService, IWalletService walletService)
+        private readonly ISpeedSMSAPI _smsService;
+
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService, IWalletService walletService, ISpeedSMSAPI smsService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roleService = roleService;
             _walletService = walletService;
+            _smsService = smsService;
         }
 
         public async Task<List<UserResponse>> GetAll()
@@ -422,7 +426,8 @@ namespace FHotel.Services.Services.Implementations
                     };
                     await _walletService.Create(wallet);
                 }
-                await SendActivationEmail(request.Email);
+                string otpCode = GenerateOTP();
+                _smsService.SendOTP(request.PhoneNumber, otpCode);
                 return _mapper.Map<User, UserResponse>(user);
 
             }
@@ -594,6 +599,21 @@ namespace FHotel.Services.Services.Implementations
                 await smtp.SendMailAsync(message);
             }
         }
+        public async Task SendSMS(string phonenumber)
+        {
+            string otpCode = GenerateOTP();
+            var hello =_smsService.SendOTP(phonenumber, otpCode);
+            Console.WriteLine(hello);
+        }
+
+        public string GenerateOTP(int length = 5)
+        {
+            var random = new Random();
+            var otpCode = new string(Enumerable.Repeat("0123456789", length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+            return otpCode;
+        }
+
     }
 
 }
