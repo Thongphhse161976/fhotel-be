@@ -425,9 +425,10 @@ namespace FHotel.Services.Services.Implementations
                         UserId = user.UserId,
                     };
                     await _walletService.Create(wallet);
+                    string otpCode = GenerateOTP();
+                    _smsService.SendOTP(request.PhoneNumber, otpCode);
                 }
-                string otpCode = GenerateOTP();
-                _smsService.SendOTP(request.PhoneNumber, otpCode);
+                
                 return _mapper.Map<User, UserResponse>(user);
 
             }
