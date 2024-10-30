@@ -72,7 +72,7 @@ namespace FHotel.Service.Services.Implementations
 
             // Use GetAll with a LINQ filter to check for duplicates
             var existingPricing = (await GetAll())
-                .Where(u => u.DistrictId == request.DistrictId && u.TypeId == request.TypeId)
+                .Where(u => u.DistrictId == request.DistrictId && u.TypeId == request.TypeId && u.DayOfWeek == request.DayOfWeek)
                 .ToList();
 
             if (existingPricing.Any())
