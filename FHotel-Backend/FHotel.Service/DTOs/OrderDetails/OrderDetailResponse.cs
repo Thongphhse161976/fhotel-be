@@ -19,5 +19,6 @@ namespace FHotel.Services.DTOs.OrderDetails
         public int? Quantity { get; set; }
 
         public virtual ServiceResponse? Service { get; set; }
+        public virtual OrderResponse? Order { get; set; }
     }
 }

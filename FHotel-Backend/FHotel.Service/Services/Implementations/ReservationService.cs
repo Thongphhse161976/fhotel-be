@@ -130,7 +130,7 @@ namespace FHotel.Services.Services.Implementations
                 // Proceed with creating the reservation
                 var reservation = _mapper.Map<ReservationCreateRequest, Reservation>(request);
                 reservation.ReservationId = Guid.NewGuid();
-                reservation.Code = $"FRSVT-{index++}"; // Proper string interpolation with increment
+                reservation.Code = $"FRSVT-{Guid.NewGuid().ToString().Substring(0, 8)}"; // Generates a unique code each time
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
                 reservation.PaymentStatus = "Not Paid";

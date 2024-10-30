@@ -6,6 +6,7 @@ using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.HotelDocuments;
+using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.UserDocuments;
@@ -30,9 +31,10 @@ namespace FHotel.API.Controllers
         private readonly IVnPayService _vnPayService;
         private readonly IUserService _userService;
         private readonly IRoomStayHistoryService _roomStayHistoryService;
+        private readonly IOrderDetailService _orderDetailService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
-            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, IRoomStayHistoryService roomStayHistoryService)
+            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
@@ -40,6 +42,7 @@ namespace FHotel.API.Controllers
             _vnPayService = vnPayService;
             _userService = userService;
             _roomStayHistoryService = roomStayHistoryService;
+            _orderDetailService = orderDetailService;
         }
 
         /// <summary>
@@ -177,6 +180,26 @@ namespace FHotel.API.Controllers
             try
             {
                 var rs = await _orderService.GetAllByReservationId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all order detail by reservation id.
+        /// </summary>
+        [HttpGet("{id}/order-details")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderDetailResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<OrderDetailResponse>>> GetAllOrderDetailByReservationId(Guid id)
+        {
+            try
+            {
+                var rs = await _orderDetailService.GetAllOrderDetailByReservation(id);
                 return Ok(rs);
             }
             catch (Exception ex)
