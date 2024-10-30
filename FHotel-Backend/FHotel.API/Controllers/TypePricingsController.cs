@@ -92,6 +92,8 @@ namespace FHotel.API.Controllers
         /// Delete type-pricing by type-pricing id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TypePricingResponse>> Delete(Guid id)
         {
             var rs = await _typePricingService.Delete(id);
@@ -102,6 +104,8 @@ namespace FHotel.API.Controllers
         /// Update type-pricing by type-pricing id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TypePricingResponse>> Update(Guid id, [FromBody] TypePricingUpdateRequest request)
         {
             try
