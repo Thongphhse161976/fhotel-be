@@ -83,6 +83,8 @@ namespace FHotel.API.Controllers
         /// Delete service-type by service-type id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ServiceTypeResponse>> Delete(Guid id)
         {
             var rs = await _serviceTypeService.Delete(id);
@@ -93,6 +95,8 @@ namespace FHotel.API.Controllers
         /// Update service-type by service-type id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ServiceTypeResponse>> Update(Guid id, [FromBody] ServiceTypeRequest request)
         {
             try
