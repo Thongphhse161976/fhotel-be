@@ -10,12 +10,10 @@ namespace FHotel.Service.DTOs.Bills
     {
         public Guid? ReservationId { get; set; }
         public decimal? TotalAmount { get; set; }
-        public decimal? PrepaidAmount { get; set; }
-        public decimal? RemainingAmount { get; set; }
+        public decimal? PaidAmount { get; set; }
         public DateTime? BillDate { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string? BillStatus { get; set; }
-        public Guid? PaymentMethodId { get; set; }
         public DateTime? LastUpdated { get; set; }
     }
 }

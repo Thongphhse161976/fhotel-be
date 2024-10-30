@@ -7,7 +7,6 @@ namespace FHotel.Repository.Models
     {
         public Room()
         {
-            LateCheckOutCharges = new HashSet<LateCheckOutCharge>();
             RoomStayHistories = new HashSet<RoomStayHistory>();
         }
 
@@ -20,7 +19,6 @@ namespace FHotel.Repository.Models
         public string? Note { get; set; }
 
         public virtual RoomType? RoomType { get; set; }
-        public virtual ICollection<LateCheckOutCharge> LateCheckOutCharges { get; set; }
         public virtual ICollection<RoomStayHistory> RoomStayHistories { get; set; }
     }
 }

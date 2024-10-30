@@ -13,10 +13,12 @@ namespace FHotel.Services.DTOs.Orders
     {
         public Guid OrderId { get; set; }
         public Guid? ReservationId { get; set; }
+        public Guid? BillId { get; set; }
         public decimal? TotalAmount { get; set; }
         public DateTime? OrderedDate { get; set; }
         public string? OrderStatus { get; set; }
 
-        public virtual ReservationResponse? Reservation { get; set; }
+        public virtual Bill? Bill { get; set; }
+        public virtual Reservation? Reservation { get; set; }
     }
 }

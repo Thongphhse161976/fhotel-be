@@ -8,14 +8,13 @@ namespace FHotel.Repository.Models
         public Reservation()
         {
             Feedbacks = new HashSet<Feedback>();
-            LateCheckOutCharges = new HashSet<LateCheckOutCharge>();
             Orders = new HashSet<Order>();
-            Refunds = new HashSet<Refund>();
             RoomStayHistories = new HashSet<RoomStayHistory>();
             UserDocuments = new HashSet<UserDocument>();
         }
 
         public Guid ReservationId { get; set; }
+        public string? Code { get; set; }
         public Guid? CustomerId { get; set; }
         public DateTime? CheckInDate { get; set; }
         public DateTime? CheckOutDate { get; set; }
@@ -34,9 +33,7 @@ namespace FHotel.Repository.Models
         public virtual RoomType? RoomType { get; set; }
         public virtual Bill? Bill { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
-        public virtual ICollection<LateCheckOutCharge> LateCheckOutCharges { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<Refund> Refunds { get; set; }
         public virtual ICollection<RoomStayHistory> RoomStayHistories { get; set; }
         public virtual ICollection<UserDocument> UserDocuments { get; set; }
     }

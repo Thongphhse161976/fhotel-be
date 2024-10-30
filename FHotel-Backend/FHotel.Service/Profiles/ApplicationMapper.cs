@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Amenities;
-using FHotel.Service.DTOs.BillLateCheckOutCharges;
-using FHotel.Service.DTOs.BillOrders;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.DTOs.Districts;
@@ -10,20 +8,17 @@ using FHotel.Service.DTOs.Facilities;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.HotelVerifications;
-using FHotel.Service.DTOs.LateCheckOutCharges;
-using FHotel.Service.DTOs.LateCheckOutPolicies;
 using FHotel.Service.DTOs.Orders;
-using FHotel.Service.DTOs.RefundPolicies;
-using FHotel.Service.DTOs.Refunds;
+using FHotel.Service.DTOs.Payments;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.Rooms;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.DTOs.Services;
+using FHotel.Service.DTOs.Transactions;
 using FHotel.Service.DTOs.TypePricings;
 using FHotel.Service.DTOs.Types;
 using FHotel.Service.DTOs.Users;
-using FHotel.Service.DTOs.WalletHistories;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Documents;
@@ -36,7 +31,6 @@ using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.PaymentMethods;
 using FHotel.Services.DTOs.Reservations;
-using FHotel.Services.DTOs.RevenueSharePolicies;
 using FHotel.Services.DTOs.Roles;
 using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.DTOs.RoomImages;
@@ -119,24 +113,13 @@ namespace FHotel.Service.Profiles
             CreateMap<Bill, BillResponse>().ReverseMap();
             CreateMap<BillTransactionImage, BillTransactionImageRequest>().ReverseMap();
             CreateMap<BillTransactionImage, BillTransactionImageResponse>().ReverseMap();
-            CreateMap<BillOrder, BillOrderRequest>().ReverseMap();
-            CreateMap<BillOrder, BillOrderResponse>().ReverseMap();
-            CreateMap<BillLateCheckOutCharge, BillLateCheckOutChargeRequest>().ReverseMap();
-            CreateMap<BillLateCheckOutCharge, BillLateCheckOutChargeResponse>().ReverseMap();
-            CreateMap<LateCheckOutCharge, LateCheckOutChargeRequest>().ReverseMap();
-            CreateMap<LateCheckOutCharge, LateCheckOutChargeResponse>().ReverseMap();
-            CreateMap<LateCheckOutPolicy, LateCheckOutPolicyRequest>().ReverseMap();
-            CreateMap<LateCheckOutPolicy, LateCheckOutPolicyResponse>().ReverseMap();
-            CreateMap<Refund, RefundRequest>().ReverseMap();
-            CreateMap<Refund, RefundResponse>().ReverseMap();
-            CreateMap<RefundPolicy, RefundPolicyRequest>().ReverseMap();
-            CreateMap<RefundPolicy, RefundPolicyResponse>().ReverseMap();
+            
             CreateMap<RoomStayHistory, RoomStayHistoryRequest>().ReverseMap();
             CreateMap<RoomStayHistory, RoomStayHistoryResponse>().ReverseMap();
             CreateMap<Wallet, WalletRequest>().ReverseMap();
             CreateMap<Wallet, WalletResponse>().ReverseMap();
-            CreateMap<WalletHistory, WalletHistoryRequest>().ReverseMap();
-            CreateMap<WalletHistory, WalletHistoryResponse>().ReverseMap();
+            CreateMap<Transaction, TransactionRequest>().ReverseMap();
+            CreateMap<Transaction, TransactionResponse>().ReverseMap();
             CreateMap<HotelAmenity, HotelAmenityResponse>().ReverseMap();
             //new
             CreateMap<HotelImage, HotelImageRequest>().ReverseMap();
@@ -145,8 +128,8 @@ namespace FHotel.Service.Profiles
             CreateMap<HotelDocument, HotelDocumentResponse>().ReverseMap();
             CreateMap<UserDocument, UserDocumentRequest>().ReverseMap();
             CreateMap<UserDocument, UserDocumentResponse>().ReverseMap();
-            CreateMap<RevenueSharePolicy, RevenueSharePolicyRequest>().ReverseMap();
-            CreateMap<RevenueSharePolicy, RevenueSharePolicyResponse>().ReverseMap();
+            CreateMap<Payment, PaymentRequest>().ReverseMap();
+            CreateMap<Payment, PaymentResponse>().ReverseMap();
 
         }
           

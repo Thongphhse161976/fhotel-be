@@ -1,7 +1,10 @@
 ﻿using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
+using FHotel.Service.DTOs.Transactions;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.Orders;
+using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +18,17 @@ namespace FHotel.API.Controllers
     public class BillsController : ControllerBase
     {
         private readonly IBillService _billService;
+        private readonly IOrderService _orderService;
+        private readonly ITransactionService _transactionService;
         private readonly IBillTransactionImageService _billTransactionImageService;
 
-        public BillsController(IBillService billService, IBillTransactionImageService billTransactionImageService)
+        public BillsController(IBillService billService, IBillTransactionImageService billTransactionImageService
+            , IOrderService orderService, ITransactionService transactionService)
         {
             _billService = billService;
             _billTransactionImageService = billTransactionImageService;
+            _orderService = orderService;
+            _transactionService = transactionService;
         }
 
         /// <summary>
@@ -120,8 +128,48 @@ namespace FHotel.API.Controllers
         {
             try
             {
-                var amenities = await _billTransactionImageService.GetBillTransactionImageByBill(id);
-                return Ok(amenities);
+                var images = await _billTransactionImageService.GetBillTransactionImageByBill(id);
+                return Ok(images);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get all order by bill id.
+        /// </summary>
+        [HttpGet("{id}/orders")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<OrderResponse>>> GetAllOrderByBill(Guid id)
+        {
+            try
+            {
+                var orders = await _orderService.GetAllOrderByBillId(id);
+                return Ok(orders);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
+        /// Get all transaction by bill id.
+        /// </summary>
+        [HttpGet("{id}/transactions")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TransactionResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<TransactionResponse>>> GetAllTransactionByBill(Guid id)
+        {
+            try
+            {
+                var transactions = await _transactionService.GetAllTransactionByBillId(id);
+                return Ok(transactions);
             }
             catch
             {

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FHotel.Service.DTOs.WalletHistories
+namespace FHotel.Service.DTOs.Transactions
 {
-    public class WalletHistoryRequest
+    public class TransactionRequest
     {
+        public Guid? BillId { get; set; }
         public Guid? WalletId { get; set; }
-        public decimal? Note { get; set; }
+        public decimal? Description { get; set; }
+        public decimal? Amount { get; set; }
         public DateTime? TransactionDate { get; set; }
     }
 }

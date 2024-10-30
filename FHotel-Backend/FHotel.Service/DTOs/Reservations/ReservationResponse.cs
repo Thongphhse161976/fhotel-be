@@ -13,6 +13,7 @@ namespace FHotel.Services.DTOs.Reservations
     public class ReservationResponse
     {
         public Guid ReservationId { get; set; }
+        public string? Code { get; set; }
         public Guid? CustomerId { get; set; }
         public DateTime? CheckInDate { get; set; }
         public DateTime? CheckOutDate { get; set; }

@@ -1,5 +1,7 @@
-﻿using FHotel.Service.DTOs.Wallets;
+﻿using FHotel.Service.DTOs.Transactions;
+using FHotel.Service.DTOs.Wallets;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.Orders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +15,12 @@ namespace FHotel.API.Controllers
     public class WalletsController : ControllerBase
     {
         private readonly IWalletService _walletService;
+        private readonly ITransactionService _transactionService;
 
-        public WalletsController(IWalletService walletService)
+        public WalletsController(IWalletService walletService, ITransactionService transactionService)
         {
             _walletService = walletService;
+            _transactionService = transactionService;
         }
 
         /// <summary>
@@ -102,6 +106,26 @@ namespace FHotel.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get all transaction by wallet id.
+        /// </summary>
+        [HttpGet("{id}/transactions")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TransactionResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<TransactionResponse>>> GetAllTransactionByWallet(Guid id)
+        {
+            try
+            {
+                var transactions = await _transactionService.GetAllTransactionByWalletId(id);
+                return Ok(transactions);
+            }
+            catch
+            {
+                return NotFound();
             }
         }
     }

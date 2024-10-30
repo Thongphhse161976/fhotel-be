@@ -8,6 +8,7 @@ namespace FHotel.Service.DTOs.Reservations
 {
     public class ReservationCreateRequest
     {
+        public string? Code { get; set; }
         public Guid? CustomerId { get; set; }
         public DateTime? CheckInDate { get; set; }
         public DateTime? CheckOutDate { get; set; }

@@ -60,25 +60,20 @@ builder.Services.AddScoped<ITypeService, TypeService>();
 builder.Services.AddScoped<ITypePricingService, TypePricingService>();
 builder.Services.AddScoped<IBillService, BillService>();
 builder.Services.AddScoped<IBillTransactionImageService, BillTransactionImageService>();
-builder.Services.AddScoped<IBillOrderService, BillOrderService>();
-builder.Services.AddScoped<IBillLateCheckOutChargeService, BillLateCheckOutChargeService>();
-builder.Services.AddScoped<ILateCheckOutChargeService, LateCheckOutChargeService>();
-builder.Services.AddScoped<ILateCheckOutPolicyService, LateCheckOutPolicyService>();
-builder.Services.AddScoped<IRefundService, RefundService>();
-builder.Services.AddScoped<IRefundPolicyService, RefundPolicyService>();
+
 builder.Services.AddScoped<IRoomStayHistoryService, RoomStayHistoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
-builder.Services.AddScoped<IWalletHistoryService, WalletHistoryService>();
 builder.Services.AddScoped<ISpeedSMSAPI, SpeedSMSAPI>();
 //new
 
 builder.Services.AddScoped<IHotelDocumentService, HotelDocumentService>();
 builder.Services.AddScoped<IHotelImageService, HotelImageService>();
 builder.Services.AddScoped<IUserDocumentService, UserDocumentService>();
-builder.Services.AddScoped<IRevenueSharePolicyService, RevenueSharePolicyService>();
 
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 
 

@@ -24,6 +24,7 @@ namespace FHotel.Services.Services.Implementations
         private IMapper _mapper;
         private readonly IRoomTypeService _roomTypeService;
         private readonly ITypePricingService _typePricingService;
+        //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
             ITypePricingService typePricingService)
         {

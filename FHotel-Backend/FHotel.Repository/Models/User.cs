@@ -11,8 +11,6 @@ namespace FHotel.Repository.Models
             HotelVerifications = new HashSet<HotelVerification>();
             Hotels = new HashSet<Hotel>();
             Reservations = new HashSet<Reservation>();
-            WalletHistoryPayeeNavigations = new HashSet<WalletHistory>();
-            WalletHistoryPayerNavigations = new HashSet<WalletHistory>();
             Wallets = new HashSet<Wallet>();
         }
 
@@ -34,8 +32,6 @@ namespace FHotel.Repository.Models
         public virtual ICollection<HotelVerification> HotelVerifications { get; set; }
         public virtual ICollection<Hotel> Hotels { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
-        public virtual ICollection<WalletHistory> WalletHistoryPayeeNavigations { get; set; }
-        public virtual ICollection<WalletHistory> WalletHistoryPayerNavigations { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
     }
 }

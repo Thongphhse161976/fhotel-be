@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Orders;
+using FHotel.Service.DTOs.Transactions;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
@@ -193,6 +194,16 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception("Order not found");
             }
+            return list;
+        }
+
+        public async Task<List<OrderResponse>> GetAllOrderByBillId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Order>().GetAll()
+                                            .ProjectTo<OrderResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.BillId == id)
+                                            .ToListAsync();
             return list;
         }
     }
