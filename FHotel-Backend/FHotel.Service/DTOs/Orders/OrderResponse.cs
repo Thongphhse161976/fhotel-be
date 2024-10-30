@@ -1,4 +1,5 @@
 ﻿using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Bills;
 using FHotel.Services.DTOs.PaymentMethods;
 using FHotel.Services.DTOs.Reservations;
 using System;
@@ -18,7 +19,7 @@ namespace FHotel.Services.DTOs.Orders
         public DateTime? OrderedDate { get; set; }
         public string? OrderStatus { get; set; }
 
-        public virtual Bill? Bill { get; set; }
-        public virtual Reservation? Reservation { get; set; }
+        public virtual BillResponse? Bill { get; set; }
+        public virtual ReservationResponse? Reservation { get; set; }
     }
 }

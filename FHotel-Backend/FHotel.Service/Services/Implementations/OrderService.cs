@@ -170,7 +170,8 @@ namespace FHotel.Services.Services.Implementations
             // Retrieve all reservations for the hotel associated with the staff member
             var orders = await _unitOfWork.Repository<Order>()
                                                 .GetAll()
-                                                .Where(r => r.Reservation.RoomType.HotelId == hotelId) // Assuming RoomTypeID or some other way links to the hotel
+                                                .Include(x => x.Reservation)
+                                                .Where(r => r.Reservation.RoomType.HotelId == hotelId) 
                                                 .ProjectTo<OrderResponse>(_mapper.ConfigurationProvider)
                                                 .ToListAsync();
 
