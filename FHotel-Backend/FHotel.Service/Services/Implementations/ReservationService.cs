@@ -126,10 +126,11 @@ namespace FHotel.Services.Services.Implementations
 
                 // Update the RoomType in the database using RoomTypeUpdateRequest
                 await _roomTypeService.Update(request.RoomTypeId.Value, updateRoomType);
-
+                int index = 1; // or however you want to start the index
                 // Proceed with creating the reservation
                 var reservation = _mapper.Map<ReservationCreateRequest, Reservation>(request);
                 reservation.ReservationId = Guid.NewGuid();
+                reservation.Code = $"FRSVT-{index++}"; // Proper string interpolation with increment
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
                 reservation.PaymentStatus = "Not Paid";
