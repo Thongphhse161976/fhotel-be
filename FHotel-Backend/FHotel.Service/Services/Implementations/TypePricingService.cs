@@ -48,6 +48,8 @@ namespace FHotel.Service.Services.Implementations
                 TypePricing typePricing = null;
                 typePricing = await _unitOfWork.Repository<TypePricing>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Type)
+                     .Include(x => x.District)
                     .Where(x => x.TypePricingId == id)
                     .FirstOrDefaultAsync();
 
