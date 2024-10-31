@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.Profiles;
 using FHotel.Service.Services.Implementations;
@@ -9,6 +10,7 @@ using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
@@ -35,13 +37,17 @@ namespace FHotel.API.Controllers
         private readonly IHotelStaffService _hotelStaffService;
         private readonly IHotelVerificationService _hotelVerificationService;
         private readonly IOrderService _orderService;
-        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService)
+        private readonly IRoomStayHistoryService _roomStayHistoryService;
+        private readonly IRoomTypeService _roomTypeService;
+        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService)
         {
             _userService = userService;
             _reservationService = reservationService;
             _hotelStaffService = hotelStaffService;
             _hotelVerificationService = hotelVerificationService;
             _orderService = orderService;
+            _roomStayHistoryService = roomStayHistoryService;
+            _roomTypeService = roomTypeService;
         }
 
         /// <summary>
@@ -372,6 +378,32 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
+        /// Get all room stay history by staff ID.
+        /// </summary>
+        [HttpGet("{staffId}/staff-room-stay-histories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomStayHistoryResponse>>> GetAllRoomStayHistoryByStaffId(Guid staffId)
+        {
+            try
+            {
+                var roomStayHistoryList = await _roomStayHistoryService.GetAllRoomStayHistoryByStaffId(staffId);
+
+                if (roomStayHistoryList == null || !roomStayHistoryList.Any())
+                {
+                    return NotFound(new { message = "No room histories found for this staff." });
+                }
+
+                return Ok(roomStayHistoryList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Get all orders by customer ID.
         /// </summary>
         [HttpGet("{customerId}/orders")]
@@ -390,6 +422,33 @@ namespace FHotel.API.Controllers
                 }
 
                 return Ok(orderList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all room types by staff ID.
+        /// </summary>
+        [HttpGet("{staffId}/room-types")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomTypeResponse>>> GetAllRoomTypeByStaffId(Guid staffId)
+        {
+            try
+            {
+                var roomTypeList = await _roomTypeService.GetAllRoomTypeByStaffId(staffId);
+
+                if (roomTypeList == null || !roomTypeList.Any())
+                {
+                    return NotFound(new { message = "No room types found for this staff." });
+                }
+
+                return Ok(roomTypeList);
             }
             catch (Exception ex)
             {

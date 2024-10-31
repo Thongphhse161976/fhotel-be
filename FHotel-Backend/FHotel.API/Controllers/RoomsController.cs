@@ -1,4 +1,5 @@
 ﻿using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -83,6 +84,9 @@ namespace FHotel.API.Controllers
         /// Delete room by room id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<RoomResponse>> Delete(Guid id)
         {
             var rs = await _roomService.Delete(id);

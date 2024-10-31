@@ -6,6 +6,7 @@ using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.Rooms;
+using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.DTOs.Types;
 using FHotel.Service.Validators.HotelValidator;
@@ -430,7 +431,36 @@ namespace FHotel.Services.Services.Implementations
             return hotels;
         }
 
+        public async Task<List<RoomTypeResponse>> GetAllRoomTypeByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
 
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var roomTypes = await _unitOfWork.Repository<RoomType>()
+                                                .GetAll()
+                                                .Where(r => r.HotelId == hotelId)
+                                                .ProjectTo<RoomTypeResponse>(_mapper.ConfigurationProvider)
+                                                .ToListAsync();
+
+            // Check if any roomStayHistories were found
+            if (roomTypes == null || !roomTypes.Any())
+            {
+                throw new Exception("No roomTypes found for this staff's hotel.");
+            }
+
+            return roomTypes;
+        }
 
     }
 }

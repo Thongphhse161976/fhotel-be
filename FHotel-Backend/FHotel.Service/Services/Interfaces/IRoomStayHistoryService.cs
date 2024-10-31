@@ -20,5 +20,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<RoomStayHistoryResponse> Update(Guid id, RoomStayHistoryRequest request);
 
         public Task<List<RoomStayHistoryResponse>> GetAllByReservationId(Guid id);
+        public Task<List<RoomStayHistoryResponse>> GetAllRoomStayHistoryByStaffId(Guid id);
+        //public Task<List<RoomStayHistoryResponse>> GetAllRoomStayHistoryByRoomTypeId(Guid id);
     }
 }

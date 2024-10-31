@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Orders;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.UserDocuments;
@@ -88,6 +89,9 @@ namespace FHotel.API.Controllers
         /// Delete order by order id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<OrderResponse>> Delete(Guid id)
         {
             var rs = await _orderService.Delete(id);
@@ -98,6 +102,9 @@ namespace FHotel.API.Controllers
         /// Update order by order id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<OrderResponse>> Update(Guid id, [FromBody] OrderRequest request)
         {
             try

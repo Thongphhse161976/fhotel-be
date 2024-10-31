@@ -4,7 +4,10 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
+using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.Orders;
+using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +25,14 @@ namespace FHotel.Service.Services.Implementations
         private IMapper _mapper;
         private IReservationService _reservationService;
         private IRoomService _roomService;
-        public RoomStayHistoryService(IUnitOfWork unitOfWork, IMapper mapper, IReservationService reservationService, IRoomService roomService)
+        private IRoomTypeService _roomTypeService;
+        public RoomStayHistoryService(IUnitOfWork unitOfWork, IMapper mapper, IReservationService reservationService, IRoomService roomService, IRoomTypeService roomTypeService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _reservationService = reservationService;
             _roomService = roomService;
+            _roomTypeService = roomTypeService;
         }
 
         public async Task<List<RoomStayHistoryResponse>> GetAll()
@@ -82,10 +87,8 @@ namespace FHotel.Service.Services.Implementations
             {
                 throw new Exception("Reservation not found");
             }
-            var room = await _unitOfWork.Repository<Room>()
-                        .AsNoTracking()
-                        .Where(x => x.RoomId == request.RoomId)
-                        .FirstOrDefaultAsync();
+            var room = await _roomService.Get(request.RoomId.Value);
+           
 
             if (room == null)
             {
@@ -120,9 +123,32 @@ namespace FHotel.Service.Services.Implementations
                 await _unitOfWork.CommitAsync();
                 if(room.RoomId == roomStayHistory.RoomId)
                 {
-                    var roomUpdateRequest = _mapper.Map<Room, RoomRequest>(room);
-                    room.Status = "Occupied";
-                    await _roomService.Update(room.RoomId, roomUpdateRequest);
+                    var updateRoom = new RoomRequest()
+                    {
+                        RoomNumber = room.RoomNumber,
+                        RoomTypeId = room.RoomTypeId,
+                        Status = "Occupied",
+                        CreatedDate = room.CreatedDate,
+                        UpdatedDate = localTime,
+                        Note = room.Note,
+                    };
+                    await _roomService.Update(room.RoomId, updateRoom);
+
+                    var roomType = await _roomTypeService.Get(reservation.RoomTypeId.Value);
+                    var updateRoomType = new RoomTypeUpdateRequest()
+                    {
+                        RoomTypeId = roomType.RoomTypeId,
+                        HotelId = roomType.HotelId,
+                        TypeId = roomType.TypeId,
+                        Description = roomType.Description,
+                        RoomSize = roomType.RoomSize,
+                        TotalRooms = roomType.TotalRooms,
+                        AvailableRooms = roomType.AvailableRooms > 0 ? roomType.AvailableRooms - 1 : 0,  // Ensure it doesn't go below 0
+                        IsActive = roomType.IsActive,
+                        UpdatedDate = localTime,
+                        Note = roomType.Note,
+                    };
+                    await _roomTypeService.Update(roomType.RoomTypeId, updateRoomType);
                 }
                 // Get the total number of RoomStayHistory entries for this reservation
                 var roomAlreadyStayed = await _unitOfWork.Repository<RoomStayHistory>()
@@ -204,5 +230,52 @@ namespace FHotel.Service.Services.Implementations
             }
             return list;
         }
+
+        public async Task<List<RoomStayHistoryResponse>> GetAllRoomStayHistoryByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var roomStayHistories = await _unitOfWork.Repository<RoomStayHistory>()
+                                                .GetAll()
+                                                .Include(x => x.Reservation)
+                                                .Where(r => r.Reservation.RoomType.HotelId == hotelId)
+                                                .ProjectTo<RoomStayHistoryResponse>(_mapper.ConfigurationProvider)
+                                                .ToListAsync();
+
+            // Check if any roomStayHistories were found
+            if (roomStayHistories == null || !roomStayHistories.Any())
+            {
+                throw new Exception("No roomStayHistories found for this staff's hotel.");
+            }
+
+            return roomStayHistories;
+        }
+
+        //public async Task<List<RoomStayHistoryResponse>> GetAllRoomStayHistoryByRoomTypeId(Guid id)
+        //{
+
+        //    var list = await _unitOfWork.Repository<Reservation>().GetAll()
+        //                                    .Where(r => r.CustomerId == id)
+        //                                    .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+        //                                    .ToListAsync();
+        //    // Check if list is null or empty
+        //    if (list == null || !list.Any())
+        //    {
+        //        throw new Exception("No reservations found.");
+        //    }
+        //    return list;
+        //}
     }
 }
