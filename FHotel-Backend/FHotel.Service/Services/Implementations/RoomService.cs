@@ -6,6 +6,7 @@ using FHotel.Service.DTOs.Districts;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Service.Validators.RoomValidator;
 using FHotel.Services.DTOs.Rooms;
+using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
@@ -44,6 +45,8 @@ namespace FHotel.Services.Services.Implementations
                 Room room = null;
                 room = await _unitOfWork.Repository<Room>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.RoomType)
+                        .ThenInclude(x => x.Type)
                     .Where(x => x.RoomId == id)
                     .FirstOrDefaultAsync();
 
@@ -140,8 +143,7 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<RoomResponse> Update(Guid id, RoomRequest request)
         {
-            var validator = new RoomRequestValidator();
-            var validationResult = await validator.ValidateAsync(request);
+           
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 
@@ -151,10 +153,7 @@ namespace FHotel.Services.Services.Implementations
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
             // Get the total number of room for this room type
-            if (!validationResult.IsValid)
-            {
-                throw new ValidationException(validationResult.Errors);
-            }
+           
             try
             {
                 Room room = _unitOfWork.Repository<Room>()
@@ -185,6 +184,37 @@ namespace FHotel.Services.Services.Implementations
                                             .Where(d => d.RoomTypeId == id)
                                             .ToListAsync();
             return list;
+        }
+
+        public async Task<List<RoomResponse>> GetAllRoomByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var rooms = await _unitOfWork.Repository<Room>()
+                                                .GetAll()
+                                                .Where(r => r.RoomType.HotelId == hotelId)
+                                                .ProjectTo<RoomResponse>(_mapper.ConfigurationProvider)
+                                                .ToListAsync();
+
+            // Check if any rooms were found
+            if (rooms == null || !rooms.Any())
+            {
+                throw new Exception("No rooms found for this staff's hotel.");
+            }
+
+            return rooms;
         }
     }
 }

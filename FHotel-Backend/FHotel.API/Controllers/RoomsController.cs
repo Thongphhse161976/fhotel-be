@@ -97,6 +97,9 @@ namespace FHotel.API.Controllers
         /// Update room by room id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<RoomResponse>> Update(Guid id, [FromBody] RoomRequest request)
         {
             try

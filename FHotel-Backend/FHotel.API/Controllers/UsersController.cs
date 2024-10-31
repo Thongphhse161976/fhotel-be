@@ -10,6 +10,7 @@ using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.DTOs.Users;
 using FHotel.Services.Services.Implementations;
@@ -39,7 +40,8 @@ namespace FHotel.API.Controllers
         private readonly IOrderService _orderService;
         private readonly IRoomStayHistoryService _roomStayHistoryService;
         private readonly IRoomTypeService _roomTypeService;
-        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService)
+        private readonly IRoomService _roomService;
+        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService)
         {
             _userService = userService;
             _reservationService = reservationService;
@@ -48,6 +50,7 @@ namespace FHotel.API.Controllers
             _orderService = orderService;
             _roomStayHistoryService = roomStayHistoryService;
             _roomTypeService = roomTypeService;
+            _roomService = roomService;
         }
 
         /// <summary>
@@ -449,6 +452,33 @@ namespace FHotel.API.Controllers
                 }
 
                 return Ok(roomTypeList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all room by staff ID.
+        /// </summary>
+        [HttpGet("{staffId}/rooms")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAllRoomByStaffId(Guid staffId)
+        {
+            try
+            {
+                var roomList = await _roomService.GetAllRoomByStaffId(staffId);
+
+                if (roomList == null || !roomList.Any())
+                {
+                    return NotFound(new { message = "No rooms found for this staff." });
+                }
+
+                return Ok(roomList);
             }
             catch (Exception ex)
             {
