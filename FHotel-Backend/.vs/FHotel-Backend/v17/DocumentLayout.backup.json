@@ -40,7 +40,7 @@
               "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
               "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\OrderDetailService.cs",
-              "ViewState": "AgIAAF0AAAAAAAAAAAApwHcAAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAHYAAAAAAAAAAAAuwJIAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-01T06:41:06.742Z",
               "EditorCaption": ""
@@ -55,8 +55,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Interfaces\\ITypePricingService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAABZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T07:31:57.761Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-01T07:31:57.761Z"
             },
             {
               "$type": "Document",
@@ -68,8 +67,7 @@
               "RelativeToolTip": "FHotel.Service\\Validators\\ServiceValidator\\ServiceCreateRequestValidator.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABYAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T07:13:24.118Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-01T07:13:24.118Z"
             },
             {
               "$type": "Document",
@@ -81,8 +79,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\TypePricingService.cs",
               "ViewState": "AgIAAPcAAAAAAAAAAAAwwPoAAABeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T06:48:49.857Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-01T06:48:49.857Z"
             },
             {
               "$type": "Document",
@@ -94,8 +91,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\OrderService.cs",
               "ViewState": "AgIAAEIAAAAAAAAAAAApwFMAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T06:39:50.496Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-01T06:39:50.496Z"
             }
           ]
         }

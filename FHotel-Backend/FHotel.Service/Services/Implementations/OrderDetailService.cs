@@ -130,12 +130,21 @@ namespace FHotel.Services.Services.Implementations
                     OrderId = order.OrderId,
                     ReservationId = order.ReservationId,
                     OrderedDate = order.OrderedDate,
-                    OrderStatus = order.OrderStatus,
+                    OrderStatus = "Confirmed",
                     TotalAmount = totalAmount // Set the accumulated total amount
+                };
+
+                var updateOrderDetail = new OrderDetailRequest
+                {
+                    OrderId = orderDetail.OrderId,
+                    ServiceId = orderDetail.ServiceId,
+                    Quantity = orderDetail.Quantity,
+                    Price = totalAmount // Set the accumulated total amount
                 };
 
                 // Update the order with the new total amount
                 await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
+                await Update(orderDetail.OrderDetailId, updateOrderDetail);
 
                 return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
             }
