@@ -248,5 +248,40 @@ namespace FHotel.Service.Services.Implementations
             }
         }
 
+        public async Task<decimal> GetPricingByRoomTypeAndDate(Guid roomTypeId, DateTime date)
+        {
+            try
+            {
+                // Step 1: Fetch Room Type details
+                var roomType = await _roomTypeService.Get(roomTypeId);
+                if (roomType == null || roomType.IsActive != true)
+                {
+                    throw new ArgumentException("Invalid or inactive room type.");
+                }
+
+                // Step 2: Get the district ID from the room type
+                var districtId = roomType.Hotel.DistrictId;
+
+                // Step 3: Get the day of the week for the specified date (1 = Monday, ..., 7 = Sunday)
+                int dayOfWeek = (int)date.DayOfWeek == 0 ? 7 : (int)date.DayOfWeek;
+
+                // Step 4: Fetch pricing for the specified room type, district, and day of the week
+                var pricing = await GetPricingByTypeAndDistrict(roomType.TypeId.Value, districtId.Value, dayOfWeek);
+
+                if (pricing == null)
+                {
+                    throw new Exception($"No pricing available for the specified date: {date.ToShortDateString()}.");
+                }
+
+                // Step 5: Return the price
+                return pricing.Price ?? throw new Exception($"Price for the specified date ({date.ToShortDateString()}) is not set.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching pricing for the specified date: {ex.Message}");
+            }
+        }
+
+
     }
 }

@@ -6,6 +6,7 @@ using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Services;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Service.Validators.ServiceValidator;
+using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.Services;
 using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
@@ -211,6 +212,17 @@ namespace FHotel.Services.Services.Implementations
                 AuthEmail = configuration.GetSection("FirebaseStorage:authEmail").Value,
                 AuthPassword = configuration.GetSection("FirebaseStorage:authPassword").Value
             };
+        }
+
+
+        public async Task<List<ServiceResponse>> GetAllServiceByServiceTypeId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Repository.Models.Service>().GetAll()
+                                            .ProjectTo<ServiceResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.ServiceTypeId == id)
+                                            .ToListAsync();
+            return list;
         }
     }
 }

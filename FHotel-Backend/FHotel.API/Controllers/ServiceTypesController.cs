@@ -1,5 +1,8 @@
 ﻿using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.OrderDetails;
+using FHotel.Services.DTOs.Services;
 using FHotel.Services.DTOs.ServiceTypes;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +17,12 @@ namespace FHotel.API.Controllers
     public class ServiceTypesController : ControllerBase
     {
         private readonly IServiceTypeService _serviceTypeService;
+        private readonly IServiceService _serviceService;
 
-        public ServiceTypesController(IServiceTypeService serviceTypeService)
+        public ServiceTypesController(IServiceTypeService serviceTypeService, IServiceService serviceService)
         {
             _serviceTypeService = serviceTypeService;
+            _serviceService = serviceService;
         }
 
         /// <summary>
@@ -107,6 +112,33 @@ namespace FHotel.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Get all service by service type id.
+        /// </summary>
+        [HttpGet("{id}/services")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ServiceResponse>>> GetAllOrderDetailByOrder(Guid id)
+        {
+            try
+            {
+                var services = await _serviceService.GetAllServiceByServiceTypeId(id);
+
+                if (services == null || !services.Any())
+                {
+                    return NotFound(new { message = "No services found for this type." });
+                }
+
+                return Ok(services);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using FHotel.Service.DTOs.Services;
 using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Services;
+using FHotel.Services.DTOs.Users;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,9 @@ namespace FHotel.Services.Services.Interfaces
         public Task<ServiceResponse> Update(Guid id, ServiceUpdateRequest request);
 
         public Task<string> UploadImage(IFormFile file);
+
+        public Task<List<ServiceResponse>> GetAllServiceByServiceTypeId(Guid serviceTypeId);
+
 
     }
 }
