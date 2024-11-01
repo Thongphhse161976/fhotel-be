@@ -486,5 +486,59 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Get all room by staff ID.
+        /// </summary>
+        [HttpGet("{staffId}/staff-customers")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAllCustomerByStaffId(Guid staffId)
+        {
+            try
+            {
+                var customerList = await _userService.GetAllCustomerByStaffId(staffId);
+
+                if (customerList == null || !customerList.Any())
+                {
+                    return NotFound(new { message = "No customer found for this staff id." });
+                }
+
+                return Ok(customerList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all room by owner ID.
+        /// </summary>
+        [HttpGet("{ownerId}/owner-customers")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAllCustomerByOwnerId(Guid ownerId)
+        {
+            try
+            {
+                var customerList = await _userService.GetAllCustomerByOwnerId(ownerId);
+
+                if (customerList == null || !customerList.Any())
+                {
+                    return NotFound(new { message = "No customer found for this owner id." });
+                }
+
+                return Ok(customerList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 }

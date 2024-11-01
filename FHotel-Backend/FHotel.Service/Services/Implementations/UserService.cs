@@ -30,6 +30,8 @@ using FHotel.Repository.SMTPs.Models;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Repository.SMS;
+using FHotel.Services.DTOs.Rooms;
+using FHotel.Services.DTOs.Reservations;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -40,14 +42,17 @@ namespace FHotel.Services.Services.Implementations
         private readonly IRoleService _roleService;
         private readonly IWalletService _walletService;
         private readonly ISpeedSMSAPI _smsService;
+        private readonly IReservationService _reservationService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService, IWalletService walletService, ISpeedSMSAPI smsService)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService,
+            IWalletService walletService, ISpeedSMSAPI smsService, IReservationService reservationService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roleService = roleService;
             _walletService = walletService;
             _smsService = smsService;
+            _reservationService = reservationService;
         }
 
         public async Task<List<UserResponse>> GetAll()
@@ -614,6 +619,79 @@ namespace FHotel.Services.Services.Implementations
                 .Select(s => s[random.Next(s.Length)]).ToArray());
             return otpCode;
         }
+
+        public async Task<List<UserResponse>> GetAllCustomerByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                               .GetAll()
+                                               .FirstOrDefaultAsync(hs => hs.UserId == staffId);
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var reservations = await _reservationService
+                                                 .GetAll(); // Ensure this is awaited and converts to a list
+
+            // Apply the Where clause after awaiting the task
+            var filteredReservations = reservations
+                                        .Where(r => r.RoomType.HotelId == hotelId)
+                                        .ToList(); // Convert to list if necessary
+
+            // Check if any reservations were found
+            if (!filteredReservations.Any())
+            {
+                throw new Exception("No reservations found for this staff's hotel.");
+            }
+
+            // Extract customer IDs from filtered reservations and retrieve customer details
+            var customerIds = filteredReservations.Select(r => r.CustomerId).Distinct().ToList(); // Ensure unique customer IDs
+            var customers = await _unitOfWork.Repository<User>()
+                                               .GetAll()
+                                               .Where(c => customerIds.Contains(c.UserId))
+                                               .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
+                                               .ToListAsync();
+
+            // Return the list of customer responses
+            return customers;
+        }
+
+        public async Task<List<UserResponse>> GetAllCustomerByOwnerId(Guid ownerId)
+        {
+           
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var reservations = await _reservationService
+                                                 .GetAll(); // Ensure this is awaited and converts to a list
+
+            // Apply the Where clause after awaiting the task
+            var filteredReservations = reservations
+                                        .Where(r => r.RoomType.Hotel.OwnerId == ownerId)
+                                        .ToList(); // Convert to list if necessary
+
+            // Check if any reservations were found
+            if (!filteredReservations.Any())
+            {
+                throw new Exception("No reservations found for this owner.");
+            }
+
+            // Extract customer IDs from filtered reservations and retrieve customer details
+            var customerIds = filteredReservations.Select(r => r.CustomerId).Distinct().ToList(); // Ensure unique customer IDs
+            var customers = await _unitOfWork.Repository<User>()
+                                               .GetAll()
+                                               .Where(c => customerIds.Contains(c.UserId))
+                                               .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
+                                               .ToListAsync();
+
+            // Return the list of customer responses
+            return customers;
+        }
+
 
     }
 
