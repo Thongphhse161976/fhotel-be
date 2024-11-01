@@ -270,7 +270,7 @@ namespace FHotel.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FeedbackResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<OrderResponse>>> GetAllFeedbackByReservationId(Guid id)
+        public async Task<ActionResult<List<FeedbackResponse>>> GetAllFeedbackByReservationId(Guid id)
         {
             try
             {

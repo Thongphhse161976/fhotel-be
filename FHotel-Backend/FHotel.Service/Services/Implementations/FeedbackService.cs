@@ -40,6 +40,7 @@ namespace FHotel.Services.Services.Implementations
                 Feedback feedback = null;
                 feedback = await _unitOfWork.Repository<Feedback>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Reservation)
                     .Where(x => x.FeedbackId == id)
                     .FirstOrDefaultAsync();
 
@@ -124,6 +125,16 @@ namespace FHotel.Services.Services.Implementations
             var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
                      .AsNoTracking()
                     .Where(x => x.ReservationId == reservationId)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
+        }
+
+        public async Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByHotelId(Guid hotelId)
+        {
+            var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
+                     .AsNoTracking()
+                    .Where(x => x.Reservation.RoomType.HotelId == hotelId)
                     .ToListAsync();
 
             return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
