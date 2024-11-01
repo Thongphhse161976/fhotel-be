@@ -186,6 +186,16 @@ namespace FHotel.Services.Services.Implementations
             return list;
         }
 
+        public async Task<List<RoomResponse>> GetAllRoomByHotelId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Room>().GetAll()
+                                            .ProjectTo<RoomResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.RoomType.HotelId == id)
+                                            .ToListAsync();
+            return list;
+        }
+
         public async Task<List<RoomResponse>> GetAllRoomByStaffId(Guid staffId)
         {
             // Retrieve the HotelID associated with the HotelStaff

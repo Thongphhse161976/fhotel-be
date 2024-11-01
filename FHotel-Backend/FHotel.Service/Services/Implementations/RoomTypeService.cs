@@ -36,10 +36,12 @@ namespace FHotel.Services.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public RoomTypeService(IUnitOfWork unitOfWork, IMapper mapper)
+        private IRoomService _roomService;
+        public RoomTypeService(IUnitOfWork unitOfWork, IMapper mapper, IRoomService roomService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _roomService = roomService;
         }
 
         public async Task<List<RoomTypeResponse>> GetAll()
@@ -90,11 +92,7 @@ namespace FHotel.Services.Services.Implementations
 
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-            // Get the current UTC time
             DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
 
             try
@@ -110,12 +108,19 @@ namespace FHotel.Services.Services.Implementations
                 await _unitOfWork.Repository<RoomType>().InsertAsync(roomType);
                 await _unitOfWork.CommitAsync();
 
+                // Retrieve all rooms for the specified hotel
+                var roomsInHotel = await _roomService.GetAllRoomByHotelId(roomType.HotelId.Value);
+
+                // Find the highest room number among the retrieved rooms
+                var highestRoomNumber = roomsInHotel
+                    .Max(r => (int?)r.RoomNumber) ?? 0; // If no rooms exist, start from 0
+
                 // Now create the individual rooms based on the total room count
                 for (int i = 0; i < request.TotalRooms; i++)
                 {
                     var room = new RoomCreateRequest
                     {
-                        RoomNumber = i + 1, // Assign room number starting from 1
+                        RoomNumber = highestRoomNumber + i + 1, // Start numbering from the highest room number
                         RoomTypeId = roomType.RoomTypeId,
                         Status = "Available", // Set default status
                         CreatedDate = localTime
@@ -138,6 +143,7 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
 
         public async Task<RoomTypeResponse> Delete(Guid id)
@@ -282,76 +288,6 @@ namespace FHotel.Services.Services.Implementations
             return _mapper.Map<IEnumerable<RoomType>, IEnumerable<RoomTypeResponse>>(roomTypeList);
         }
 
-        //public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? cityName)
-        //{
-        //    var roomTypeList = await _unitOfWork.Repository<RoomType>()
-        //        .GetAll()
-        //        .AsNoTracking()
-        //        .Include(rt => rt.Hotel)
-        //            .ThenInclude(hotel => hotel.District)
-        //                .ThenInclude(district => district.City)
-        //        .Include(rt => rt.Type)
-        //        .Where(rt => rt.IsActive == true)
-        //        .ToListAsync();
-
-        //    // Filter by city if provided
-        //    if (!string.IsNullOrEmpty(cityName))
-        //    {
-        //        roomTypeList = roomTypeList
-        //            .Where(rt => rt.Hotel.District.City != null &&
-        //                         rt.Hotel.District.City.CityName.Contains(cityName, StringComparison.OrdinalIgnoreCase))
-        //            .ToList();
-        //    }
-
-        //    var hotels = new List<HotelResponse>();
-        //    var hotelIds = new HashSet<Guid>();
-
-        //    // Group room types by hotel
-        //    var hotelRoomTypes = roomTypeList
-        //        .GroupBy(rt => rt.Hotel.HotelId) // Group by HotelId to avoid duplicates
-        //        .Select(g => new
-        //        {
-        //            Hotel = g.First().Hotel, // Get the hotel from the first room type
-        //            RoomTypes = g.ToList()
-        //        })
-        //        .ToList();
-
-        //    // Log after grouping
-        //    Console.WriteLine($"Grouped Hotels Count After Grouping: {hotelRoomTypes.Count}");
-        //    foreach (var hotelGroup in hotelRoomTypes)
-        //    {
-        //        Console.WriteLine($"Hotel: {hotelGroup.Hotel.HotelName}, Room Types Count: {hotelGroup.RoomTypes.Count}");
-        //        foreach (var roomType in hotelGroup.RoomTypes)
-        //        {
-        //            Console.WriteLine($"- Room Type ID: {roomType.TypeId}, Available: {roomType.AvailableRooms}");
-        //        }
-        //    }
-
-        //    // Check each hotel against all search requests
-        //    foreach (var searchRequest in searchRequests)
-        //    {
-        //        // Iterate over the hotels
-        //        foreach (var hotelGroup in hotelRoomTypes)
-        //        {
-        //            // Check if the hotel has all required room types with sufficient availability
-        //            bool hasAllRequiredRoomTypes = searchRequests.All(sr =>
-        //                hotelGroup.RoomTypes.Any(rt => rt.TypeId == sr.TypeId
-        //                                                && rt.AvailableRooms >= sr.Quantity));
-
-        //            if (hasAllRequiredRoomTypes)
-        //            {
-        //                // Directly check HotelId without using Value
-        //                if (!hotelIds.Contains(hotelGroup.Hotel.HotelId))
-        //                {
-        //                    hotels.Add(_mapper.Map<HotelResponse>(hotelGroup.Hotel));
-        //                    hotelIds.Add(hotelGroup.Hotel.HotelId); // Directly use HotelId
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return hotels;
-        //}
 
         public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? query)
         {

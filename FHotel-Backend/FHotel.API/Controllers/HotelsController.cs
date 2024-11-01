@@ -6,6 +6,7 @@ using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Interfaces;
 using FHotel.Services.Services.Implementations;
@@ -31,9 +32,10 @@ namespace FHotel.API.Controllers
         private readonly IHotelDocumentService _hotelDocumentService;
         private readonly IHotelImageService _hotelImageService;
         private readonly IHotelVerificationService _hotelVerificationService;
+        private readonly IRoomService _roomService;
 
         public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService, IReservationService reservationService, IHotelDocumentService hotelDocumentService
-            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService)
+            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService , IRoomService roomService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
@@ -43,6 +45,7 @@ namespace FHotel.API.Controllers
             _hotelDocumentService = hotelDocumentService;
             _hotelImageService = hotelImageService;
             _hotelVerificationService = hotelVerificationService;
+            _roomService = roomService;
         }
 
         /// <summary>
@@ -393,7 +396,31 @@ namespace FHotel.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all room by hotel id.
+        /// </summary>
+        [HttpGet("{hotelId}/rooms")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<RoomResponse>>> GetAllRoomByHotelId(Guid hotelId)
+        {
+            try
+            {
+                var rooms = await _hotelVerificationService.GetAllByHotelId(hotelId);
 
+                if (rooms == null || !rooms.Any())
+                {
+                    return NotFound(new { message = "No rooms found for this hotel." });
+                }
+
+                return Ok(rooms);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
 
     }
 }
