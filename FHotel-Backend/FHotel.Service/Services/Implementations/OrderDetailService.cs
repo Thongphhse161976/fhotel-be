@@ -96,12 +96,13 @@ namespace FHotel.Services.Services.Implementations
                 // Retrieve the created order detail to access the service details
                 var orderDetailResponse = await Get(orderDetail.OrderDetailId);
 
-                // Initialize total amount to zero
-                decimal totalAmount = 0;
+                
 
                 // Check if the service type is for late checkout
                 if (orderDetailResponse.Service.ServiceType.ServiceTypeName == "Trả phòng muộn")
                 {
+                    // Initialize total amount to zero
+                    decimal totalAmount = 0;
                     // Retrieve the reservation to calculate late checkout fees
                     var reservation = await _reservationService.Get(order.ReservationId.Value);
 
@@ -122,31 +123,48 @@ namespace FHotel.Services.Services.Implementations
                             totalAmount += dailyRate * request.Quantity.Value;
                         }
                     }
+                    // Update the order's total amount with late checkout fees included
+                    var updateOrder = new OrderRequest
+                    {
+                        OrderId = order.OrderId,
+                        ReservationId = order.ReservationId,
+                        OrderedDate = order.OrderedDate,
+                        OrderStatus = "Confirmed",
+                        TotalAmount = totalAmount // Set the accumulated total amount
+                    };
+
+                    var updateOrderDetail = new OrderDetailRequest
+                    {
+                        OrderId = orderDetail.OrderId,
+                        ServiceId = orderDetail.ServiceId,
+                        Quantity = orderDetail.Quantity,
+                        Price = totalAmount // Set the accumulated total amount
+                    };
+
+                    // Update the order with the new total amount
+                    await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
+                    await Update(orderDetail.OrderDetailId, updateOrderDetail);
+                }
+                if (orderDetailResponse.Service.ServiceType.ServiceTypeName != "Trả phòng muộn")
+                {
+                    // Use the calculation service for TotalAmount calculation
+                    var totalAmount = orderDetailResponse.Service.Price * request.Quantity;
+
+                    var updateOrder = new OrderRequest
+                    {
+                        OrderId = order.OrderId,
+                        ReservationId = order.ReservationId,
+                        OrderedDate = order.OrderedDate,
+                        OrderStatus = order.OrderStatus,
+                        TotalAmount = totalAmount
+                    };
+
+                    await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
                 }
 
-                // Update the order's total amount with late checkout fees included
-                var updateOrder = new OrderRequest
-                {
-                    OrderId = order.OrderId,
-                    ReservationId = order.ReservationId,
-                    OrderedDate = order.OrderedDate,
-                    OrderStatus = "Confirmed",
-                    TotalAmount = totalAmount // Set the accumulated total amount
-                };
 
-                var updateOrderDetail = new OrderDetailRequest
-                {
-                    OrderId = orderDetail.OrderId,
-                    ServiceId = orderDetail.ServiceId,
-                    Quantity = orderDetail.Quantity,
-                    Price = totalAmount // Set the accumulated total amount
-                };
 
-                // Update the order with the new total amount
-                await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
-                await Update(orderDetail.OrderDetailId, updateOrderDetail);
-
-                return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
+                    return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
             }
             catch (Exception e)
             {
