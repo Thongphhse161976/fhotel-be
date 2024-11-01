@@ -159,12 +159,22 @@ namespace FHotel.Services.Services.Implementations
                         TotalAmount = totalAmount
                     };
 
+                    var updateOrderDetail = new OrderDetailRequest
+                    {
+                        OrderId = orderDetail.OrderId,
+                        ServiceId = orderDetail.ServiceId,
+                        Quantity = orderDetail.Quantity,
+                        Price = totalAmount // Set the accumulated total amount
+                    };
+
                     await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
+                    await Update(orderDetail.OrderDetailId, updateOrderDetail);
+
                 }
 
 
 
-                    return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
+                return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
             }
             catch (Exception e)
             {
