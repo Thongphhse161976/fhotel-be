@@ -13,7 +13,7 @@ namespace FHotel.Service.Validators.FacilityValidator
         public FacilityRequestValidator()
         {
             RuleFor(r => r.FacilityName)
-                .NotEmpty().WithMessage("Facility name is required.");
+                .NotEmpty().WithMessage("Vui lòng nhập tên.");
         }
     }
 }

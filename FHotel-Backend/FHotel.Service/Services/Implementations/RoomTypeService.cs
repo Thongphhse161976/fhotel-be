@@ -19,6 +19,7 @@ using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
 using Firebase.Storage;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -85,6 +86,12 @@ namespace FHotel.Services.Services.Implementations
             var validator = new RoomTypeCreateRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
 
+            if (await _unitOfWork.Repository<RoomType>()
+                .FindAsync(rt => rt.HotelId == request.HotelId && rt.TypeId == request.TypeId) != null)
+            {
+                validationResult.Errors.Add(new ValidationFailure("Type", "Khách sạn đã có loại phòng này."));
+            }
+
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
@@ -97,6 +104,10 @@ namespace FHotel.Services.Services.Implementations
 
             try
             {
+                // Check if the room type with the same TypeId already exists for the specified HotelId
+
+
+
                 // Create the RoomType entity
                 var roomType = _mapper.Map<RoomTypeCreateRequest, RoomType>(request);
                 roomType.RoomTypeId = Guid.NewGuid();
@@ -118,7 +129,7 @@ namespace FHotel.Services.Services.Implementations
                 // Now create the individual rooms based on the total room count
                 for (int i = 0; i < request.TotalRooms; i++)
                 {
-                    var room = new RoomCreateRequest
+                    var room = new RoomRequest
                     {
                         RoomNumber = highestRoomNumber + i + 1, // Start numbering from the highest room number
                         RoomTypeId = roomType.RoomTypeId,
@@ -127,9 +138,7 @@ namespace FHotel.Services.Services.Implementations
                     };
 
                     // Map and insert the Room into the database
-                    var roomEntity = _mapper.Map<RoomCreateRequest, Room>(room);
-                    roomEntity.RoomId = Guid.NewGuid();
-                    await _unitOfWork.Repository<Room>().InsertAsync(roomEntity);
+                    await _roomService.Create(room);
                 }
 
                 // Commit the transaction after creating all rooms
@@ -143,6 +152,7 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
 
 

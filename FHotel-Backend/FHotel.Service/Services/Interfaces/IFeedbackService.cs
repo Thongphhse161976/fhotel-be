@@ -19,5 +19,6 @@ namespace FHotel.Services.Services.Interfaces
         public Task<FeedbackResponse> Delete(Guid id);
 
         public Task<FeedbackResponse> Update(Guid id, FeedbackRequest request);
+        public Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByReservationId(Guid reservationId);
     }
 }

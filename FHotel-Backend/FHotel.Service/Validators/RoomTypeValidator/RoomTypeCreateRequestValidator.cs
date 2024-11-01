@@ -13,22 +13,22 @@ namespace FHotel.Service.Validators.RoomTypeValidator
         public RoomTypeCreateRequestValidator()
         {
             RuleFor(r => r.TypeId)
-                .NotEmpty().WithMessage("Type Id is required.");
+                .NotEmpty().WithMessage("Vui lòng nhập loại.");
 
             RuleFor(r => r.Description)
-            .NotEmpty().WithMessage("Description is required.");
+            .NotEmpty().WithMessage("Vui lòng nhập mô tả.");
             RuleFor(r => r.HotelId)
-            .NotEmpty().WithMessage("HotelId is required.");
+            .NotEmpty().WithMessage("Vui lòng nhập Id khách sạn.");
 
             RuleFor(r => r.RoomSize)
-                .NotNull().WithMessage("Room size is required.")
-                .GreaterThan(0).WithMessage("Room size must be greater than 0.");
+                .NotNull().WithMessage("Vui lòng nhập diện tích phòngd.")
+                .GreaterThan(0).WithMessage("Diện tích phòng phải lớn hơn 0.");
 
             
 
             RuleFor(r => r.TotalRooms)
-                .NotNull().WithMessage("Total rooms are required.")
-                .GreaterThan(0).WithMessage("Total rooms must be greater than 0.");
+                .NotNull().WithMessage("Vui lòng nhập tổng số phòng.")
+                .GreaterThan(0).WithMessage("Tổng số phòng phải lớn hơn 0.");
 
             
 

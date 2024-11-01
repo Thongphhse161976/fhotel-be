@@ -5,6 +5,7 @@ using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
@@ -32,9 +33,11 @@ namespace FHotel.API.Controllers
         private readonly IUserService _userService;
         private readonly IRoomStayHistoryService _roomStayHistoryService;
         private readonly IOrderDetailService _orderDetailService;
+        private readonly IFeedbackService _feedbackService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
-            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService)
+            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, 
+            IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService, IFeedbackService feedbackService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
@@ -43,6 +46,7 @@ namespace FHotel.API.Controllers
             _userService = userService;
             _roomStayHistoryService = roomStayHistoryService;
             _orderDetailService = orderDetailService;
+            _feedbackService = feedbackService;
         }
 
         /// <summary>
@@ -256,6 +260,26 @@ namespace FHotel.API.Controllers
             {
                 // Log the exception if you have logging set up
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all feedback by reservation id.
+        /// </summary>
+        [HttpGet("{id}/feedbacks")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FeedbackResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<OrderResponse>>> GetAllFeedbackByReservationId(Guid id)
+        {
+            try
+            {
+                var rs = await _feedbackService.GetAllFeedbackByReservationId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

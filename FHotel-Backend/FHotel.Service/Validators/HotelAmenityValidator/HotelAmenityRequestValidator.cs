@@ -13,9 +13,9 @@ namespace FHotel.Service.Validators.HotelAmenityValidator
         public HotelAmenityRequestValidator()
         {
             RuleFor(x => x.HotelId)
-                 .NotEmpty().WithMessage("Hotel id is required.");
+                 .NotEmpty().WithMessage("Vui lòng nhập khách sạn.");
             RuleFor(x => x.AmenityId)
-                 .NotEmpty().WithMessage("Amenity id is required.");
+                 .NotEmpty().WithMessage("Vui lòn nhập tiện nghi.");
         }
     }
 }

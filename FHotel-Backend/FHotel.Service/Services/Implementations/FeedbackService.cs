@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Services.DTOs.Feedbacks;
+using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -116,6 +117,16 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByReservationId(Guid reservationId)
+        {
+            var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
+                     .AsNoTracking()
+                    .Where(x => x.ReservationId == reservationId)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
         }
     }
 }

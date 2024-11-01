@@ -14,22 +14,22 @@ namespace FHotel.Service.Validators.ReservationValidator
         {
             // Validate CustomerId: it should not be null
             RuleFor(x => x.CustomerId)
-                .NotNull().WithMessage("Customer ID is required.");
+                .NotNull().WithMessage("Vui lòng nhập Id khách hàng.");
 
             // Validate CheckInDate: it should not be null, should be today or later
             RuleFor(x => x.CheckInDate)
-                .NotNull().WithMessage("Check-in date is required.")
-                .GreaterThanOrEqualTo(DateTime.Today).WithMessage("Check-in date must be today or in the future.");
+                .NotNull().WithMessage("Vui lòng nhập ngày nhận phòng.")
+                .GreaterThanOrEqualTo(DateTime.Today).WithMessage("Ngày nhận phòng phải là hôm nay hoặc tương lai.");
 
             // Validate CheckOutDate: it should not be null, and should be after CheckInDate
             RuleFor(x => x.CheckOutDate)
-                .NotNull().WithMessage("Check-out date is required.")
-                .GreaterThan(x => x.CheckInDate).WithMessage("Check-out date must be after check-in date.");
+                .NotNull().WithMessage("Vui lòng nhập ngày trả phòng.")
+                .GreaterThan(x => x.CheckInDate).WithMessage("Ngày trả phòng phải sau ngày nhận phòng.");
 
             // Validate TotalAmount: it should not be null or negative
             RuleFor(x => x.TotalAmount)
-                .NotNull().WithMessage("Total amount is required.")
-                .GreaterThan(0).WithMessage("Total amount must be greater than zero.");
+                .NotNull().WithMessage("Vui lòng nhập tổng số tiền.")
+                .GreaterThan(0).WithMessage("Tổng số tiền phải lớn hơn 0.");
         }
     }
 }
