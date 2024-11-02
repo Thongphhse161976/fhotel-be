@@ -1,9 +1,13 @@
-﻿using FHotel.Service.DTOs.Bills;
+﻿using FHotel.API.VnPay;
+using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.DTOs.Transactions;
+using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Orders;
+using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +24,19 @@ namespace FHotel.API.Controllers
         private readonly IBillService _billService;
         private readonly IOrderService _orderService;
         private readonly ITransactionService _transactionService;
+        private readonly IUserService _userService;
         private readonly IBillTransactionImageService _billTransactionImageService;
+        private readonly IVnPayService _vnPayService;
 
         public BillsController(IBillService billService, IBillTransactionImageService billTransactionImageService
-            , IOrderService orderService, ITransactionService transactionService)
+            , IOrderService orderService, ITransactionService transactionService, IUserService userService, IVnPayService vnPayService)
         {
             _billService = billService;
             _billTransactionImageService = billTransactionImageService;
             _orderService = orderService;
             _transactionService = transactionService;
+            _userService = userService;
+            _vnPayService = vnPayService;
         }
 
         /// <summary>
@@ -104,6 +112,9 @@ namespace FHotel.API.Controllers
         /// Update bill by bill id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<BillResponse>> Update(Guid id, [FromBody] BillRequest request)
         {
             try
@@ -175,6 +186,42 @@ namespace FHotel.API.Controllers
             {
                 return NotFound();
             }
+        }
+
+        /// <summary>
+        /// Pay through VnPay by bill id.
+        /// </summary>
+        [HttpPost("{id}/pay")]
+        public async Task<ActionResult<string>> Pay(Guid id)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+
+            var bill = await _billService.Get(id);
+            if (bill == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var customer = await _userService.Get(bill.Reservation.CustomerId.Value);
+                var vnPayModel = new VnPaymentRequestModel
+                {
+                    Amount = (int)(bill.TotalAmount),
+                    CreatedDate = localTime,
+                    Description = "Payment-For-Bill:",
+                    FullName = customer.Name,
+                    OrderId = id
+                };
+                return _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
+            }
+
         }
     }
 }

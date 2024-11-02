@@ -4,6 +4,8 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Services.DTOs.Orders;
+using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,10 +19,12 @@ namespace FHotel.Service.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public BillService(IUnitOfWork unitOfWork, IMapper mapper)
+        private IOrderService _orderService;
+        public BillService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _orderService = orderService;
         }
 
         public async Task<List<BillResponse>> GetAll()
@@ -39,6 +43,7 @@ namespace FHotel.Service.Services.Implementations
                 Bill bill = null;
                 bill = await _unitOfWork.Repository<Bill>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Reservation)
                     .Where(x => x.BillId == id)
                     .FirstOrDefaultAsync();
 
@@ -58,12 +63,41 @@ namespace FHotel.Service.Services.Implementations
 
         public async Task<BillResponse> Create(BillRequest request)
         {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
                 var bill = _mapper.Map<BillRequest, Bill>(request);
                 bill.BillId = Guid.NewGuid();
+                bill.CreatedDate = localTime;
+                bill.BillStatus = "Pending";
                 await _unitOfWork.Repository<Bill>().InsertAsync(bill);
                 await _unitOfWork.CommitAsync();
+
+                var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
+                if (orders.Count > 0)
+                {
+                    foreach (var order in orders)
+                    {
+                        var updateOrder = new OrderRequest()
+                        {
+                            OrderId = order.OrderId,
+                            ReservationId = order.ReservationId,
+                            BillId = bill.BillId,
+                            OrderedDate = order.OrderedDate,
+                            OrderStatus = order.OrderStatus,
+                            TotalAmount = order.TotalAmount,
+                        };
+                        await _orderService.Update(order.OrderId, updateOrder);
+                    }
+
+                }
 
                 return _mapper.Map<Bill, BillResponse>(bill);
             }

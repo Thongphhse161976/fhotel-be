@@ -83,7 +83,6 @@ namespace FHotel.Repository.Models
                     .ValueGeneratedNever()
                     .HasColumnName("BillID");
 
-                entity.Property(e => e.BillDate).HasColumnType("datetime");
 
                 entity.Property(e => e.BillStatus).HasMaxLength(50);
 
@@ -91,7 +90,6 @@ namespace FHotel.Repository.Models
 
                 entity.Property(e => e.LastUpdated).HasColumnType("datetime");
 
-                entity.Property(e => e.PaidAmount).HasColumnType("decimal(10, 2)");
 
                 entity.Property(e => e.ReservationId).HasColumnName("ReservationID");
 
