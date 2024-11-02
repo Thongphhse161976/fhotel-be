@@ -34,10 +34,12 @@ namespace FHotel.API.Controllers
         private readonly IRoomStayHistoryService _roomStayHistoryService;
         private readonly IOrderDetailService _orderDetailService;
         private readonly IFeedbackService _feedbackService;
+        private readonly IBillService _billService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
             IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, 
-            IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService, IFeedbackService feedbackService)
+            IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService, IFeedbackService feedbackService
+            , IBillService billService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
@@ -47,6 +49,7 @@ namespace FHotel.API.Controllers
             _roomStayHistoryService = roomStayHistoryService;
             _orderDetailService = orderDetailService;
             _feedbackService = feedbackService;
+            _billService = billService;
         }
 
         /// <summary>
@@ -275,6 +278,26 @@ namespace FHotel.API.Controllers
             try
             {
                 var rs = await _feedbackService.GetAllFeedbackByReservationId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get bill by reservation id.
+        /// </summary>
+        [HttpGet("{id}/bills")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<BillResponse>> GetBillByReservation(Guid id)
+        {
+            try
+            {
+                var rs = await _billService.GetBillByReservation(id);
                 return Ok(rs);
             }
             catch (Exception ex)

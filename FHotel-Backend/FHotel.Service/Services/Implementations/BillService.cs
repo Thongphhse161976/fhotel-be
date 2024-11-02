@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.Transactions;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.Services.Interfaces;
@@ -80,24 +81,7 @@ namespace FHotel.Service.Services.Implementations
                 await _unitOfWork.Repository<Bill>().InsertAsync(bill);
                 await _unitOfWork.CommitAsync();
 
-                var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
-                if (orders.Count > 0)
-                {
-                    foreach (var order in orders)
-                    {
-                        var updateOrder = new OrderRequest()
-                        {
-                            OrderId = order.OrderId,
-                            ReservationId = order.ReservationId,
-                            BillId = bill.BillId,
-                            OrderedDate = order.OrderedDate,
-                            OrderStatus = order.OrderStatus,
-                            TotalAmount = order.TotalAmount,
-                        };
-                        await _orderService.Update(order.OrderId, updateOrder);
-                    }
-
-                }
+                
 
                 return _mapper.Map<Bill, BillResponse>(bill);
             }
@@ -140,8 +124,31 @@ namespace FHotel.Service.Services.Implementations
                 }
                 bill = _mapper.Map(request, bill);
 
+
                 await _unitOfWork.Repository<Bill>().UpdateDetached(bill);
                 await _unitOfWork.CommitAsync();
+
+                if(bill.BillStatus == "Paid")
+                {
+                    var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
+                    if (orders.Count > 0)
+                    {
+                        foreach (var order in orders)
+                        {
+                            var updateOrder = new OrderRequest()
+                            {
+                                OrderId = order.OrderId,
+                                ReservationId = order.ReservationId,
+                                BillId = bill.BillId,
+                                OrderedDate = order.OrderedDate,
+                                OrderStatus = order.OrderStatus,
+                                TotalAmount = order.TotalAmount,
+                            };
+                            await _orderService.Update(order.OrderId, updateOrder);
+                        }
+
+                    }
+                }
 
                 return _mapper.Map<Bill, BillResponse>(bill);
             }
@@ -151,5 +158,15 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<BillResponse> GetBillByReservation(Guid id)
+        {
+            var bill = await _unitOfWork.Repository<Bill>().GetAll()
+                                           .ProjectTo<BillResponse>(_mapper.ConfigurationProvider)
+                                           .FirstOrDefaultAsync(d => d.ReservationId == id);
+
+            return bill;
+        }
+
     }
 }

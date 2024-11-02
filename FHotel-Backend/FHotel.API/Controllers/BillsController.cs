@@ -102,6 +102,9 @@ namespace FHotel.API.Controllers
         /// Delete bill by bill id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<BillResponse>> Delete(Guid id)
         {
             var rs = await _billService.Delete(id);
