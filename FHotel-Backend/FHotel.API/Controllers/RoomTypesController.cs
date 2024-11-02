@@ -5,6 +5,7 @@ using FHotel.Service.DTOs.TypePricings;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.RoomFacilities;
 using FHotel.Services.DTOs.RoomImages;
 using FHotel.Services.DTOs.Rooms;
@@ -29,16 +30,18 @@ namespace FHotel.API.Controllers
         private readonly IRoomFacilityService _roomFacilityService;
         private readonly ITypePricingService _typePricingService;
         private readonly IRoomService _roomService;
+        private readonly IReservationService _reservationService;
 
         public RoomTypesController(IRoomTypeService roomTypeService, 
             IRoomImageService roomImageService, IRoomFacilityService roomFacilityService,
-            ITypePricingService typePricingService, IRoomService roomService)
+            ITypePricingService typePricingService, IRoomService roomService, IReservationService reservationService)
         {
             _roomTypeService = roomTypeService;
             _roomImageService = roomImageService;
             _roomFacilityService = roomFacilityService;
             _typePricingService = typePricingService;
             _roomService = roomService;
+            _reservationService = reservationService;
         }
 
         /// <summary>
@@ -276,6 +279,25 @@ namespace FHotel.API.Controllers
             try
             {
                 var rs = await _roomService.GetAllRoomByRoomTypeId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Get a list of all reservations by room-type id.
+        /// </summary>
+        [HttpGet("{id}/reservations")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReservationResponse>>> GetAllReservationByRoomTypeId(Guid id)
+        {
+            try
+            {
+                var rs = await _reservationService.GetAllByRoomTypeId(id);
                 return Ok(rs);
             }
             catch (Exception ex)

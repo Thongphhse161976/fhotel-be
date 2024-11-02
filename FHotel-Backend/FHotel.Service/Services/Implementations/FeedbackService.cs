@@ -124,6 +124,8 @@ namespace FHotel.Services.Services.Implementations
         {
             var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
                      .AsNoTracking()
+                     .Include(x=> x.Reservation)
+                        .ThenInclude(x=> x.Customer)
                     .Where(x => x.ReservationId == reservationId)
                     .ToListAsync();
 
@@ -134,6 +136,8 @@ namespace FHotel.Services.Services.Implementations
         {
             var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Reservation)
+                        .ThenInclude(x => x.Customer)
                     .Where(x => x.Reservation.RoomType.HotelId == hotelId)
                     .ToListAsync();
 
