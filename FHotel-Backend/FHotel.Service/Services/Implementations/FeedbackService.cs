@@ -126,6 +126,9 @@ namespace FHotel.Services.Services.Implementations
                      .AsNoTracking()
                      .Include(x=> x.Reservation)
                         .ThenInclude(x=> x.Customer)
+                    .Include(x => x.Reservation)
+                        .ThenInclude(x => x.RoomType)
+                            .ThenInclude(x=> x.Type)
                     .Where(x => x.ReservationId == reservationId)
                     .ToListAsync();
 
@@ -138,6 +141,9 @@ namespace FHotel.Services.Services.Implementations
                      .AsNoTracking()
                      .Include(x => x.Reservation)
                         .ThenInclude(x => x.Customer)
+                    .Include(x => x.Reservation)
+                        .ThenInclude(x => x.RoomType)
+                            .ThenInclude(x => x.Type)
                     .Where(x => x.Reservation.RoomType.HotelId == hotelId)
                     .ToListAsync();
 
