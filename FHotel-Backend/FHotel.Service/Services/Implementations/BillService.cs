@@ -6,6 +6,7 @@ using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Transactions;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Orders;
+using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -167,6 +168,50 @@ namespace FHotel.Service.Services.Implementations
 
             return bill;
         }
+        public async Task<List<BillResponse>> GetAllBillByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
 
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+
+            // Retrieve all reservations for the hotel associated with the staff member
+            var bills = await _unitOfWork.Repository<Bill>()
+                                                .GetAll()
+                                                .Include(x => x.Reservation)
+                                                .Where(r => r.Reservation.RoomType.HotelId == hotelId)
+                                                .ProjectTo<BillResponse>(_mapper.ConfigurationProvider)
+                                                .ToListAsync();
+
+            // Check if any reservations were found
+            if (bills == null || !bills.Any())
+            {
+                throw new Exception("No orders found for this staff's hotel.");
+            }
+
+            return bills;
+        }
+        public async Task<List<BillResponse>> GetAllByOwnerId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Bill>().GetAll()
+                                            .Where(r => r.Reservation.RoomType.Hotel.OwnerId == id)
+                                            .ProjectTo<BillResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            // Check if list is null or empty
+            if (list == null || !list.Any())
+            {
+                throw new Exception("No bills found.");
+            }
+            return list;
+        }
     }
 }

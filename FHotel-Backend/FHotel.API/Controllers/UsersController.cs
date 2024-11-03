@@ -1,4 +1,5 @@
-﻿using FHotel.Service.DTOs.HotelStaffs;
+﻿using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.Profiles;
@@ -38,10 +39,11 @@ namespace FHotel.API.Controllers
         private readonly IHotelStaffService _hotelStaffService;
         private readonly IHotelVerificationService _hotelVerificationService;
         private readonly IOrderService _orderService;
+        private readonly IBillService _billService;
         private readonly IRoomStayHistoryService _roomStayHistoryService;
         private readonly IRoomTypeService _roomTypeService;
         private readonly IRoomService _roomService;
-        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService)
+        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService, IBillService billService)
         {
             _userService = userService;
             _reservationService = reservationService;
@@ -51,6 +53,7 @@ namespace FHotel.API.Controllers
             _roomStayHistoryService = roomStayHistoryService;
             _roomTypeService = roomTypeService;
             _roomService = roomService;
+            _billService = billService;
         }
 
         /// <summary>
@@ -533,6 +536,60 @@ namespace FHotel.API.Controllers
                 }
 
                 return Ok(customerList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Get all bills by staff ID.
+        /// </summary>
+        [HttpGet("{staffId}/staff-bills")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<BillResponse>>> GetAllBillByStaffId(Guid staffId)
+        {
+            try
+            {
+                var billList = await _billService.GetAllBillByStaffId(staffId);
+
+                if (billList == null || !billList.Any())
+                {
+                    return NotFound(new { message = "No bills found for this staff." });
+                }
+
+                return Ok(billList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all bills by owner id.
+        /// </summary>
+        /// <param name="Id">The ID of the user.</param>
+        /// <returns>A list of bills.</returns>
+        [HttpGet("{id}/owner-bills")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> GetAllBillByOwnerId(Guid id)
+        {
+            try
+            {
+                var staffList = await _billService.GetAllByOwnerId(id);
+
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No bill found for this user." });
+                }
+
+                return Ok(staffList);
             }
             catch (Exception ex)
             {
