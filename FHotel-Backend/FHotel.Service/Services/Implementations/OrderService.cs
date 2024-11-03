@@ -81,7 +81,7 @@ namespace FHotel.Services.Services.Implementations
                 var order = _mapper.Map<OrderCreateRequest, Order>(request);
                 order.OrderId = Guid.NewGuid();
                 order.OrderedDate = localTime;
-                order.OrderStatus = "Pending";
+                //order.OrderStatus = "Pending";
                 await _unitOfWork.Repository<Order>().InsertAsync(order);
                 await _unitOfWork.CommitAsync();
                 
