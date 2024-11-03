@@ -120,7 +120,7 @@ namespace FHotel.Repository.SMS
         public string SendOTP(string phoneNumber, string otpCode)
         {
             string content = $"Your verification code is {otpCode}. Please enter it to verify your phone number.";
-            return sendSMS(new string[] { phoneNumber }, content, 2, "e5871753dd9f057a");
+            return sendSMS(new string[] { phoneNumber }, content, 2, "e23ce1a827f36cfa");
         }
         
     }

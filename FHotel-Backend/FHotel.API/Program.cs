@@ -75,7 +75,7 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
-
+builder.Services.AddSingleton<InMemoryOtpStore>();
 
 //mapper
 builder.Services.AddAutoMapper(typeof(ApplicationMapper));

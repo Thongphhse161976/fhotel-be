@@ -35,11 +35,12 @@ namespace FHotel.API.Controllers
         private readonly IOrderDetailService _orderDetailService;
         private readonly IFeedbackService _feedbackService;
         private readonly IBillService _billService;
+        private readonly IRoomTypeService _roomTypeService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
             IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, 
             IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService, IFeedbackService feedbackService
-            , IBillService billService)
+            , IBillService billService, IRoomTypeService roomTypeService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
@@ -50,6 +51,7 @@ namespace FHotel.API.Controllers
             _orderDetailService = orderDetailService;
             _feedbackService = feedbackService;
             _billService = billService;
+            _roomTypeService = roomTypeService;
         }
 
         /// <summary>
@@ -340,6 +342,14 @@ namespace FHotel.API.Controllers
                 return _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
             }
 
+            
+
+        }
+        [HttpGet("api/roomtypes/available-on-date")]
+        public async Task<IActionResult> GetAvailableRoomsOnDate(Guid roomTypeId, DateTime targetDate)
+        {
+            var availableRooms = await _roomTypeService.CountAvailableRoomsOnDateAsync(roomTypeId, targetDate);
+            return Ok(new { AvailableRooms = availableRooms });
         }
     }
 

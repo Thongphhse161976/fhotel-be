@@ -43,9 +43,10 @@ namespace FHotel.Services.Services.Implementations
         private readonly IWalletService _walletService;
         private readonly ISpeedSMSAPI _smsService;
         private readonly IReservationService _reservationService;
+        private readonly InMemoryOtpStore _inMemoryOtpStore;
 
         public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService,
-            IWalletService walletService, ISpeedSMSAPI smsService, IReservationService reservationService)
+            IWalletService walletService, ISpeedSMSAPI smsService, IReservationService reservationService, InMemoryOtpStore inMemoryOtpStore)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -53,6 +54,7 @@ namespace FHotel.Services.Services.Implementations
             _walletService = walletService;
             _smsService = smsService;
             _reservationService = reservationService;
+            _inMemoryOtpStore = inMemoryOtpStore;
         }
 
         public async Task<List<UserResponse>> GetAll()
@@ -432,6 +434,7 @@ namespace FHotel.Services.Services.Implementations
                     await _walletService.Create(wallet);
                     string otpCode = GenerateOTP();
                     _smsService.SendOTP(request.PhoneNumber, otpCode);
+                    _inMemoryOtpStore.StoreOTP(request.PhoneNumber, otpCode, TimeSpan.FromMinutes(5));
                 }
                 
                 return _mapper.Map<User, UserResponse>(user);
@@ -443,6 +446,33 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
+        public async Task VerifyOTP(string phoneNumber, string otpCode)
+        {
+            bool isOtpValid = _inMemoryOtpStore.ValidateOTP(phoneNumber, otpCode);
+            if (!isOtpValid)
+            {
+                throw new Exception("Invalid OTP. Please try again.");
+            }
+
+            var user = await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == phoneNumber);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            if (user.IsActive != true)
+            {
+                user.IsActive = true;
+
+                await _unitOfWork.Repository<User>().UpdateDetached(user);
+                await _unitOfWork.CommitAsync();
+            }
+            else
+            {
+                throw new Exception("Account already activated");
+            }
+        }
         public async Task SendActivationEmail(string toEmail)
         {
             // Retrieve email settings from appsettings.json

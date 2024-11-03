@@ -180,6 +180,25 @@ namespace FHotel.API.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Verify otp to activate user.
+        /// </summary>
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifyOTP(string phoneNumber, string otpCode)
+        {
+            try
+            {
+                await _userService.VerifyOTP(phoneNumber,otpCode);
+                return Ok(new ApiResponse
+                {
+                    Success = true,
+                    Message = "Your account is available now!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
     }
 }

@@ -30,6 +30,8 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<UserResponse> Register(UserCreateRequest request);
 
+        public Task VerifyOTP(string phoneNumber, string otpCode);
+
         public Task SendActivationEmail(string toEmail);
 
         public Task ActivateUser(string email);

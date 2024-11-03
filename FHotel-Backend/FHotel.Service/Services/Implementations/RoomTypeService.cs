@@ -407,6 +407,31 @@ namespace FHotel.Services.Services.Implementations
 
             return roomTypes;
         }
+        public async Task<int> CountAvailableRoomsOnDateAsync(Guid id, DateTime targetDate)
+        {
+            // Lấy thông tin loại phòng
+            var roomType = await _unitOfWork.Repository<RoomType>().FindAsync(r => r.RoomTypeId == id);
+            if (roomType == null)
+            {
+                throw new Exception("Room type not found");
+            }
 
+            // Tổng số phòng trong loại phòng này
+            int totalRooms = roomType.TotalRooms ?? 0;
+
+            // Tìm tất cả các đặt phòng đã xác nhận (Confirmed) trong loại phòng này
+            var reservations = await _unitOfWork.Repository<Reservation>().GetAll()
+                .Where(r => r.RoomTypeId == id &&
+                            r.CheckInDate <= targetDate && r.CheckOutDate >= targetDate)
+                .ToListAsync();
+
+            // Tính tổng số phòng đang bận vào ngày đó
+            int reservedRoomsOnTargetDate = reservations.Sum(r => r.NumberOfRooms ?? 0);
+
+            // Tính số phòng trống
+            int availableRoomsOnTargetDate = totalRooms - reservedRoomsOnTargetDate;
+
+            return availableRoomsOnTargetDate > 0 ? availableRoomsOnTargetDate : 0;
+        }
     }
 }
