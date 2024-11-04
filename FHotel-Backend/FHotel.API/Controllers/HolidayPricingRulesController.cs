@@ -1,6 +1,7 @@
 ﻿using FHotel.Service.DTOs.HolidayPricingRules;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.Services.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,9 +74,18 @@ namespace FHotel.API.Controllers
                 var result = await _holidayPricingRuleService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -106,9 +116,18 @@ namespace FHotel.API.Controllers
                 var rs = await _holidayPricingRuleService.Update(id, request);
                 return Ok(rs);
             }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
     }

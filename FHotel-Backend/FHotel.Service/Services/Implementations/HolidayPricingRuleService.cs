@@ -4,6 +4,11 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.HolidayPricingRules;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Service.Validators.HolidayPricingRuleValidator;
+using FHotel.Service.Validators.TypePricingValidator;
+using FHotel.Services.DTOs.HotelImages;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,6 +44,8 @@ namespace FHotel.Service.Services.Implementations
                 HolidayPricingRule holidayPricingRule = null;
                 holidayPricingRule = await _unitOfWork.Repository<HolidayPricingRule>().GetAll()
                      .AsNoTracking()
+                     .Include(x => x.Holiday)
+                     .Include(x => x.District)
                     .Where(x => x.HolidayPricingRuleId == id)
                     .FirstOrDefaultAsync();
 
@@ -58,6 +65,24 @@ namespace FHotel.Service.Services.Implementations
 
         public async Task<HolidayPricingRuleResponse> Create(HolidayPricingRuleCreateRequest request)
         {
+            var validator = new HolidayPricingRuleCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // Use GetAll with a LINQ filter to check for duplicates
+            var existingPricing = (await GetAll())
+                .Where(u => u.DistrictId == request.DistrictId && u.HolidayId == request.HolidayId)
+                .ToList();
+
+            if (existingPricing.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("Quận và ngày lễ", "Đã tạo cho quận này rồi!."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 
@@ -133,6 +158,18 @@ namespace FHotel.Service.Services.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<IEnumerable<HolidayPricingRuleResponse>> GetAllHolidayPricingRuleByHolidayId(Guid holidayId)
+        {
+            var holidayPricings = await _unitOfWork.Repository<HolidayPricingRule>().GetAll()
+                     .AsNoTracking()
+                     .Include(x => x.District)
+                     .Include(x => x.Holiday)
+                    .Where(x => x.HolidayId == holidayId)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<HolidayPricingRule>, IEnumerable<HolidayPricingRuleResponse>>(holidayPricings);
         }
     }
 }

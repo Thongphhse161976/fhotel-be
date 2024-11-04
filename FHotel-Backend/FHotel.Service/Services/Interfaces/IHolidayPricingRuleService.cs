@@ -18,5 +18,6 @@ namespace FHotel.Service.Services.Interfaces
         public Task<HolidayPricingRuleResponse> Delete(Guid id);
 
         public Task<HolidayPricingRuleResponse> Update(Guid id, HolidayPricingRuleUpdateRequest request);
+        public Task<IEnumerable<HolidayPricingRuleResponse>> GetAllHolidayPricingRuleByHolidayId(Guid holidayId);
     }
 }

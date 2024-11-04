@@ -212,7 +212,7 @@ namespace FHotel.Service.Services.Implementations
                 // Check for holiday pricing rules
                 var holidayPricingRules = await _holidayPricingRuleService.GetAll(); // Get the list of holiday pricing rules
                 var holidayPricingRule = holidayPricingRules
-                    .Where(h => h.DistrictId == districtId && h.HolidayDate == DateTime.Now.Date)
+                    .Where(h => h.DistrictId == districtId && h.Holiday.HolidayDate == DateTime.Now.Date)
                     .FirstOrDefault(); // Filter for applicable rules
 
                 if (holidayPricingRule != null)
@@ -291,7 +291,7 @@ namespace FHotel.Service.Services.Implementations
                 // Step 5: Check for holiday pricing rules
                 var holidayPricingRules = await _holidayPricingRuleService.GetAll(); // Get the list of holiday pricing rules
                 var holidayPricingRule = holidayPricingRules
-                    .Where(h => h.DistrictId == districtId && h.HolidayDate == date.Date)
+                    .Where(h => h.DistrictId == districtId && h.Holiday.HolidayDate == date.Date)
                     .FirstOrDefault(); // Filter for applicable rules
 
                 if (holidayPricingRule != null)
