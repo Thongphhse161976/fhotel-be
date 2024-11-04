@@ -108,9 +108,6 @@ namespace FHotel.Services.Services.Implementations
                     throw new Exception("Not enough available rooms.");
                 }
 
-                // Reduce the available rooms
-                roomType.AvailableRooms -= request.NumberOfRooms;
-
                 var updateRoomType = new RoomTypeUpdateRequest()
                 {
                     RoomTypeId = roomType.RoomTypeId,
