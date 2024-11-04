@@ -25,11 +25,13 @@ namespace FHotel.Service.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
         private IRoomTypeService _roomTypeService;
-        public TypePricingService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService)
+        private IHolidayPricingRuleService _holidayPricingRuleService;
+        public TypePricingService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService, IHolidayPricingRuleService holidayPricingRuleService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roomTypeService = roomTypeService;
+            _holidayPricingRuleService = holidayPricingRuleService;
         }
 
         public async Task<List<TypePricingResponse>> GetAll()
@@ -196,6 +198,7 @@ namespace FHotel.Service.Services.Implementations
         {
             try
             {
+                // Fetch the regular pricing
                 var pricing = await _unitOfWork.Repository<TypePricing>()
                     .GetAll()
                     .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
@@ -204,6 +207,18 @@ namespace FHotel.Service.Services.Implementations
                 if (pricing == null)
                 {
                     throw new Exception("No pricing found for the specified criteria.");
+                }
+
+                // Check for holiday pricing rules
+                var holidayPricingRules = await _holidayPricingRuleService.GetAll(); // Get the list of holiday pricing rules
+                var holidayPricingRule = holidayPricingRules
+                    .Where(h => h.DistrictId == districtId && h.HolidayDate == DateTime.Now.Date)
+                    .FirstOrDefault(); // Filter for applicable rules
+
+                if (holidayPricingRule != null)
+                {
+                    // Calculate the holiday price
+                    pricing.Price *= (1 + (holidayPricingRule.PercentageIncrease / 100));
                 }
 
                 return _mapper.Map<TypePricing, TypePricingResponse>(pricing);
@@ -273,7 +288,20 @@ namespace FHotel.Service.Services.Implementations
                     throw new Exception($"No pricing available for the specified date: {date.ToShortDateString()}.");
                 }
 
-                // Step 5: Return the price
+                // Step 5: Check for holiday pricing rules
+                var holidayPricingRules = await _holidayPricingRuleService.GetAll(); // Get the list of holiday pricing rules
+                var holidayPricingRule = holidayPricingRules
+                    .Where(h => h.DistrictId == districtId && h.HolidayDate == date.Date)
+                    .FirstOrDefault(); // Filter for applicable rules
+
+                if (holidayPricingRule != null)
+                {
+                    // Calculate the holiday price
+                    decimal holidayPrice = (decimal)(pricing.Price.Value * (1 + (holidayPricingRule.PercentageIncrease / 100)));
+                    return holidayPrice;
+                }
+
+                // Step 6: Return the normal price if no holiday pricing is applied
                 return pricing.Price ?? throw new Exception($"Price for the specified date ({date.ToShortDateString()}) is not set.");
             }
             catch (Exception ex)
@@ -281,6 +309,8 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception($"Error fetching pricing for the specified date: {ex.Message}");
             }
         }
+
+
 
 
     }

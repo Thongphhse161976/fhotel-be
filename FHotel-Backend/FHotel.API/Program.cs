@@ -70,6 +70,7 @@ builder.Services.AddScoped<ISpeedSMSAPI, SpeedSMSAPI>();
 builder.Services.AddScoped<IHotelDocumentService, HotelDocumentService>();
 builder.Services.AddScoped<IHotelImageService, HotelImageService>();
 builder.Services.AddScoped<IUserDocumentService, UserDocumentService>();
+builder.Services.AddScoped<IHolidayPricingRuleService, HolidayPricingRuleService>();
 
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();

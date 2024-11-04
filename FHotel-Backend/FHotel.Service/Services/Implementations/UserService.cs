@@ -44,9 +44,10 @@ namespace FHotel.Services.Services.Implementations
         private readonly ISpeedSMSAPI _smsService;
         private readonly IReservationService _reservationService;
         private readonly InMemoryOtpStore _inMemoryOtpStore;
+        private readonly IHotelStaffService _hotelStaffService;
 
         public UserService(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService,
-            IWalletService walletService, ISpeedSMSAPI smsService, IReservationService reservationService, InMemoryOtpStore inMemoryOtpStore)
+            IWalletService walletService, ISpeedSMSAPI smsService, IReservationService reservationService, InMemoryOtpStore inMemoryOtpStore, IHotelStaffService hotelStaffService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -55,6 +56,7 @@ namespace FHotel.Services.Services.Implementations
             _smsService = smsService;
             _reservationService = reservationService;
             _inMemoryOtpStore = inMemoryOtpStore;
+            _hotelStaffService = hotelStaffService;
         }
 
         public async Task<List<UserResponse>> GetAll()
@@ -653,10 +655,10 @@ namespace FHotel.Services.Services.Implementations
         public async Task<List<UserResponse>> GetAllCustomerByStaffId(Guid staffId)
         {
             // Retrieve the HotelID associated with the HotelStaff
-            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
-                                               .GetAll()
-                                               .FirstOrDefaultAsync(hs => hs.UserId == staffId);
-
+           
+            var hotelStaffs = await _hotelStaffService.GetAll();
+            var hotelStaff = hotelStaffs.Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefault();
             if (hotelStaff == null)
             {
                 throw new Exception("Staff not found or not associated with any hotel.");
