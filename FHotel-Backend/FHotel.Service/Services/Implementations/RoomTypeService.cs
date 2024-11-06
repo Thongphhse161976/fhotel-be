@@ -26,6 +26,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -299,6 +300,24 @@ namespace FHotel.Services.Services.Implementations
         }
 
 
+        public static string RemoveAccents(string input)
+        {
+            if (input == null) return string.Empty;
+
+            string normalizedString = input.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in normalizedString)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
         public async Task<IEnumerable<HotelResponse>> SearchHotelsWithRoomTypes(List<RoomSearchRequest> searchRequests, string? query)
         {
             var roomTypesQuery = await _unitOfWork.Repository<RoomType>()
@@ -319,11 +338,13 @@ namespace FHotel.Services.Services.Implementations
                 })
                 .ToList();
 
-            // Apply the single query filter across the combined address if provided
+            // Apply the query filter for address, district, or city if provided
             if (!string.IsNullOrEmpty(query))
             {
+                var normalizedQuery = RemoveAccents(query.ToLower()); // Normalize the query to remove accents
+
                 hotelDetails = hotelDetails.Where(h =>
-                    h.CombinedAddress.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    RemoveAccents(h.CombinedAddress.ToLower()).Contains(normalizedQuery)) // Normalize hotel address as well
                     .ToList();
             }
 
@@ -340,42 +361,50 @@ namespace FHotel.Services.Services.Implementations
                 })
                 .ToList();
 
-            // Log after grouping
-            Console.WriteLine($"Grouped Hotels Count After Grouping: {hotelRoomTypes.Count}");
+            // Check each hotel against all search requests
             foreach (var hotelGroup in hotelRoomTypes)
             {
-                Console.WriteLine($"Hotel: {hotelGroup.Hotel.HotelName}, Room Types Count: {hotelGroup.RoomTypes.Count}");
-                foreach (var roomType in hotelGroup.RoomTypes)
-                {
-                    Console.WriteLine($"- Room Type ID: {roomType.TypeId}, Available: {roomType.AvailableRooms}");
-                }
-            }
+                // Track if the hotel satisfies all conditions for every searchRequest
+                bool satisfiesAllRequests = true;
 
-            // Check each hotel against all search requests
-            foreach (var searchRequest in searchRequests)
-            {
-                // Iterate over the hotels
-                foreach (var hotelGroup in hotelRoomTypes)
+                foreach (var searchRequest in searchRequests)
                 {
-                    // Check if the hotel has all required room types with sufficient availability
-                    bool hasAllRequiredRoomTypes = searchRequests.All(sr =>
-                        hotelGroup.RoomTypes.Any(rt => rt.TypeId == sr.TypeId
-                                                        && rt.AvailableRooms >= sr.Quantity));
-
-                    if (hasAllRequiredRoomTypes)
+                    var roomType = hotelGroup.RoomTypes.FirstOrDefault(rt => rt.TypeId == searchRequest.TypeId);
+                    if (roomType != null)
                     {
-                        // Directly check HotelId without using Value
-                        if (!hotelIds.Contains(hotelGroup.Hotel.HotelId))
+                        int availableRoomsInRange = await CountAvailableRoomsInRangeAsync(roomType.RoomTypeId, searchRequest.CheckInDate, searchRequest.CheckOutDate);
+
+                        // Check if the hotel has enough available rooms for the current search request
+                        bool hasRequiredRooms = availableRoomsInRange >= searchRequest.Quantity;
+
+                        // If any request condition is not met, break out and mark this hotel as unsatisfactory
+                        if (!hasRequiredRooms)
                         {
-                            hotels.Add(_mapper.Map<HotelResponse>(hotelGroup.Hotel));
-                            hotelIds.Add(hotelGroup.Hotel.HotelId); // Directly use HotelId
+                            satisfiesAllRequests = false;
+                            break;
                         }
                     }
+                    else
+                    {
+                        satisfiesAllRequests = false;
+                        break;
+                    }
+                }
+
+                // If the hotel satisfies all requests, add it to the result list
+                if (satisfiesAllRequests && !hotelIds.Contains(hotelGroup.Hotel.HotelId))
+                {
+                    hotels.Add(_mapper.Map<HotelResponse>(hotelGroup.Hotel));
+                    hotelIds.Add(hotelGroup.Hotel.HotelId);
                 }
             }
 
             return hotels;
         }
+
+
+
+
 
         public async Task<List<RoomTypeResponse>> GetAllRoomTypeByStaffId(Guid staffId)
         {
@@ -434,6 +463,9 @@ namespace FHotel.Services.Services.Implementations
 
             return availableRoomsInRange > 0 ? availableRoomsInRange : 0;
         }
+
+        
+
 
     }
 }

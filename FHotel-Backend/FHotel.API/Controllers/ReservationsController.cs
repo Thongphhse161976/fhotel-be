@@ -12,6 +12,7 @@ using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.DTOs.UserDocuments;
 using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
@@ -38,11 +39,12 @@ namespace FHotel.API.Controllers
         private readonly IFeedbackService _feedbackService;
         private readonly IBillService _billService;
         private readonly IRoomTypeService _roomTypeService;
+        private readonly IHotelService _hotelService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
             IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, 
             IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService, IFeedbackService feedbackService
-            , IBillService billService, IRoomTypeService roomTypeService)
+            , IBillService billService, IRoomTypeService roomTypeService, IHotelService hotelService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
@@ -54,6 +56,7 @@ namespace FHotel.API.Controllers
             _feedbackService = feedbackService;
             _billService = billService;
             _roomTypeService = roomTypeService;
+            _hotelService = hotelService;
         }
 
         /// <summary>
@@ -355,6 +358,17 @@ namespace FHotel.API.Controllers
             var availableRooms = await _roomTypeService.CountAvailableRoomsInRangeAsync(roomTypeId,checkinDate, checkoutDate);
             return Ok(new { AvailableRooms = availableRooms });
         }
+
+        [HttpGet("api/hotels/available-on-date")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<HotelResponse>>> SearchAvailableRoomsOnDate([FromQuery]DateTime checkinDate, [FromQuery] DateTime checkoutDate)
+        {
+            var availableHotels = await _hotelService.GetHotelsWithAvailableRoomTypesInRangeAsync(checkinDate, checkoutDate);
+            return Ok(availableHotels);
+        }
+        
         [HttpPost("search")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

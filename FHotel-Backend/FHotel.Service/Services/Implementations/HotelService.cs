@@ -7,6 +7,7 @@ using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.Validators.HotelValidator;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Interfaces;
 using Firebase.Auth;
 using Firebase.Storage;
@@ -360,6 +361,50 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(e.Message);
             }
+        }
+
+        public async Task<List<HotelResponse>> GetHotelsWithAvailableRoomTypesInRangeAsync(DateTime checkIn, DateTime checkOut)
+        {
+            // Lấy tất cả các khách sạn cùng loại phòng của họ
+            var roomTypes = await _unitOfWork.Repository<RoomType>().GetAll()
+                .ProjectTo<RoomTypeResponse>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            var hotels = await GetAll();
+            var availableHotels = new List<HotelResponse>();
+            foreach (var roomType in roomTypes)
+            {
+                int totalRooms = roomType.TotalRooms ?? 0;
+
+                // Tìm tất cả các đặt phòng trong loại phòng này và có giao với khoảng thời gian check-in và check-out
+                var reservations = await _unitOfWork.Repository<Reservation>().GetAll()
+                    .Where(r => r.RoomTypeId == roomType.RoomTypeId &&
+                                r.CheckInDate <= checkOut && r.CheckOutDate >= checkIn)
+                    .ToListAsync();
+
+                // Tính tổng số phòng đang bận trong khoảng thời gian đó
+                int reservedRoomsInRange = reservations.Sum(r => r.NumberOfRooms ?? 0);
+
+                // Kiểm tra xem còn phòng trống không
+                int availableRoomsInRange = totalRooms - reservedRoomsInRange;
+
+                if (availableRoomsInRange > 0)
+                {
+                    // Tìm khách sạn chứa loại phòng này trong danh sách kết quả
+                    var hotelResponse = hotels
+                        .FirstOrDefault(h => h.HotelId == roomType.Hotel.HotelId);
+
+                    if (hotelResponse != null)
+                    {
+
+                        availableHotels.Add(hotelResponse);
+                    }
+
+
+                }
+            }
+
+            return availableHotels;
         }
     }
 }

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Districts;
+using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Service.Validators.RoomValidator;
 using FHotel.Services.DTOs.Rooms;
@@ -11,6 +12,7 @@ using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +25,13 @@ namespace FHotel.Services.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public RoomService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IServiceProvider _serviceProvider;
+
+        public RoomService(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<List<RoomResponse>> GetAll()
@@ -143,7 +148,6 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<RoomResponse> Update(Guid id, RoomRequest request)
         {
-           
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 
@@ -152,29 +156,63 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
-            // Get the total number of room for this room type
-           
+
             try
             {
+                // Find the room to update
                 Room room = _unitOfWork.Repository<Room>()
                             .Find(x => x.RoomId == id);
                 if (room == null)
                 {
-                    throw new Exception();
+                    throw new KeyNotFoundException("Room not found.");
                 }
+
+                // Map the update request to the room entity
                 room = _mapper.Map(request, room);
                 room.UpdatedDate = localTime;
+
+                // Update the room
                 await _unitOfWork.Repository<Room>().UpdateDetached(room);
                 await _unitOfWork.CommitAsync();
 
+                // If room is available, update the RoomType's available rooms
+                if (room.Status == "Available")
+                {
+                    var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
+                    var roomType = await _roomTypeService.Get(room.RoomTypeId.Value);
+                    if (roomType.AvailableRooms < roomType.TotalRooms)
+                    {
+                        roomType.AvailableRooms += 1;
+
+                        await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
+                        {
+                            RoomTypeId = roomType.RoomTypeId,
+                            AvailableRooms = roomType.AvailableRooms,
+                            TotalRooms = roomType.TotalRooms,
+                            HotelId = roomType.HotelId,
+                            TypeId = roomType.TypeId,
+                            Description = roomType.Description,
+                            RoomSize = roomType.RoomSize,
+                            IsActive = roomType.IsActive,
+                            Note = roomType.Note,
+                        });
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Available rooms cannot exceed total rooms.");
+                    }
+                }
+
+                // Return the updated room
                 return _mapper.Map<Room, RoomResponse>(room);
             }
-
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                // Log error (if logging is available)
+                throw new ApplicationException($"Error updating room: {ex.Message}", ex);
             }
         }
+
 
         public async Task<List<RoomResponse>> GetAllRoomByRoomTypeId(Guid id)
         {
