@@ -24,6 +24,7 @@ namespace FHotel.Services.Services.Implementations
         private IMapper _mapper;
         private readonly IRoomTypeService _roomTypeService;
         private readonly ITypePricingService _typePricingService;
+
        
         //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
@@ -355,7 +356,25 @@ namespace FHotel.Services.Services.Implementations
             return list;
         }
 
-        
+        public async Task<List<ReservationResponse>> SearchReservations(string? query)
+        {
+            if (string.IsNullOrEmpty(query))
+                return new List<ReservationResponse>();
+
+            query = query.ToLower();
+            var list = await _unitOfWork.Repository<Reservation>().GetAll()
+                                .Where(r => r.Code.ToLower().Contains(query)
+                                || r.Customer.Name.ToLower().Contains(query)
+                                || r.Customer.Email.ToLower().Contains(query)
+                                || r.Customer.PhoneNumber.ToLower().Contains(query)
+                                || r.Customer.IdentificationNumber.ToLower().Contains(query))
+                                .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                                .ToListAsync();
+
+            return list;
+        }
+
+
 
     }
 }

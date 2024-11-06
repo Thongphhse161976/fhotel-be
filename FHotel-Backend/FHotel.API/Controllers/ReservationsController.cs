@@ -3,10 +3,12 @@ using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
+using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelDocuments;
+using FHotel.Services.DTOs.Hotels;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
@@ -350,6 +352,29 @@ namespace FHotel.API.Controllers
         {
             var availableRooms = await _roomTypeService.CountAvailableRoomsOnDateAsync(roomTypeId, targetDate);
             return Ok(new { AvailableRooms = availableRooms });
+        }
+        [HttpPost("search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> SearchReservations([FromQuery] string? query)
+        {
+            try
+            {
+                // Call the service to search with multiple room types and quantities
+                var result = await _reservationService.SearchReservations(query);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound("No reservation matching the search criteria.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
         }
     }
 
