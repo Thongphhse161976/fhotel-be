@@ -9,6 +9,8 @@ namespace FHotel.Service.DTOs.Hotels
     public class HotelUpdateRequest
     {
         public Guid HotelId { get; set; }
+
+        public string? Code { get; set; }
         public string? HotelName { get; set; }
         public string? OwnerName { get; set; }
         public string? OwnerEmail { get; set; }

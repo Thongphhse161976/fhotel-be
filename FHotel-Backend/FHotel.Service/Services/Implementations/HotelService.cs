@@ -78,7 +78,6 @@ namespace FHotel.Services.Services.Implementations
             var validator = new HotelCreateRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
 
-
             if (await _unitOfWork.Repository<Repository.Models.User>().FindAsync(u => u.Email == request.OwnerEmail) != null)
             {
                 validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
@@ -89,19 +88,19 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new ValidationException(validationResult.Errors);
             }
+
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-            // Get the current UTC time
-            DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
-            DateTime localTime = utcNow + utcOffset;
+            DateTime localTime = DateTime.UtcNow + utcOffset;
 
             try
             {
                 var hotel = _mapper.Map<HotelCreateRequest, Hotel>(request);
                 hotel.HotelId = Guid.NewGuid();
+
+                // Generate a unique code for the hotel
+                hotel.Code = await GenerateUniqueHotelCode();
+
                 hotel.CreatedDate = localTime;
                 hotel.IsActive = false;
                 hotel.VerifyStatus = "Pending";
@@ -115,6 +114,36 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
+        private async Task<string> GenerateUniqueHotelCode()
+        {
+            // Find the highest existing code number in the database
+            var lastHotel = await _unitOfWork.Repository<Hotel>()
+                .GetAll()
+                .OrderByDescending(h => h.Code)
+                .FirstOrDefaultAsync();
+
+            // Extract the numeric part from the last code (e.g., "HTL-01" => 1)
+            int lastNumber = 0;
+            if (lastHotel != null && int.TryParse(lastHotel.Code.Replace("HTL", ""), out int parsedNumber))
+            {
+                lastNumber = parsedNumber;
+            }
+
+            // Generate the new code with an incremented number
+            int newNumber = lastNumber + 1;
+            string newCode = $"HTL{newNumber:D2}";
+
+            // Check for uniqueness just in case
+            while (await _unitOfWork.Repository<Hotel>().FindAsync(h => h.Code == newCode) != null)
+            {
+                newNumber++;
+                newCode = $"HTL{newNumber:D2}";
+            }
+
+            return newCode;
+        }
+
         public async Task<HotelResponse> CreateMore(HotelRequest request)
         {
             // Validate the create request

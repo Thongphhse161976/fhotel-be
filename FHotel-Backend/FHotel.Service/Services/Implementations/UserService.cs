@@ -163,6 +163,8 @@ namespace FHotel.Services.Services.Implementations
                 var role = await _roleService.Get((Guid)request.RoleId);
                 var user = _mapper.Map<UserCreateRequest, User>(request);
                 user.UserId = Guid.NewGuid();
+                user.Code = await GenerateUniqueUserCode();
+
                 user.CreatedDate = localTime;
                 await _unitOfWork.Repository<User>().InsertAsync(user);
                 await _unitOfWork.CommitAsync();
@@ -193,6 +195,35 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(e.Message);
             }
+        }
+
+        private async Task<string> GenerateUniqueUserCode()
+        {
+            // Find the highest existing code number in the database
+            var lastUser = await _unitOfWork.Repository<User>()
+                .GetAll()
+                .OrderByDescending(h => h.Code)
+                .FirstOrDefaultAsync();
+
+            // Extract the numeric part from the last code (e.g., "HTL-01" => 1)
+            int lastNumber = 0;
+            if (lastUser != null && int.TryParse(lastUser.Code.Replace("USR", ""), out int parsedNumber))
+            {
+                lastNumber = parsedNumber;
+            }
+
+            // Generate the new code with an incremented number
+            int newNumber = lastNumber + 1;
+            string newCode = $"USR{newNumber:D2}";
+
+            // Check for uniqueness just in case
+            while (await _unitOfWork.Repository<User>().FindAsync(h => h.Code == newCode) != null)
+            {
+                newNumber++;
+                newCode = $"USR{newNumber:D2}";
+            }
+
+            return newCode;
         }
 
         public async Task<UserResponse> Delete(Guid id)
@@ -422,6 +453,7 @@ namespace FHotel.Services.Services.Implementations
             {
                 var user = _mapper.Map<UserCreateRequest, User>(request);
                 user.UserId = Guid.NewGuid();
+                user.Code = await GenerateUniqueUserCode();
                 user.CreatedDate = localTime;
                 user.IsActive = false;
                 user.RoleId = await _roleService.GetRoleIdByName("Customer");

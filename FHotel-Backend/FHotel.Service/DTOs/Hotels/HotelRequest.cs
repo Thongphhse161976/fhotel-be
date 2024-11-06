@@ -10,6 +10,8 @@ namespace FHotel.Services.DTOs.Hotels
     public class HotelRequest
     {
         public string? HotelName { get; set; }
+
+        public string? Code { get; set; }
         public string? OwnerName { get; set; }
         public string? OwnerEmail { get; set; }
         public string? OwnerIdentificationNumber { get; set; }

@@ -24,14 +24,16 @@ namespace FHotel.Services.Services.Implementations
         private IMapper _mapper;
         private readonly IRoomTypeService _roomTypeService;
         private readonly ITypePricingService _typePricingService;
+       
         //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
-            ITypePricingService typePricingService)
+            ITypePricingService typePricingService )
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roomTypeService = roomTypeService;
             _typePricingService = typePricingService;
+          
         }
 
         public async Task<List<ReservationResponse>> GetAll()
@@ -85,18 +87,12 @@ namespace FHotel.Services.Services.Implementations
 
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-            // Get the current UTC time
-            DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
-            DateTime localTime = utcNow + utcOffset;
+            DateTime localTime = DateTime.UtcNow + utcOffset;
 
             try
             {
                 // Fetch the RoomType entity
                 var roomType = await _roomTypeService.Get(request.RoomTypeId.Value);
-
                 if (roomType == null)
                 {
                     throw new Exception("Room type not found.");
@@ -108,10 +104,11 @@ namespace FHotel.Services.Services.Implementations
                     throw new Exception("Not enough available rooms.");
                 }
 
+                // Update the RoomType available rooms
                 var updateRoomType = new RoomTypeUpdateRequest()
                 {
                     RoomTypeId = roomType.RoomTypeId,
-                    AvailableRooms = roomType.AvailableRooms,
+                    AvailableRooms = roomType.AvailableRooms - request.NumberOfRooms, // Reduce available rooms
                     TotalRooms = roomType.TotalRooms,
                     HotelId = roomType.HotelId,
                     TypeId = roomType.TypeId,
@@ -121,13 +118,17 @@ namespace FHotel.Services.Services.Implementations
                     Note = roomType.Note,
                 };
 
-                // Update the RoomType in the database using RoomTypeUpdateRequest
                 await _roomTypeService.Update(request.RoomTypeId.Value, updateRoomType);
-                int index = 1; // or however you want to start the index
+
+                // Generate the reservation code in the format FRSVT-<user_code>-<local_time>
+                string userCode = await GetUserCode(request.CustomerId.Value); // Assume this method gets or generates the user's code
+                string formattedTime = localTime.ToString("yyyyMMdd");
+                string reservationCode = $"FRSVT{userCode}{formattedTime}";
+
                 // Proceed with creating the reservation
                 var reservation = _mapper.Map<ReservationCreateRequest, Reservation>(request);
                 reservation.ReservationId = Guid.NewGuid();
-                reservation.Code = $"FRSVT-{Guid.NewGuid().ToString().Substring(0, 8)}"; // Generates a unique code each time
+                reservation.Code = reservationCode;
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
                 reservation.PaymentStatus = "Not Paid";
@@ -143,8 +144,19 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(e.Message);
             }
-
         }
+
+        private async Task<string> GetUserCode(Guid userId)
+        {
+            // Assuming you have a method to fetch or generate the user code from the user entity
+            var user = await _unitOfWork.Repository<User>().FindAsync(u => u.UserId == userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            return user.Code; // or generate a code based on user info, e.g., username initials
+        }
+
 
 
 

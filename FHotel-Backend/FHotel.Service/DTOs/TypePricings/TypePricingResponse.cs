@@ -17,6 +17,8 @@ namespace FHotel.Service.DTOs.TypePricings
         public Guid? DistrictId { get; set; }
         public int? DayOfWeek { get; set; }
         public decimal? Price { get; set; }
+        public decimal? PercentageIncrease { get; set; }
+
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
