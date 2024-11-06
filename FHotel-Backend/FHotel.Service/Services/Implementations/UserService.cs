@@ -669,11 +669,16 @@ namespace FHotel.Services.Services.Implementations
                 await smtp.SendMailAsync(message);
             }
         }
-        public async Task SendSMS(string phonenumber)
+        public async Task SendSMS(string phoneNumber)
         {
             string otpCode = GenerateOTP();
-            var hello =_smsService.SendOTP(phonenumber, otpCode);
-            Console.WriteLine(hello);
+            var user = await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == phoneNumber);
+
+            if (user != null)
+            {
+                _smsService.SendOTP(phoneNumber, otpCode);
+                _inMemoryOtpStore.StoreOTP(phoneNumber, otpCode, TimeSpan.FromMinutes(5));
+            }
         }
 
         public string GenerateOTP(int length = 5)

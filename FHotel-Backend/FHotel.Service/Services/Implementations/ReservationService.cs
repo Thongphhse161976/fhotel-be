@@ -88,48 +88,30 @@ namespace FHotel.Services.Services.Implementations
 
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
-            DateTime localTime = DateTime.UtcNow + utcOffset;
 
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            string userCode = await GetUserCode(request.CustomerId.Value); // Assume this method gets or generates the user's code
+            string formattedTime = localTime.ToString("yyyyMMdd");
+            string reservationCode = $"FRSVT{userCode}{formattedTime}";
             try
             {
-                // Fetch the RoomType entity
-                var roomType = await _roomTypeService.Get(request.RoomTypeId.Value);
-                if (roomType == null)
-                {
-                    throw new Exception("Room type not found.");
-                }
+                int availableRooms = await _roomTypeService.CountAvailableRoomsInRangeAsync((Guid)request.RoomTypeId, (DateTime)request.CheckInDate, (DateTime)request.CheckOutDate);
 
                 // Check if there are enough available rooms
-                if (roomType.AvailableRooms < request.NumberOfRooms)
+                if (availableRooms < request.NumberOfRooms)
                 {
                     throw new Exception("Not enough available rooms.");
                 }
 
-                // Update the RoomType available rooms
-                var updateRoomType = new RoomTypeUpdateRequest()
-                {
-                    RoomTypeId = roomType.RoomTypeId,
-                    AvailableRooms = roomType.AvailableRooms - request.NumberOfRooms, // Reduce available rooms
-                    TotalRooms = roomType.TotalRooms,
-                    HotelId = roomType.HotelId,
-                    TypeId = roomType.TypeId,
-                    Description = roomType.Description,
-                    RoomSize = roomType.RoomSize,
-                    IsActive = roomType.IsActive,
-                    Note = roomType.Note,
-                };
-
-                await _roomTypeService.Update(request.RoomTypeId.Value, updateRoomType);
-
-                // Generate the reservation code in the format FRSVT-<user_code>-<local_time>
-                string userCode = await GetUserCode(request.CustomerId.Value); // Assume this method gets or generates the user's code
-                string formattedTime = localTime.ToString("yyyyMMdd");
-                string reservationCode = $"FRSVT{userCode}{formattedTime}";
-
+                int index = 1; // or however you want to start the index
                 // Proceed with creating the reservation
                 var reservation = _mapper.Map<ReservationCreateRequest, Reservation>(request);
                 reservation.ReservationId = Guid.NewGuid();
-                reservation.Code = reservationCode;
+                reservation.Code = reservationCode; // Generates a unique code each time
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
                 reservation.PaymentStatus = "Not Paid";
@@ -145,6 +127,7 @@ namespace FHotel.Services.Services.Implementations
             {
                 throw new Exception(e.Message);
             }
+
         }
 
         private async Task<string> GetUserCode(Guid userId)

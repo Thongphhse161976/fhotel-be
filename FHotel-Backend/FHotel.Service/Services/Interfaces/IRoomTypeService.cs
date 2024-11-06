@@ -30,6 +30,6 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task<List<RoomTypeResponse>> GetAllRoomTypeByStaffId(Guid staffId);
 
-        public Task<int> CountAvailableRoomsOnDateAsync(Guid id, DateTime targetDate);
+        public Task<int> CountAvailableRoomsInRangeAsync(Guid id, DateTime checkIn, DateTime checkOut);
     }
 }

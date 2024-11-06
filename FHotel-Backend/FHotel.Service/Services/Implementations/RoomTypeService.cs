@@ -407,7 +407,8 @@ namespace FHotel.Services.Services.Implementations
 
             return roomTypes;
         }
-        public async Task<int> CountAvailableRoomsOnDateAsync(Guid id, DateTime targetDate)
+
+        public async Task<int> CountAvailableRoomsInRangeAsync(Guid id, DateTime checkIn, DateTime checkOut)
         {
             // Lấy thông tin loại phòng
             var roomType = await _unitOfWork.Repository<RoomType>().FindAsync(r => r.RoomTypeId == id);
@@ -419,19 +420,20 @@ namespace FHotel.Services.Services.Implementations
             // Tổng số phòng trong loại phòng này
             int totalRooms = roomType.TotalRooms ?? 0;
 
-            // Tìm tất cả các đặt phòng đã xác nhận (Confirmed) trong loại phòng này
+            // Tìm tất cả các đặt phòng trong loại phòng này và có giao với khoảng thời gian check-in và check-out
             var reservations = await _unitOfWork.Repository<Reservation>().GetAll()
                 .Where(r => r.RoomTypeId == id &&
-                            r.CheckInDate <= targetDate && r.CheckOutDate >= targetDate)
+                            r.CheckInDate <= checkOut && r.CheckOutDate >= checkIn)
                 .ToListAsync();
 
-            // Tính tổng số phòng đang bận vào ngày đó
-            int reservedRoomsOnTargetDate = reservations.Sum(r => r.NumberOfRooms ?? 0);
+            // Tính tổng số phòng đang bận trong khoảng thời gian đó
+            int reservedRoomsInRange = reservations.Sum(r => r.NumberOfRooms ?? 0);
 
             // Tính số phòng trống
-            int availableRoomsOnTargetDate = totalRooms - reservedRoomsOnTargetDate;
+            int availableRoomsInRange = totalRooms - reservedRoomsInRange;
 
-            return availableRoomsOnTargetDate > 0 ? availableRoomsOnTargetDate : 0;
+            return availableRoomsInRange > 0 ? availableRoomsInRange : 0;
         }
+
     }
 }

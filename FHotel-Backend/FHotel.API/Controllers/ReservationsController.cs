@@ -347,10 +347,12 @@ namespace FHotel.API.Controllers
             
 
         }
-        [HttpGet("api/roomtypes/available-on-date")]
-        public async Task<IActionResult> GetAvailableRoomsOnDate(Guid roomTypeId, DateTime targetDate)
+        [HttpGet("api/roomtypes/{roomTypeId}/available-on-date")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAvailableRoomsOnDate(Guid roomTypeId, DateTime checkinDate, DateTime checkoutDate)
         {
-            var availableRooms = await _roomTypeService.CountAvailableRoomsOnDateAsync(roomTypeId, targetDate);
+            var availableRooms = await _roomTypeService.CountAvailableRoomsInRangeAsync(roomTypeId,checkinDate, checkoutDate);
             return Ok(new { AvailableRooms = availableRooms });
         }
         [HttpPost("search")]
