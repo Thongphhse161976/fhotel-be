@@ -94,16 +94,7 @@ namespace FHotel.Service.Services.Implementations
             {
                 throw new Exception("Room not found");
             }
-            // Check if the room is already used in another stay history
-            var roomStayAlready = await _unitOfWork.Repository<RoomStayHistory>()
-                        .AsNoTracking()
-                        .Where(x => x.RoomId == request.RoomId)
-                        .FirstOrDefaultAsync();
-
-            if (roomStayAlready != null)
-            {
-                throw new Exception("Room is already used");
-            }
+            
             var existingRoomStayHistories = await _unitOfWork.Repository<RoomStayHistory>()
                                             .AsNoTracking()
                                             .Where(x => x.ReservationId == reservation.ReservationId)
@@ -114,6 +105,8 @@ namespace FHotel.Service.Services.Implementations
             }
             try
             {
+                
+                
                 var roomStayHistory = _mapper.Map<RoomStayHistoryRequest, RoomStayHistory>(request);
                 
                 roomStayHistory.RoomStayHistoryId = Guid.NewGuid();
@@ -121,10 +114,11 @@ namespace FHotel.Service.Services.Implementations
                 roomStayHistory.CheckInDate = localTime;
                 await _unitOfWork.Repository<RoomStayHistory>().InsertAsync(roomStayHistory);
                 await _unitOfWork.CommitAsync();
-                if(room.RoomId == roomStayHistory.RoomId)
+                if(room.RoomId == roomStayHistory.RoomId && room.Status== "Available")
                 {
                     var updateRoom = new RoomRequest()
                     {
+                        RoomId = room.RoomId,
                         RoomNumber = room.RoomNumber,
                         RoomTypeId = room.RoomTypeId,
                         Status = "Occupied",
@@ -133,22 +127,8 @@ namespace FHotel.Service.Services.Implementations
                         Note = room.Note,
                     };
                     await _roomService.Update(room.RoomId, updateRoom);
-
-                    var roomType = await _roomTypeService.Get(reservation.RoomTypeId.Value);
-                    var updateRoomType = new RoomTypeUpdateRequest()
-                    {
-                        RoomTypeId = roomType.RoomTypeId,
-                        HotelId = roomType.HotelId,
-                        TypeId = roomType.TypeId,
-                        Description = roomType.Description,
-                        RoomSize = roomType.RoomSize,
-                        TotalRooms = roomType.TotalRooms,
-                        AvailableRooms = roomType.AvailableRooms > 0 ? roomType.AvailableRooms - 1 : 0,  // Ensure it doesn't go below 0
-                        IsActive = roomType.IsActive,
-                        UpdatedDate = localTime,
-                        Note = roomType.Note,
-                    };
-                    await _roomTypeService.Update(roomType.RoomTypeId, updateRoomType);
+                    
+                    
                 }
                 // Get the total number of RoomStayHistory entries for this reservation
                 var roomAlreadyStayed = await _unitOfWork.Repository<RoomStayHistory>()
@@ -161,7 +141,6 @@ namespace FHotel.Service.Services.Implementations
                 {
                     var reservationUpdateRequest = _mapper.Map<Reservation, ReservationUpdateRequest>(reservation);
                     reservationUpdateRequest.ReservationStatus = "CheckIn";
-                    reservationUpdateRequest.ActualCheckInTime = localTime;
                     await _reservationService.Update(reservation.ReservationId, reservationUpdateRequest);
                 }
                 return _mapper.Map<RoomStayHistory, RoomStayHistoryResponse>(roomStayHistory);

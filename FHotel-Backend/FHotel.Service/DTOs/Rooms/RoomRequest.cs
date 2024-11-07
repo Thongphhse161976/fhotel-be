@@ -9,6 +9,7 @@ namespace FHotel.Services.DTOs.Rooms
 {
     public class RoomRequest
     {
+        public Guid RoomId { get; set; }
         public int? RoomNumber { get; set; }
         public Guid? RoomTypeId { get; set; }
         public string? Status { get; set; }

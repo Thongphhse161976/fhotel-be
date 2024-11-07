@@ -18,5 +18,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<WalletResponse> Delete(Guid id);
 
         public Task<WalletResponse> Update(Guid id, WalletRequest request);
+
+        public Task<WalletResponse> GetWalletByUser(Guid id);
     }
 }

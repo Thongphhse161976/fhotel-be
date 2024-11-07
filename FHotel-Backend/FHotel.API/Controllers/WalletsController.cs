@@ -96,6 +96,9 @@ namespace FHotel.API.Controllers
         /// Update wallet by wallet id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WalletResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<WalletResponse>> Update(Guid id, [FromBody] WalletRequest request)
         {
             try

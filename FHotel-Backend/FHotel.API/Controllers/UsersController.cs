@@ -2,6 +2,7 @@
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.Users;
+using FHotel.Service.DTOs.Wallets;
 using FHotel.Service.Profiles;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
@@ -43,7 +44,9 @@ namespace FHotel.API.Controllers
         private readonly IRoomStayHistoryService _roomStayHistoryService;
         private readonly IRoomTypeService _roomTypeService;
         private readonly IRoomService _roomService;
-        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService, IBillService billService)
+        private readonly IWalletService _walletService;
+        public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService, 
+            IBillService billService, IWalletService walletService)
         {
             _userService = userService;
             _reservationService = reservationService;
@@ -54,6 +57,7 @@ namespace FHotel.API.Controllers
             _roomTypeService = roomTypeService;
             _roomService = roomService;
             _billService = billService;
+            _walletService = walletService;
         }
 
         /// <summary>
@@ -595,6 +599,25 @@ namespace FHotel.API.Controllers
             {
                 // Log the exception if you have logging set up
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Get wallet by user id.
+        /// </summary>
+        [HttpGet("{id}/wallets")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WalletResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<WalletResponse>> GetWalletByUser(Guid id)
+        {
+            try
+            {
+                var rs = await _walletService.GetWalletByUser(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

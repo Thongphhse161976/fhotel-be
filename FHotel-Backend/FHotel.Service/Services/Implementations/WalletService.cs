@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Service.Services.Interfaces;
 using FluentValidation;
@@ -137,6 +138,14 @@ namespace FHotel.Service.Services.Implementations
             {
                 throw new Exception(ex.Message);
             }
+        }
+        public async Task<WalletResponse> GetWalletByUser(Guid id)
+        {
+            var wallet = await _unitOfWork.Repository<Wallet>().GetAll()
+                                           .ProjectTo<WalletResponse>(_mapper.ConfigurationProvider)
+                                           .FirstOrDefaultAsync(w => w.UserId == id);
+
+            return wallet;
         }
     }
 }
