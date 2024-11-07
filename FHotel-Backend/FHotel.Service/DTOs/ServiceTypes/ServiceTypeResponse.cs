@@ -10,5 +10,7 @@ namespace FHotel.Services.DTOs.ServiceTypes
     {
         public Guid ServiceTypeId { get; set; }
         public string? ServiceTypeName { get; set; }
+        public bool? IsVisibleToCustomer { get; set; }
+
     }
 }

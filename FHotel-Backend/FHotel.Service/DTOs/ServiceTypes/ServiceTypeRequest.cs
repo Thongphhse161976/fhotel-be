@@ -9,5 +9,7 @@ namespace FHotel.Services.DTOs.ServiceTypes
     public class ServiceTypeRequest
     {
         public string? ServiceTypeName { get; set; }
+        public bool? IsVisibleToCustomer { get; set; }
+
     }
 }

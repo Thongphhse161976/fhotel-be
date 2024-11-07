@@ -12,6 +12,7 @@ namespace FHotel.Repository.Models
 
         public Guid ServiceTypeId { get; set; }
         public string? ServiceTypeName { get; set; }
+        public bool? IsVisibleToCustomer { get; set; }
 
         public virtual ICollection<Service> Services { get; set; }
     }
