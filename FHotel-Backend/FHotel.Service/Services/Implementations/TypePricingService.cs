@@ -204,10 +204,11 @@ namespace FHotel.Service.Services.Implementations
         {
             try
             {
-                // Fetch the regular pricing
+                // Fetch the regular pricing within the date range
                 var pricing = await _unitOfWork.Repository<TypePricing>()
                     .GetAll()
-                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
+                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek
+                                 && tp.From <= DateTime.Now.Date && tp.To >= DateTime.Now.Date) // Check if the date is within the range
                     .FirstOrDefaultAsync();
 
                 if (pricing == null)
@@ -234,6 +235,7 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception($"Error fetching pricing: {ex.Message}");
             }
         }
+
 
         public async Task<decimal> GetTodayPricingByRoomType(Guid roomTypeId)
         {
