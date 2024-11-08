@@ -355,22 +355,24 @@ namespace FHotel.Services.Services.Implementations
             return list;
         }
 
-        public async Task<List<ReservationResponse>> SearchReservations(string? query)
+        public async Task<List<ReservationResponse>> SearchReservations(Guid staffId, string? query)
         {
             if (string.IsNullOrEmpty(query))
                 return new List<ReservationResponse>();
 
             query = query.ToLower();
-            var list = await _unitOfWork.Repository<Reservation>().GetAll()
-                                .Where(r => r.Code.ToLower().Contains(query)
-                                || r.Customer.Name.ToLower().Contains(query)
-                                || r.Customer.Email.ToLower().Contains(query)
-                                || r.Customer.PhoneNumber.ToLower().Contains(query)
-                                || r.Customer.IdentificationNumber.ToLower().Contains(query))
-                                .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
-                                .ToListAsync();
+            var reservations = await GetAllReservationByStaffId(staffId); // Await the task to get List<Reservation>
 
-            return list;
+            var filteredList = reservations
+                                .Where(r => r.Code.ToLower().Contains(query)
+                                        || (r.Customer.Name?.ToLower().Contains(query) ?? false)
+                                        || (r.Customer.Email?.ToLower().Contains(query) ?? false)
+                                        || (r.Customer.PhoneNumber?.ToLower().Contains(query) ?? false)
+                                        || (r.Customer.IdentificationNumber?.ToLower().Contains(query) ?? false))
+                                .AsQueryable()
+                                .ToList();
+
+            return filteredList;
         }
 
 
