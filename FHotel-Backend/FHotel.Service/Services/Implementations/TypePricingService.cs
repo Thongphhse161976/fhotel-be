@@ -75,9 +75,15 @@ namespace FHotel.Service.Services.Implementations
             var validationResult = await validator.ValidateAsync(request);
 
             // Use GetAll with a LINQ filter to check for duplicates
+            // Modified validation for existingPricing to include DayOfWeek
             var existingPricing = (await GetAll())
-                .Where(u => u.DistrictId == request.DistrictId && u.TypeId == request.TypeId && u.DayOfWeek == request.DayOfWeek)
+                .Where(u => u.DistrictId == request.DistrictId &&
+                            u.TypeId == request.TypeId &&
+                            u.DayOfWeek == request.DayOfWeek && // Include DayOfWeek in the check
+                            ((u.From <= request.To && u.To >= request.From) ||
+                             (request.From <= u.To && request.To >= u.From)))
                 .ToList();
+
 
             if (existingPricing.Any())
             {
