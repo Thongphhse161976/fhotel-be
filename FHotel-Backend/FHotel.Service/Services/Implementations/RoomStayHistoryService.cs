@@ -95,14 +95,14 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception("Room not found");
             }
             
-            var existingRoomStayHistories = await _unitOfWork.Repository<RoomStayHistory>()
-                                            .AsNoTracking()
-                                            .Where(x => x.ReservationId == reservation.ReservationId)
-                                            .CountAsync();
-            if (existingRoomStayHistories == reservation.NumberOfRooms)
-            {
-                throw new Exception("All rooms for this reservation have already been checked in. No more RoomStayHistory can be added.");
-            }
+            //var existingRoomStayHistories = await _unitOfWork.Repository<RoomStayHistory>()
+            //                                .AsNoTracking()
+            //                                .Where(x => x.ReservationId == reservation.ReservationId)
+            //                                .CountAsync();
+            //if (existingRoomStayHistories == reservation.NumberOfRooms)
+            //{
+            //    throw new Exception("All rooms for this reservation have already been checked in. No more RoomStayHistory can be added.");
+            //}
             try
             {
                 
