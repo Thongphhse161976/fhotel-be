@@ -95,7 +95,7 @@ namespace FHotel.Services.Services.Implementations
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
             string userCode = await GetUserCode(request.CustomerId.Value); // Assume this method gets or generates the user's code
-            string formattedTime = localTime.ToString("yyyyMMdd");
+            string formattedTime = localTime.ToString("yyyyMMddHHmmss");
             string reservationCode = $"FRSVT{userCode}{formattedTime}";
             try
             {
