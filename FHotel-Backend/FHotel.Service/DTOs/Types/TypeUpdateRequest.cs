@@ -10,6 +10,8 @@ namespace FHotel.Service.DTOs.Types
     {
         public string? TypeName { get; set; }
         public int? MaxOccupancy { get; set; }
+        public decimal? MinSize { get; set; }
+        public decimal? MaxSize { get; set; }
         public DateTime? UpdatedDate { get; set; }
     }
 }

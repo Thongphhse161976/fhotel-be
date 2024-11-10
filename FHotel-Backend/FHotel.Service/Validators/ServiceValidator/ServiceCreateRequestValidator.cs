@@ -16,8 +16,8 @@ namespace FHotel.Service.Validators.ServiceValidator
                 .NotEmpty().WithMessage("Service name is required.")
                 .MaximumLength(100).WithMessage("Service name must not exceed 100 characters.");
 
-            RuleFor(s => s.Price)
-                .NotNull().WithMessage("Price is required.");
+            //RuleFor(s => s.Price)
+            //    .NotNull().WithMessage("Price is required.");
 
             RuleFor(s => s.Description)
                 .NotEmpty().WithMessage("Description is required.")

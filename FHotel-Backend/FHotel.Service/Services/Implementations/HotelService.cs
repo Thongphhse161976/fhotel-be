@@ -187,6 +187,8 @@ namespace FHotel.Services.Services.Implementations
                 }
                 var hotel = _mapper.Map<HotelRequest, Hotel>(request);
                 hotel.HotelId = Guid.NewGuid();
+                // Generate a unique code for the hotel
+                hotel.Code = await GenerateUniqueHotelCode();
                 hotel.CreatedDate = localTime;
                 hotel.OwnerName = ownerhotel.Name;
                 hotel.OwnerPhoneNumber = ownerhotel.PhoneNumber;
