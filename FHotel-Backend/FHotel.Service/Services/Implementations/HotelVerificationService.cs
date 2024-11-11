@@ -138,6 +138,7 @@ namespace FHotel.Service.Services.Implementations
                 var updateHotel = new HotelUpdateRequest()
                 {
                     HotelId = hotel.HotelId,
+                    Code = hotel.Code,
                     HotelName = hotel.HotelName,
                     OwnerEmail = hotel.OwnerEmail,
                     OwnerId = hotel.OwnerId,
