@@ -208,7 +208,23 @@ namespace FHotel.Services.Services.Implementations
                 }else if (updatereservation.ReservationStatus == "CheckIn")
                 {
                     var roomType = await _roomTypeService.Get(updatereservation.RoomTypeId.Value);
-                    roomType.AvailableRooms -= updatereservation.NumberOfRooms;
+                    //roomType.AvailableRooms -= updatereservation.NumberOfRooms;
+                    await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
+                    {
+                        RoomTypeId = roomType.RoomTypeId,
+                        AvailableRooms = roomType.AvailableRooms,
+                        TotalRooms = roomType.TotalRooms,
+                        HotelId = roomType.HotelId,
+                        TypeId = roomType.TypeId,
+                        Description = roomType.Description,
+                        RoomSize = roomType.RoomSize,
+                        IsActive = roomType.IsActive,
+                        Note = roomType.Note,
+                    });
+                }
+                else if (updatereservation.ReservationStatus == "CheckOut")
+                {
+                    var roomType = await _roomTypeService.Get(updatereservation.RoomTypeId.Value);
                     await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
                     {
                         RoomTypeId = roomType.RoomTypeId,

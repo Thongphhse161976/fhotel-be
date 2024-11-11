@@ -167,6 +167,9 @@ namespace FHotel.Services.Services.Implementations
                     throw new KeyNotFoundException("Room not found.");
                 }
 
+                // Store the previous status
+                string previousStatus = room.Status;
+
                 // Map the update request to the room entity
                 room = _mapper.Map(request, room);
                 room.UpdatedDate = localTime;
@@ -175,32 +178,11 @@ namespace FHotel.Services.Services.Implementations
                 await _unitOfWork.Repository<Room>().UpdateDetached(room);
                 await _unitOfWork.CommitAsync();
 
-                // If room is available, update the RoomType's available rooms
-                if (room.Status == "Available")
+                // If the status has changed, update RoomType availability
+                if (previousStatus != request.Status)
                 {
-                    var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
-                    var roomType = await _roomTypeService.Get(room.RoomTypeId.Value);
-                    if (roomType.AvailableRooms < roomType.TotalRooms)
-                    {
-                        roomType.AvailableRooms += 1;
-
-                        await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
-                        {
-                            RoomTypeId = roomType.RoomTypeId,
-                            AvailableRooms = roomType.AvailableRooms,
-                            TotalRooms = roomType.TotalRooms,
-                            HotelId = roomType.HotelId,
-                            TypeId = roomType.TypeId,
-                            Description = roomType.Description,
-                            RoomSize = roomType.RoomSize,
-                            IsActive = roomType.IsActive,
-                            Note = roomType.Note,
-                        });
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Available rooms cannot exceed total rooms.");
-                    }
+                    // Call the helper method to update RoomType availability based on the room's status
+                    await UpdateRoomTypeAvailability(room.RoomTypeId.Value, request.Status, previousStatus);
                 }
 
                 // Return the updated room
@@ -212,6 +194,68 @@ namespace FHotel.Services.Services.Implementations
                 throw new ApplicationException($"Error updating room: {ex.Message}", ex);
             }
         }
+
+        private async Task UpdateRoomTypeAvailability(Guid roomTypeId, string newStatus, string previousStatus)
+        {
+            var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
+            var roomType = await _roomTypeService.Get(roomTypeId);
+
+            if (roomType == null)
+            {
+                throw new KeyNotFoundException("Room type not found.");
+            }
+
+            int newAvailableRooms = roomType.AvailableRooms.Value;
+
+            // Only change AvailableRooms based on transitions from Available -> Occupied or Maintenance
+            if (previousStatus == "Available" && (newStatus == "Occupied" || newStatus == "Maintenance"))
+            {
+                // Decrease AvailableRooms only if the room was available before
+                if (newAvailableRooms > 0)
+                {
+                    newAvailableRooms -= 1; // Room is now occupied or in maintenance, decrement available rooms
+                }
+                else
+                {
+                    throw new InvalidOperationException("Cannot reduce available rooms below 0.");
+                }
+            }
+            else if (previousStatus != "Available" && newStatus == "Available")
+            {
+                // Increase AvailableRooms only if the room was previously not available (Occupied or Maintenance)
+                if (newAvailableRooms < roomType.TotalRooms)
+                {
+                    newAvailableRooms += 1; // Room is now available, increment available rooms
+                }
+                else
+                {
+                    throw new InvalidOperationException("Available rooms cannot exceed total rooms.");
+                }
+            }
+
+            // Ensure AvailableRooms never exceed TotalRooms or drop below 0
+            if (newAvailableRooms < 0 || newAvailableRooms > roomType.TotalRooms)
+            {
+                throw new InvalidOperationException("Available rooms cannot exceed total rooms or be negative.");
+            }
+
+            // Update room type with the new available room count
+            await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
+            {
+                RoomTypeId = roomType.RoomTypeId,
+                AvailableRooms = newAvailableRooms,
+                TotalRooms = roomType.TotalRooms,
+                HotelId = roomType.HotelId,
+                TypeId = roomType.TypeId,
+                Description = roomType.Description,
+                RoomSize = roomType.RoomSize,
+                IsActive = roomType.IsActive,
+                Note = roomType.Note,
+            });
+        }
+
+
+
 
 
         public async Task<List<RoomResponse>> GetAllRoomByRoomTypeId(Guid id)
