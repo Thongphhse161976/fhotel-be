@@ -62,6 +62,7 @@ builder.Services.AddScoped<IBillService, BillService>();
 builder.Services.AddScoped<IBillTransactionImageService, BillTransactionImageService>();
 
 builder.Services.AddScoped<IRoomStayHistoryService, RoomStayHistoryService>();
+builder.Services.AddScoped(provider => new Lazy<IRoomStayHistoryService>(() => provider.GetRequiredService<IRoomStayHistoryService>()));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<ISpeedSMSAPI, SpeedSMSAPI>();

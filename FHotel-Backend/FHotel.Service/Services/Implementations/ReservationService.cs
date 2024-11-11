@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.ReservationValidator;
@@ -24,17 +25,18 @@ namespace FHotel.Services.Services.Implementations
         private IMapper _mapper;
         private readonly IRoomTypeService _roomTypeService;
         private readonly ITypePricingService _typePricingService;
+        private readonly Lazy<IRoomStayHistoryService> _roomStayHistoryService;
 
-       
+
         //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
-            ITypePricingService typePricingService )
+            ITypePricingService typePricingService , Lazy<IRoomStayHistoryService> roomStayHistoryService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roomTypeService = roomTypeService;
             _typePricingService = typePricingService;
-          
+           _roomStayHistoryService = roomStayHistoryService;
         }
 
         public async Task<List<ReservationResponse>> GetAll()
@@ -168,6 +170,14 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<ReservationResponse> Update(Guid id, ReservationUpdateRequest request)
         {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             // Fetch the existing reservation
             var reservation = await _unitOfWork.Repository<Reservation>().FindAsync(x => x.ReservationId == id);
 
@@ -187,12 +197,12 @@ namespace FHotel.Services.Services.Implementations
             }
             try
             {
-                var updatereservation = _mapper.Map(request, reservation);
+                var updateReservation = _mapper.Map(request, reservation);
                 
-                if (updatereservation.ReservationStatus == "Cancelled")
+                if (updateReservation.ReservationStatus == "Cancelled")
                 {
-                    var roomType = await _roomTypeService.Get(updatereservation.RoomTypeId.Value);
-                    roomType.AvailableRooms += updatereservation.NumberOfRooms;
+                    var roomType = await _roomTypeService.Get(updateReservation.RoomTypeId.Value);
+                    roomType.AvailableRooms += updateReservation.NumberOfRooms;
                     await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
                     {
                         RoomTypeId = roomType.RoomTypeId,
@@ -205,26 +215,10 @@ namespace FHotel.Services.Services.Implementations
                         IsActive = roomType.IsActive,
                         Note = roomType.Note,
                     });
-                }else if (updatereservation.ReservationStatus == "CheckIn")
+                }else if (updateReservation.ReservationStatus == "CheckIn")
                 {
-                    var roomType = await _roomTypeService.Get(updatereservation.RoomTypeId.Value);
-                    //roomType.AvailableRooms -= updatereservation.NumberOfRooms;
-                    await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
-                    {
-                        RoomTypeId = roomType.RoomTypeId,
-                        AvailableRooms = roomType.AvailableRooms,
-                        TotalRooms = roomType.TotalRooms,
-                        HotelId = roomType.HotelId,
-                        TypeId = roomType.TypeId,
-                        Description = roomType.Description,
-                        RoomSize = roomType.RoomSize,
-                        IsActive = roomType.IsActive,
-                        Note = roomType.Note,
-                    });
-                }
-                else if (updatereservation.ReservationStatus == "CheckOut")
-                {
-                    var roomType = await _roomTypeService.Get(updatereservation.RoomTypeId.Value);
+                    var roomType = await _roomTypeService.Get(updateReservation.RoomTypeId.Value);
+                    //roomType.AvailableRooms -= updateReservation.NumberOfRooms;
                     await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
                     {
                         RoomTypeId = roomType.RoomTypeId,
@@ -238,7 +232,44 @@ namespace FHotel.Services.Services.Implementations
                         Note = roomType.Note,
                     });
                 }
-                await _unitOfWork.Repository<Reservation>().UpdateDetached(updatereservation);
+                else if (updateReservation.ReservationStatus == "CheckOut")
+                {
+                    var roomType = await _roomTypeService.Get(updateReservation.RoomTypeId.Value);
+                    await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
+                    {
+                        RoomTypeId = roomType.RoomTypeId,
+                        AvailableRooms = roomType.AvailableRooms,
+                        TotalRooms = roomType.TotalRooms,
+                        HotelId = roomType.HotelId,
+                        TypeId = roomType.TypeId,
+                        Description = roomType.Description,
+                        RoomSize = roomType.RoomSize,
+                        IsActive = roomType.IsActive,
+                        Note = roomType.Note,
+                    });
+
+                    // Retrieve all room stay histories associated with the reservation
+                    var roomStayHistories = await _roomStayHistoryService.Value.GetAllByReservationId(id);
+
+                    // Iterate over each room stay history and update individually
+                    foreach (var history in roomStayHistories)
+                    {
+                        var roomStayHistoryUpdate = new RoomStayHistoryRequest()
+                        {
+                            CheckInDate = history.CheckInDate,
+                            CheckOutDate = localTime,
+                            RoomId = history.RoomId,
+                            CreatedDate = history.CreatedDate,
+                            ReservationId = history.ReservationId,  
+                            UpdatedDate = history.UpdatedDate   
+                        };
+
+                        // Update each history one by one
+                        await _roomStayHistoryService.Value.Update(history.RoomStayHistoryId, roomStayHistoryUpdate);
+                    }
+                }
+
+                await _unitOfWork.Repository<Reservation>().UpdateDetached(updateReservation);
                 await _unitOfWork.CommitAsync();
 
                 return _mapper.Map<Reservation, ReservationResponse>(reservation);
