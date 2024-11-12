@@ -2,15 +2,18 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Orders;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.ReservationValidator;
+using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,17 +29,19 @@ namespace FHotel.Services.Services.Implementations
         private readonly IRoomTypeService _roomTypeService;
         private readonly ITypePricingService _typePricingService;
         private readonly Lazy<IRoomStayHistoryService> _roomStayHistoryService;
+        private readonly IServiceProvider _serviceProvider;
 
 
         //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
-            ITypePricingService typePricingService , Lazy<IRoomStayHistoryService> roomStayHistoryService)
+            ITypePricingService typePricingService , Lazy<IRoomStayHistoryService> roomStayHistoryService, IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _roomTypeService = roomTypeService;
             _typePricingService = typePricingService;
-           _roomStayHistoryService = roomStayHistoryService;
+            _roomStayHistoryService = roomStayHistoryService;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<List<ReservationResponse>> GetAll()
@@ -202,7 +207,7 @@ namespace FHotel.Services.Services.Implementations
                 if (updateReservation.ReservationStatus == "Cancelled")
                 {
                     var roomType = await _roomTypeService.Get(updateReservation.RoomTypeId.Value);
-                    roomType.AvailableRooms += updateReservation.NumberOfRooms;
+                    //roomType.AvailableRooms += updateReservation.NumberOfRooms;
                     await _roomTypeService.Update(roomType.RoomTypeId, new RoomTypeUpdateRequest
                     {
                         RoomTypeId = roomType.RoomTypeId,
@@ -422,7 +427,83 @@ namespace FHotel.Services.Services.Implementations
             return filteredList;
         }
 
+        public async Task<string> Refund(Guid id)
+        {
+            string message = string.Empty;
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
 
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            // Fetch the existing reservation
+            var reservation = await _unitOfWork.Repository<Reservation>().FindAsync(x => x.ReservationId == id);
+
+            // Check if the reservation exists
+            if (reservation == null)
+            {
+                throw new KeyNotFoundException($"Reservation with ID {id} does not exist.");
+            }
+
+            try
+            {
+
+                if(reservation.ReservationStatus!= "CheckIn"|| reservation.ReservationStatus!= "CheckOut"|| reservation.ReservationStatus!= "Cancelled")
+                {
+                    if(reservation.PaymentStatus== "Paid")
+                    {
+                        var _serviceService = _serviceProvider.GetService<IServiceService>();
+                        var _orderService = _serviceProvider.GetService<IOrderService>();
+                        var _orderdetailService = _serviceProvider.GetService<IOrderDetailService>();
+                        var serviceList = await _serviceService.GetAll();
+                        var service = serviceList.Find(s => s.ServiceName == "Hoàn tiền");
+                        var order = new OrderCreateRequest
+                        {
+                            ReservationId = reservation.ReservationId,
+                            OrderedDate = localTime,
+                            OrderStatus = "Pending",
+                            TotalAmount = reservation.TotalAmount
+                        };
+                        var orderResponse = await _orderService.Create(order);
+                        var orderDetail = new OrderDetailRequest
+                        {
+                            OrderId = orderResponse.OrderId,
+                            Price = reservation.TotalAmount,
+                            Quantity = 1,
+                            ServiceId = service.ServiceId
+
+                        };
+                        var orderDetailResponse = await _orderdetailService.Create(orderDetail);
+                        if(orderDetailResponse != null)
+                        {
+                            message = "Bạn đã gửi yêu cầu thành công! Vui lòng chờ ...";
+                        }
+                        else
+                        {
+                            message = "Có lỗi xảy ra trong quá trình gửi yêu cầu ...";
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Not found");
+                }
+
+
+                return message;
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }

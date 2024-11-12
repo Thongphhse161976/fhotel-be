@@ -147,6 +147,11 @@ namespace FHotel.Services.Services.Implementations
                 }
                 if (orderDetailResponse.Service.ServiceType.ServiceTypeName != "Trả phòng muộn")
                 {
+                    if (orderDetailResponse.Service.ServiceType.ServiceTypeName == "Hoàn tiền hủy đặt phòng")
+                    {
+                        return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
+
+                    }
                     // Use the calculation service for TotalAmount calculation
                     var totalAmount = orderDetailResponse.Service.Price * request.Quantity;
 
@@ -171,6 +176,7 @@ namespace FHotel.Services.Services.Implementations
                     await Update(orderDetail.OrderDetailId, updateOrderDetail);
 
                 }
+                
 
 
 

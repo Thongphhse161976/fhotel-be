@@ -392,6 +392,25 @@ namespace FHotel.API.Controllers
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Create refund request.
+        /// </summary>
+        [HttpPost("refund")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> CreateRefundRequest([FromQuery] Guid id)
+        {
+            try
+            {
+                var result = await _reservationService.Refund(id);
+                return CreatedAtAction(nameof(Create), result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 
     public class CalculateTotalAmountRequest
