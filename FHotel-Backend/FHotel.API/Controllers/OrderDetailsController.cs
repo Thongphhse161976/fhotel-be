@@ -1,6 +1,8 @@
 ﻿using FHotel.Service.DTOs.Types;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.OrderDetails;
+using FHotel.Services.DTOs.Orders;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +82,17 @@ namespace FHotel.API.Controllers
             }
         }
 
-        
+        /// <summary>
+        /// Delete order detail by order detail id.
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderDetailResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<OrderDetailResponse>> Delete(Guid id)
+        {
+            var rs = await _orderDetailService.Delete(id);
+            return Ok(rs);
+        }
     }
 }
