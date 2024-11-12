@@ -22,6 +22,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<OrderDetailResponse> Update(Guid id, OrderDetailRequest request);
         public Task<IEnumerable<OrderDetailResponse>> GetAllOrderDetailByOrder(Guid orderId);
         public Task<IEnumerable<OrderDetailResponse>> GetAllOrderDetailByReservation(Guid reservationId);
+        public Task<IEnumerable<OrderDetailResponse>> GetAllOrderDetailByUser(Guid userId);
 
     }
 }

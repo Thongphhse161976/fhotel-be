@@ -10,6 +10,7 @@ using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
+using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.DTOs.Rooms;
@@ -45,8 +46,9 @@ namespace FHotel.API.Controllers
         private readonly IRoomTypeService _roomTypeService;
         private readonly IRoomService _roomService;
         private readonly IWalletService _walletService;
+        private readonly IOrderDetailService _orderDetailService;
         public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService, 
-            IBillService billService, IWalletService walletService)
+            IBillService billService, IWalletService walletService, IOrderDetailService orderDetailService)
         {
             _userService = userService;
             _reservationService = reservationService;
@@ -58,6 +60,7 @@ namespace FHotel.API.Controllers
             _roomService = roomService;
             _billService = billService;
             _walletService = walletService;
+            _orderDetailService = orderDetailService;
         }
 
         /// <summary>
@@ -582,7 +585,7 @@ namespace FHotel.API.Controllers
         [HttpGet("{id}/owner-bills")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ReservationResponse>>> GetAllBillByOwnerId(Guid id)
+        public async Task<ActionResult<IEnumerable<BillResponse>>> GetAllBillByOwnerId(Guid id)
         {
             try
             {
@@ -618,6 +621,33 @@ namespace FHotel.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        /// <summary>
+        /// Get all order-details by customer id.
+        /// </summary>
+        /// <param name="Id">The ID of the user.</param>
+        /// <returns>A list of order-details.</returns>
+        [HttpGet("{id}/customer-order-details")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<OrderDetailResponse>>> GetAllOrderDetailByCustomerId(Guid id)
+        {
+            try
+            {
+                var orderList = await _orderDetailService.GetAllOrderDetailByUser(id);
+
+                if (orderList == null || !orderList.Any())
+                {
+                    return NotFound(new { message = "No order found for this customer." });
+                }
+
+                return Ok(orderList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
     }
