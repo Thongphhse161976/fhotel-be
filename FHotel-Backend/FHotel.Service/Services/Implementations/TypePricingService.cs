@@ -204,11 +204,25 @@ namespace FHotel.Service.Services.Implementations
         {
             try
             {
-                // Fetch the regular pricing within the date range
+                // Get the current date
+                var currentDate = DateTime.Now.Date;
+
+                // Calculate the difference between today and the target day of the week
+                var daysToAdd = dayOfWeek - (int)currentDate.DayOfWeek;
+
+                // If the target day is before today in the week, we move to next week (add 7 days)
+                if (daysToAdd < 0)
+                {
+                    daysToAdd += 7;
+                }
+
+                // Calculate the date for the target day of the current or next week
+                var targetDate = currentDate.AddDays(daysToAdd);
+
+                // Fetch the regular pricing for the calculated target date
                 var pricing = await _unitOfWork.Repository<TypePricing>()
                     .GetAll()
-                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek
-                                 && tp.From <= DateTime.Now.Date && tp.To >= DateTime.Now.Date) // Check if the date is within the range
+                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
                     .FirstOrDefaultAsync();
 
                 if (pricing == null)
@@ -219,7 +233,7 @@ namespace FHotel.Service.Services.Implementations
                 // Check for holiday pricing rules
                 var holidayPricingRules = await _holidayPricingRuleService.GetAll(); // Get the list of holiday pricing rules
                 var holidayPricingRule = holidayPricingRules
-                    .Where(h => h.DistrictId == districtId && h.Holiday.HolidayDate == DateTime.Now.Date)
+                    .Where(h => h.DistrictId == districtId && h.Holiday.HolidayDate == targetDate)
                     .FirstOrDefault(); // Filter for applicable rules
 
                 if (holidayPricingRule != null)
