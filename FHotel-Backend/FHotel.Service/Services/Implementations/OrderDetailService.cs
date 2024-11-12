@@ -201,6 +201,16 @@ namespace FHotel.Services.Services.Implementations
                 {
                     throw new Exception("Bi trung id");
                 }
+                // Resolve IOrderService dynamically at runtime
+                var orderService = _serviceProvider.GetService<IOrderService>();
+
+                // Get the order details
+                var order = await orderService.Get(orderDetail.OrderId.Value);
+                if (order != null)
+                {
+                    await orderService.Delete(order.OrderId);
+                }
+
                 await _unitOfWork.Repository<OrderDetail>().HardDeleteGuid(orderDetail.OrderDetailId);
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
