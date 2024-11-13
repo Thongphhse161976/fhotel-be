@@ -501,7 +501,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get all room by staff ID.
+        /// Get all customers by staff ID.
         /// </summary>
         [HttpGet("{staffId}/staff-customers")]
 
@@ -528,7 +528,7 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get all room by owner ID.
+        /// Get all customers by owner ID.
         /// </summary>
         [HttpGet("{ownerId}/owner-customers")]
 
