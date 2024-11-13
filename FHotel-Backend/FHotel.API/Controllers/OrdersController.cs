@@ -143,5 +143,24 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Accept transaction refund.
+        /// </summary>
+        [HttpPost("accept-refund")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<OrderResponse>> AcceptRefund([FromQuery] Guid id)
+        {
+            try
+            {
+                var result = await _orderService.AcceptRefund(id);
+                return CreatedAtAction(nameof(Create), result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

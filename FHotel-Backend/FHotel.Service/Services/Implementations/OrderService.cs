@@ -2,13 +2,20 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Orders;
+using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.Transactions;
+using FHotel.Service.DTOs.Wallets;
+using FHotel.Service.Services.Implementations;
+using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.OrderDetails;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +29,13 @@ namespace FHotel.Services.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
         private IOrderDetailService _orderDetailService;
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IOrderDetailService orderDetailService)
+        private readonly IServiceProvider _serviceProvider;
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IOrderDetailService orderDetailService, IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _orderDetailService = orderDetailService;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<List<OrderResponse>> GetAll()
@@ -49,6 +58,7 @@ namespace FHotel.Services.Services.Implementations
                 Order order = null;
                 order = await _unitOfWork.Repository<Order>().GetAll()
                      .AsNoTracking()
+                     .Include(o=> o.Reservation)
                     .Where(x => x.OrderId == id)
                     .FirstOrDefaultAsync();
 
@@ -206,6 +216,102 @@ namespace FHotel.Services.Services.Implementations
                                             .Where(d => d.BillId == id)
                                             .ToListAsync();
             return list;
+        }
+
+        public async Task<OrderResponse> AcceptRefund(Guid id)
+        {
+            var billService = _serviceProvider.GetService<IBillService>();
+            var reservationService = _serviceProvider.GetService<IReservationService>();
+            var transactionService = _serviceProvider.GetService<ITransactionService>();
+            var walletService = _serviceProvider.GetService<IWalletService>();
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            try
+            {
+                
+                var order = await Get(id);
+                var createBill = new BillRequest
+                {
+                    ReservationId = order.ReservationId,
+                    TotalAmount = order.TotalAmount,
+                };
+                var createBillResponse = await billService.Create(createBill);
+                var updateOrder = new OrderRequest
+                {
+                    BillId = createBillResponse.BillId,
+                    OrderId = order.OrderId,
+                    ReservationId = order.ReservationId,
+                    TotalAmount = order.TotalAmount,
+                    OrderedDate = order.OrderedDate,
+                    OrderStatus = "Paid"
+                };
+               await Update(order.OrderId, updateOrder);
+                var bill = await billService.Get(createBillResponse.BillId);
+                var updateBill = new BillRequest
+                {
+                    BillStatus = "Paid",
+                    CreatedDate = bill.CreatedDate,
+                    LastUpdated = localTime,
+                    ReservationId = bill.ReservationId,
+                    TotalAmount = bill.TotalAmount,
+                };
+                await billService.Update(bill.BillId, updateBill);
+                //transfer 
+                var wallets = await walletService.GetAll();
+                var customerWallet = wallets.Find(x => x.UserId == order.Reservation.CustomerId);
+                // Verify that the required wallets exist
+                if (customerWallet == null)
+                {
+                    throw new Exception("Không tìm thấy tài khoản của khách hàng");
+                }
+                var amount = order.TotalAmount;
+                var createTransaction = new TransactionRequest
+                {
+                    BillId = bill.BillId,
+                    Amount = amount,
+                    Description = $@"Nhận {amount} từ hoàn tiền của đặt phòng {order.Reservation.Code} lúc {localTime}",
+                    TransactionDate = localTime,
+                    WalletId = customerWallet.WalletId
+                };
+                await transactionService.Create(createTransaction);
+                var updateWallet = new WalletRequest
+                {
+                    Balance = customerWallet.Balance += amount,
+                    UserId = customerWallet.UserId,
+                    BankAccountNumber = customerWallet.BankAccountNumber,
+                    BankName = customerWallet.BankName
+                };
+                await walletService.Update(customerWallet.WalletId, updateWallet);
+                //update reservation status
+                var reservation = await reservationService.Get((Guid)order.ReservationId);
+                var updateReservation = new ReservationUpdateRequest
+                {
+                    ReservationId = reservation.ReservationId,
+                    CheckInDate = reservation.CheckInDate,
+                    CheckOutDate = reservation.CheckOutDate,
+                    Code = reservation.Code,
+                    CreatedDate = reservation.CreatedDate,
+                    CustomerId = reservation.CustomerId,
+                    NumberOfRooms = reservation.NumberOfRooms,
+                    PaymentMethodId = reservation.PaymentMethodId,
+                    PaymentStatus = reservation.PaymentStatus,
+                    RoomTypeId = reservation.RoomTypeId,
+                    TotalAmount = reservation.TotalAmount,
+                    ReservationStatus = "Cancelled"
+                };
+                await reservationService.Update(reservation.ReservationId, updateReservation);
+                return order;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }
