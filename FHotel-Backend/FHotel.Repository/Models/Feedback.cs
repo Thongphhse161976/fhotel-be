@@ -12,5 +12,6 @@ namespace FHotel.Repository.Models
         public DateTime? CreatedDate { get; set; }
 
         public virtual Reservation? Reservation { get; set; }
+      
     }
 }

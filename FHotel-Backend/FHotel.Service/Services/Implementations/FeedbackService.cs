@@ -149,5 +149,20 @@ namespace FHotel.Services.Services.Implementations
 
             return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
         }
+
+        public async Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByOwnerId(Guid ownerId)
+        {
+            var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
+                     .AsNoTracking()
+                     .Include(x => x.Reservation)
+                        .ThenInclude(x => x.Customer)
+                    .Include(x => x.Reservation)
+                        .ThenInclude(x => x.RoomType)
+                            .ThenInclude(x => x.Type)
+                    .Where(x => x.Reservation.RoomType.Hotel.OwnerId == ownerId)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
+        }
     }
 }

@@ -7,6 +7,7 @@ using FHotel.Service.Profiles;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Cities;
+using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelAmenities;
 using FHotel.Services.DTOs.HotelDocuments;
 using FHotel.Services.DTOs.Hotels;
@@ -47,8 +48,9 @@ namespace FHotel.API.Controllers
         private readonly IRoomService _roomService;
         private readonly IWalletService _walletService;
         private readonly IOrderDetailService _orderDetailService;
+        private readonly IFeedbackService _feedbackService;
         public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService, 
-            IBillService billService, IWalletService walletService, IOrderDetailService orderDetailService)
+            IBillService billService, IWalletService walletService, IOrderDetailService orderDetailService, IFeedbackService feedbackService)
         {
             _userService = userService;
             _reservationService = reservationService;
@@ -60,7 +62,8 @@ namespace FHotel.API.Controllers
             _roomService = roomService;
             _billService = billService;
             _walletService = walletService;
-            _orderDetailService = orderDetailService;
+            _orderDetailService = orderDetailService; 
+            _feedbackService = feedbackService;
         }
 
         /// <summary>
@@ -648,6 +651,26 @@ namespace FHotel.API.Controllers
             {
                 // Log the exception if you have logging set up
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all feedback by owner id.
+        /// </summary>
+        [HttpGet("{id}/owner-feedbacks")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FeedbackResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<FeedbackResponse>>> GetAllFeedbackByOwnerId(Guid id)
+        {
+            try
+            {
+                var rs = await _feedbackService.GetAllFeedbackByOwnerId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
