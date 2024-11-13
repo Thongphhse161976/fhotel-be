@@ -158,7 +158,7 @@ namespace FHotel.Services.Services.Implementations
                         .ThenInclude(x => x.Customer)
                     .Include(x => x.Reservation)
                         .ThenInclude(x => x.RoomType)
-                            .ThenInclude(x => x.Type)
+                            .ThenInclude(x => x.Hotel)
                     .Where(x => x.Reservation.RoomType.Hotel.OwnerId == ownerId)
                     .ToListAsync();
 
