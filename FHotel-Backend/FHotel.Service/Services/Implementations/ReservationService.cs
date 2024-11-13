@@ -21,8 +21,12 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using FHotel.Repository.SMTPs.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -513,52 +517,69 @@ namespace FHotel.Services.Services.Implementations
         }
 
 
-        //DIVIDE
         public async Task CheckAndProcessReservationsAsync()
         {
             IEnumerable<ReservationResponse> reservations = null;
+            IEnumerable<ReservationResponse> pendingReservations = null;
+
             try
             {
+                // Lấy các reservation đủ điều kiện để xử lý
                 reservations = await GetEligibleReservationsAsync();
+                // Lấy các reservation ở trạng thái "Pending" để gửi thông báo
+                pendingReservations = await GetNotifyReservationsAsync();
             }
             catch (Exception ex)
             {
-                // Handle exceptions here
+                // Xử lý lỗi khi truy vấn
                 Console.WriteLine($"An error occurred while querying bills: {ex.Message}");
-                return; // Exit the method if an error occurs
+                return; // Thoát nếu có lỗi xảy ra
             }
 
             List<ReservationResponse> reservationsToProcess = new List<ReservationResponse>();
 
             foreach (var reservation in reservations)
             {
-
                 if (reservation.ReservationStatus == "CheckOut"
                     && Is60SecondsAfterReservation(reservation))
                 {
                     reservationsToProcess.Add(reservation);
                 }
-
             }
 
-            // Only one thread should execute this part at a time
+            // Chỉ một luồng duy nhất thực thi phần này tại một thời điểm
             lock (_lockObject)
             {
                 try
                 {
                     foreach (var reservation in reservationsToProcess)
                     {
-                        // Process each enrollment synchronously
+                        // Xử lý mỗi reservation đồng bộ
                         ProcessReservationAsync(reservation).Wait();
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions here
+                    // Xử lý lỗi khi xử lý reservation
                     Console.WriteLine($"An error occurred while processing bills: {ex.Message}");
                 }
             }
+
+            // Gửi thông báo sắp hết hạn cho các reservation ở trạng thái "Pending"
+            foreach (var pendingReservation in pendingReservations)
+            {
+                try
+                {
+                    await NotifyExpiration(pendingReservation);
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý lỗi khi gửi thông báo hết hạn
+                    Console.WriteLine($"An error occurred while notifying expiration: {ex.Message}");
+                }
+            }
         }
+
 
         //bill da paid + amount reservation (if pre-paid)
         public async Task<ReservationResponse[]> GetEligibleReservationsAsync()
@@ -894,6 +915,88 @@ namespace FHotel.Services.Services.Implementations
             // Continue with further processing, like transferring funds between wallets
             Console.WriteLine($"Calculated amount for the reservation: {amount}");
 
+        }
+
+        //NOTIFY
+        public async Task<ReservationResponse[]> GetNotifyReservationsAsync()
+        {
+            //chi lay reservation dang pending
+            var eligibleReservations = await _unitOfWork.Repository<Reservation>().GetAll()
+                .Where(reservation => reservation.ReservationStatus == "Pending")
+                .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                .ToArrayAsync();
+
+            return eligibleReservations;
+        }
+
+        public async Task NotifyExpiration(ReservationResponse reservation)
+        {
+            // Đặt ngưỡng thông báo trước 2 ngày
+            var expirationThreshold = reservation.CheckInDate?.AddDays(-2);
+
+            if (expirationThreshold.HasValue && DateTime.UtcNow >= expirationThreshold.Value)
+            {
+                await SendEmail(reservation); // Gửi email thông báo
+            }
+        }
+
+        public async Task SendEmail(ReservationResponse reservation)
+        {
+            // Retrieve email settings from appsettings.json
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(reservation.Customer.Email);
+            const string subject = "Sắp tới ngày nhận phòng!"; // Email subject
+
+            // Construct the email body with HTML template
+            string body = $@"
+        <h1>Thông tin Đặt Phòng</h1>
+        <p>Kính gửi {reservation.Customer.Name},</p>
+        <p>Cảm ơn đã dành thời gian với chúng tôi.</p>
+        <p>Còn 2 ngày nữa là tới ngày nhận phòng của mã đặt phòng này: {reservation.Code}</p>
+        <p>Ngày nhận phòng: {reservation.CheckInDate}</p>
+        <p>Ngày trả phòng: {reservation.CheckOutDate}</p>     
+        <p>Số lượng phòng đặt: {reservation.NumberOfRooms}</p>     
+        <p>Trân trọng nhất,<br>FHotel company.</p>";
+
+            // Set up the SMTP client
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            // Configure and send the email
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true // Specify that the email body is HTML
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
+        private Email GetEmailSettings()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                                          .SetBasePath(Directory.GetCurrentDirectory())
+                                          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+
+            return new Email()
+            {
+                SystemName = configuration.GetSection("Email:SystemName").Value,
+                Sender = configuration.GetSection("Email:Sender").Value,
+                Password = configuration.GetSection("Email:Password").Value,
+                Port = int.Parse(configuration.GetSection("Email:Port").Value),
+                Host = configuration.GetSection("Email:Host").Value
+            };
         }
     }
 }

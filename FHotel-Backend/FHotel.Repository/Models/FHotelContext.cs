@@ -868,6 +868,8 @@ namespace FHotel.Repository.Models
 
                 entity.Property(e => e.BankName).HasMaxLength(250);
 
+                entity.Property(e => e.BankAccountNumber).HasMaxLength(255);
+
                 entity.Property(e => e.UserId).HasColumnName("UserID");
 
                 entity.HasOne(d => d.User)

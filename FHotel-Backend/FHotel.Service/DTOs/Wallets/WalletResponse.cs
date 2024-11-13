@@ -12,7 +12,7 @@ namespace FHotel.Service.DTOs.Wallets
     {
         public Guid WalletId { get; set; }
         public Guid? UserId { get; set; }
-        public int? BankAccountNumber { get; set; }
+        public string? BankAccountNumber { get; set; }
         public string? BankName { get; set; }
         public decimal? Balance { get; set; }
         public virtual UserResponse? User { get; set; }

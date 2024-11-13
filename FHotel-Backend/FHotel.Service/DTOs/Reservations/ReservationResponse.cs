@@ -22,8 +22,6 @@ namespace FHotel.Services.DTOs.Reservations
         public Guid? RoomTypeId { get; set; }
         public int? NumberOfRooms { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public DateTime? ActualCheckInTime { get; set; }
-        public DateTime? ActualCheckOutDate { get; set; }
         public string? PaymentStatus { get; set; }
         public Guid? PaymentMethodId { get; set; }
 

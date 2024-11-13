@@ -31,7 +31,7 @@ namespace FHotel.Service.BackgroundServices
                 }
 
                 // Wait for 60 seconds before next check
-                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+                await Task.Delay(TimeSpan.FromDays(30), stoppingToken);
             }
         }
     }
