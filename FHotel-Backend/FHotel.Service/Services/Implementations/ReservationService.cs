@@ -2,10 +2,14 @@
 using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
+using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Orders;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
+using FHotel.Service.DTOs.Transactions;
+using FHotel.Service.DTOs.Wallets;
+using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Services.DTOs.OrderDetails;
@@ -30,11 +34,12 @@ namespace FHotel.Services.Services.Implementations
         private readonly ITypePricingService _typePricingService;
         private readonly Lazy<IRoomStayHistoryService> _roomStayHistoryService;
         private readonly IServiceProvider _serviceProvider;
-
+        private IWalletService _walletService;
+        private readonly object _lockObject = new object();
 
         //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
-            ITypePricingService typePricingService , Lazy<IRoomStayHistoryService> roomStayHistoryService, IServiceProvider serviceProvider)
+            ITypePricingService typePricingService, Lazy<IRoomStayHistoryService> roomStayHistoryService, IServiceProvider serviceProvider, IWalletService walletService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -42,6 +47,7 @@ namespace FHotel.Services.Services.Implementations
             _typePricingService = typePricingService;
             _roomStayHistoryService = roomStayHistoryService;
             _serviceProvider = serviceProvider;
+            _walletService = walletService;
         }
 
         public async Task<List<ReservationResponse>> GetAll()
@@ -203,7 +209,7 @@ namespace FHotel.Services.Services.Implementations
             try
             {
                 var updateReservation = _mapper.Map(request, reservation);
-                
+
                 if (updateReservation.ReservationStatus == "Cancelled")
                 {
                     var roomType = await _roomTypeService.Get(updateReservation.RoomTypeId.Value);
@@ -220,7 +226,8 @@ namespace FHotel.Services.Services.Implementations
                         IsActive = roomType.IsActive,
                         Note = roomType.Note,
                     });
-                }else if (updateReservation.ReservationStatus == "CheckIn")
+                }
+                else if (updateReservation.ReservationStatus == "CheckIn")
                 {
                     var roomType = await _roomTypeService.Get(updateReservation.RoomTypeId.Value);
                     //roomType.AvailableRooms -= updateReservation.NumberOfRooms;
@@ -265,8 +272,8 @@ namespace FHotel.Services.Services.Implementations
                             CheckOutDate = localTime,
                             RoomId = history.RoomId,
                             CreatedDate = history.CreatedDate,
-                            ReservationId = history.ReservationId,  
-                            UpdatedDate = history.UpdatedDate   
+                            ReservationId = history.ReservationId,
+                            UpdatedDate = history.UpdatedDate
                         };
 
                         // Update each history one by one
@@ -321,7 +328,7 @@ namespace FHotel.Services.Services.Implementations
         {
 
             var list = await _unitOfWork.Repository<Reservation>().GetAll()
-                                            .Where(r=> r.RoomType.HotelId == id)
+                                            .Where(r => r.RoomType.HotelId == id)
                                             .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
             // Check if list is null or empty
@@ -335,7 +342,7 @@ namespace FHotel.Services.Services.Implementations
         {
 
             var list = await _unitOfWork.Repository<Reservation>().GetAll()
-                                            .Where(r=> r.CustomerId == id)
+                                            .Where(r => r.CustomerId == id)
                                             .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
             // Check if list is null or empty
@@ -349,7 +356,7 @@ namespace FHotel.Services.Services.Implementations
         {
 
             var list = await _unitOfWork.Repository<Reservation>().GetAll()
-                                            .Where(r=> r.RoomType.Hotel.OwnerId == id)
+                                            .Where(r => r.RoomType.Hotel.OwnerId == id)
                                             .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
             // Check if list is null or empty
@@ -450,9 +457,9 @@ namespace FHotel.Services.Services.Implementations
             try
             {
 
-                if(reservation.ReservationStatus!= "CheckIn"|| reservation.ReservationStatus!= "CheckOut"|| reservation.ReservationStatus!= "Cancelled")
+                if (reservation.ReservationStatus != "CheckIn" || reservation.ReservationStatus != "CheckOut" || reservation.ReservationStatus != "Cancelled")
                 {
-                    if(reservation.PaymentStatus== "Paid")
+                    if (reservation.PaymentStatus == "Paid")
                     {
                         var _serviceService = _serviceProvider.GetService<IServiceService>();
                         var _orderService = _serviceProvider.GetService<IOrderService>();
@@ -476,7 +483,7 @@ namespace FHotel.Services.Services.Implementations
 
                         };
                         var orderDetailResponse = await _orderdetailService.Create(orderDetail);
-                        if(orderDetailResponse != null)
+                        if (orderDetailResponse != null)
                         {
                             message = "Bạn đã gửi yêu cầu thành công! Vui lòng chờ ...";
                         }
@@ -505,5 +512,388 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
+
+        //DIVIDE
+        public async Task CheckAndProcessReservationsAsync()
+        {
+            IEnumerable<ReservationResponse> reservations = null;
+            try
+            {
+                reservations = await GetEligibleReservationsAsync();
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                Console.WriteLine($"An error occurred while querying bills: {ex.Message}");
+                return; // Exit the method if an error occurs
+            }
+
+            List<ReservationResponse> reservationsToProcess = new List<ReservationResponse>();
+
+            foreach (var reservation in reservations)
+            {
+
+                if (reservation.ReservationStatus == "CheckOut"
+                    && Is60SecondsAfterReservation(reservation))
+                {
+                    reservationsToProcess.Add(reservation);
+                }
+
+            }
+
+            // Only one thread should execute this part at a time
+            lock (_lockObject)
+            {
+                try
+                {
+                    foreach (var reservation in reservationsToProcess)
+                    {
+                        // Process each enrollment synchronously
+                        ProcessReservationAsync(reservation).Wait();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions here
+                    Console.WriteLine($"An error occurred while processing bills: {ex.Message}");
+                }
+            }
+        }
+
+        //bill da paid + amount reservation (if pre-paid)
+        public async Task<ReservationResponse[]> GetEligibleReservationsAsync()
+        {
+            //chi lay reservation da CHECKOUT
+            var eligibleReservations = await _unitOfWork.Repository<Reservation>().GetAll()
+                .Where(reservation => reservation.ReservationStatus == "CheckOut")
+                .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                .ToArrayAsync();
+
+            return eligibleReservations;
+        }
+
+        //check cuoi tuan
+        public bool Is60SecondsAfterReservation(ReservationResponse reservation)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+
+            if (reservation.CreatedDate.HasValue)
+            {
+                return localTime >= reservation.CreatedDate.Value.AddSeconds(60);
+            }
+            else
+            {
+                // Handle null case (e.g., return false or throw an exception)
+                return false;
+            }
+        }
+
+        //Tranfer money
+        public async Task ProcessReservationAsync(ReservationResponse reservation)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            // Retrieve services using dependency injection
+            var billService = _serviceProvider.GetService<IBillService>();
+            var orderService = _serviceProvider.GetService<IOrderService>();
+            var transactionService = _serviceProvider.GetService<ITransactionService>();
+
+            // Retrieve all wallets and identify the admin and hotel owner wallets
+            var wallets = await _walletService.GetAll();
+            var adminWallet = wallets.Find(x => x.User.Role.RoleName == "Admin");
+            var hotelOwnerWallet = wallets.Find(x => x.UserId == reservation.RoomType.Hotel.Owner.UserId);
+
+            // Verify that the required wallets exist
+            if (adminWallet == null || hotelOwnerWallet == null)
+            {
+                throw new Exception("Không tìm thấy tài khoản FHotel hoặc chủ khách sạn");
+            }
+
+            decimal amount = 0;
+
+            // Calculate the amount based on the payment status of the reservation
+            if (reservation.PaymentStatus == "Paid")
+            {
+                // If the reservation is paid, calculate the amount from the reservation's total and orders
+                amount = (decimal)reservation.TotalAmount; // Assuming TotalAmount is part of ReservationResponse
+
+                // Retrieve all orders linked to this reservation to add any applicable amounts
+                var orders = await orderService.GetAllByReservationId(reservation.ReservationId);
+                foreach (var order in orders)
+                {
+                    amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
+                }
+
+                // Retrieve and process the bill if needed
+                var bill = await billService.GetBillByReservation(reservation.ReservationId);
+                if (bill != null)
+                {
+                    var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
+                    if (existingTransactionAdmin == null)
+                    {
+                        var transactionAdmin = new TransactionRequest
+                        {
+                            BillId = bill.BillId,
+                            Amount = bill.TotalAmount * 0.2m,
+                            Description = $@"Nhận {bill.TotalAmount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = adminWallet.WalletId
+                        };
+                        await transactionService.Create(transactionAdmin);
+                        var updateAdminWallet = new WalletRequest
+                        {
+                            Balance = adminWallet.Balance += (amount * 0.2m),
+                            UserId = adminWallet.UserId,
+                            BankAccountNumber = adminWallet.BankAccountNumber,
+                            BankName = adminWallet.BankName
+                        };
+                        await _walletService.Update(adminWallet.WalletId, updateAdminWallet);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Transaction already exists. Creation stopped.");
+                    }
+                    var existingTransactionHotelOwner = await transactionService.GetTransactionByWalletAndBillId(hotelOwnerWallet.WalletId, bill.BillId);
+                    if (existingTransactionHotelOwner == null)
+                    {
+                        var transactionHotelOwner = new TransactionRequest
+                        {
+                            BillId = bill.BillId,
+                            Amount = bill.TotalAmount * 0.8m,
+                            Description = $@"Nhận {bill.TotalAmount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = hotelOwnerWallet.WalletId
+                        };
+                        await transactionService.Create(transactionHotelOwner);
+
+                        var updateHotelOwnerWallet = new WalletRequest
+                        {
+                            Balance = hotelOwnerWallet.Balance += (amount * 0.8m),
+                            UserId = hotelOwnerWallet.UserId,
+                            BankAccountNumber = hotelOwnerWallet.BankAccountNumber,
+                            BankName = hotelOwnerWallet.BankName
+                        };
+                        await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+                    }
+                }
+                else
+                {
+                    //if bill is null
+                    var createBill = new BillRequest
+                    {
+                        ReservationId = reservation.ReservationId,
+                        BillStatus = "Paid",
+                        CreatedDate = localTime,
+                        TotalAmount = amount
+                    };
+                    var createBillResponse = await billService.Create(createBill);
+                    var updateBill = new BillRequest
+                    {
+                        ReservationId = reservation.ReservationId,
+                        BillStatus = "Paid",
+                        CreatedDate = localTime,
+                        TotalAmount = amount
+                    };
+                    await billService.Update(createBillResponse.BillId, updateBill);
+                    //transfer
+                    var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
+                    if (existingTransactionAdmin == null)
+                    {
+                        var transactionAdmin = new TransactionRequest
+                        {
+                            BillId = createBillResponse.BillId,
+                            Amount = bill.TotalAmount * 0.2m,
+                            Description = $@"Nhận {bill.TotalAmount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = adminWallet.WalletId
+                        };
+                        await transactionService.Create(transactionAdmin);
+                        var updateAdminWallet = new WalletRequest
+                        {
+                            Balance = adminWallet.Balance += (amount * 0.2m),
+                            UserId = adminWallet.UserId,
+                            BankAccountNumber = adminWallet.BankAccountNumber,
+                            BankName = adminWallet.BankName
+                        };
+                        await _walletService.Update(adminWallet.WalletId, updateAdminWallet);
+                    }
+                    var existingTransactionHotelOwner = await transactionService.GetTransactionByWalletAndBillId(hotelOwnerWallet.WalletId, bill.BillId);
+                    if (existingTransactionHotelOwner == null)
+                    {
+                        var transactionHotelOwner = new TransactionRequest
+                        {
+                            BillId = createBillResponse.BillId,
+                            Amount = bill.TotalAmount * 0.8m,
+                            Description = $@"Nhận {bill.TotalAmount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = hotelOwnerWallet.WalletId
+                        };
+                        await transactionService.Create(transactionHotelOwner);
+
+                        var updateHotelOwnerWallet = new WalletRequest
+                        {
+                            Balance = hotelOwnerWallet.Balance += (amount * 0.8m),
+                            UserId = hotelOwnerWallet.UserId,
+                            BankAccountNumber = hotelOwnerWallet.BankAccountNumber,
+                            BankName = hotelOwnerWallet.BankName
+                        };
+                        await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Transaction already exists. Creation stopped.");
+                    }
+                }
+            }
+            else
+            {
+                // If not paid, the amount could include reservation total + bill total
+                amount = reservation.TotalAmount.Value;
+
+                var orders = await orderService.GetAllByReservationId(reservation.ReservationId);
+                foreach (var order in orders)
+                {
+                    amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
+                }
+                // Retrieve and process the bill if needed
+                var bill = await billService.GetBillByReservation(reservation.ReservationId);
+                if (bill != null)
+                {
+                    var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
+                    if (existingTransactionAdmin == null)
+                    {
+                        var transactionAdmin = new TransactionRequest
+                        {
+                            BillId = bill.BillId,
+                            Amount = bill.TotalAmount * 0.2m,
+                            Description = $@"Nhận {bill.TotalAmount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = adminWallet.WalletId
+                        };
+                        await transactionService.Create(transactionAdmin);
+                        var updateAdminWallet = new WalletRequest
+                        {
+                            Balance = adminWallet.Balance += (amount * 0.2m),
+                            UserId = adminWallet.UserId,
+                            BankAccountNumber = adminWallet.BankAccountNumber,
+                            BankName = adminWallet.BankName
+                        };
+                        await _walletService.Update(adminWallet.WalletId, updateAdminWallet);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Transaction already exists. Creation stopped.");
+                    }
+                    var existingTransactionHotelOwner = await transactionService.GetTransactionByWalletAndBillId(hotelOwnerWallet.WalletId, bill.BillId);
+                    if (existingTransactionHotelOwner == null)
+                    {
+                        var transactionHotelOwner = new TransactionRequest
+                        {
+                            BillId = bill.BillId,
+                            Amount = bill.TotalAmount * 0.8m,
+                            Description = $@"Nhận {bill.TotalAmount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = hotelOwnerWallet.WalletId
+                        };
+                        await transactionService.Create(transactionHotelOwner);
+
+                        var updateHotelOwnerWallet = new WalletRequest
+                        {
+                            Balance = hotelOwnerWallet.Balance += (amount * 0.8m),
+                            UserId = hotelOwnerWallet.UserId,
+                            BankAccountNumber = hotelOwnerWallet.BankAccountNumber,
+                            BankName = hotelOwnerWallet.BankName
+                        };
+                        await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+                    }
+                }
+                else
+                {
+                    //if bill is null
+                    var createBill = new BillRequest
+                    {
+                        ReservationId = reservation.ReservationId,
+                        BillStatus = "Paid",
+                        CreatedDate = localTime,
+                        TotalAmount = amount
+                    };
+                    var createBillResponse = await billService.Create(createBill);
+                    var updateBill = new BillRequest
+                    {
+                        ReservationId = reservation.ReservationId,
+                        BillStatus = "Paid",
+                        CreatedDate = localTime,
+                        TotalAmount = amount
+                    };
+                    await billService.Update(createBillResponse.BillId, updateBill);
+                    var nowBill = await billService.Get(createBillResponse.BillId);
+                    //transfer
+                    var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, createBillResponse.BillId);
+                    if (existingTransactionAdmin == null)
+                    {
+                        var transactionAdmin = new TransactionRequest
+                        {
+                            BillId = createBillResponse.BillId,
+                            Amount = nowBill.TotalAmount * 0.2m,
+                            Description = $@"Nhận {nowBill.TotalAmount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = adminWallet.WalletId
+                        };
+                        await transactionService.Create(transactionAdmin);
+                        var updateAdminWallet = new WalletRequest
+                        {
+                            Balance = adminWallet.Balance += (amount * 0.2m),
+                            UserId = adminWallet.UserId,
+                            BankAccountNumber = adminWallet.BankAccountNumber,
+                            BankName = adminWallet.BankName
+                        };
+                        await _walletService.Update(adminWallet.WalletId, updateAdminWallet);
+                    }
+                    var existingTransactionHotelOwner = await transactionService.GetTransactionByWalletAndBillId(hotelOwnerWallet.WalletId, createBillResponse.BillId);
+                    if (existingTransactionHotelOwner == null)
+                    {
+                        var transactionHotelOwner = new TransactionRequest
+                        {
+                            BillId = createBillResponse.BillId,
+                            Amount = nowBill.TotalAmount * 0.8m,
+                            Description = $@"Nhận {nowBill.TotalAmount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            TransactionDate = localTime,
+                            WalletId = hotelOwnerWallet.WalletId
+                        };
+                        await transactionService.Create(transactionHotelOwner);
+
+                        var updateHotelOwnerWallet = new WalletRequest
+                        {
+                            Balance = hotelOwnerWallet.Balance += (amount * 0.8m),
+                            UserId = hotelOwnerWallet.UserId,
+                            BankAccountNumber = hotelOwnerWallet.BankAccountNumber,
+                            BankName = hotelOwnerWallet.BankName
+                        };
+                        await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Transaction already exists. Creation stopped.");
+                    }
+                }
+            }
+
+            // Continue with further processing, like transferring funds between wallets
+            Console.WriteLine($"Calculated amount for the reservation: {amount}");
+
+        }
     }
 }

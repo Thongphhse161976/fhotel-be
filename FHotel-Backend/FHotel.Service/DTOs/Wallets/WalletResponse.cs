@@ -15,5 +15,6 @@ namespace FHotel.Service.DTOs.Wallets
         public int? BankAccountNumber { get; set; }
         public string? BankName { get; set; }
         public decimal? Balance { get; set; }
+        public virtual UserResponse? User { get; set; }
     }
 }

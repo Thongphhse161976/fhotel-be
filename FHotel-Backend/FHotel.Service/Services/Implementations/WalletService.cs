@@ -64,6 +64,7 @@ namespace FHotel.Service.Services.Implementations
             {
                 var wallet = _mapper.Map<WalletRequest, Wallet>(request);
                 wallet.WalletId = Guid.NewGuid();
+                wallet.Balance = 0;
                 if (wallet.UserId == Guid.Empty)
                 {
                     throw new ValidationException("UserId cannot be empty. Please provide a valid UserId.");

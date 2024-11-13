@@ -156,5 +156,12 @@ namespace FHotel.Service.Services.Implementations
             return list;
         }
 
+        public async Task<TransactionResponse> GetTransactionByWalletAndBillId(Guid walletId, Guid billId)
+        {
+            return await _unitOfWork.Repository<Transaction>().GetAll()
+                 .ProjectTo<TransactionResponse>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(t => t.WalletId == walletId && t.BillId == billId);
+        }
+
     }
 }

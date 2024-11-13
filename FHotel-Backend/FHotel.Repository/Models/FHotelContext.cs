@@ -718,7 +718,7 @@ namespace FHotel.Repository.Models
 
                 entity.Property(e => e.BillId).HasColumnName("BillID");
 
-                entity.Property(e => e.Description).HasColumnType("decimal(10, 2)");
+                entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.Property(e => e.TransactionDate).HasColumnType("datetime");
 

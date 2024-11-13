@@ -22,5 +22,6 @@ namespace FHotel.Service.Services.Interfaces
 
         public Task<List<TransactionResponse>> GetAllTransactionByWalletId(Guid id);
         public Task<List<TransactionResponse>> GetAllTransactionByBillId(Guid id);
+        public Task<TransactionResponse> GetTransactionByWalletAndBillId(Guid walletId, Guid billId);
     }
 }

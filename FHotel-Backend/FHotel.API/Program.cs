@@ -2,6 +2,7 @@ using FHotel.API.VnPay;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Repository.SMS;
+using FHotel.Service.BackgroundServices;
 using FHotel.Service.Profiles;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
@@ -165,6 +166,16 @@ builder.Services.AddCors(options =>
                                 .AllowAnyMethod();
         });
 });
+
+// Configure HostOptions
+builder.Services.Configure<HostOptions>(options =>
+{
+    options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+});
+
+//builder.Services.AddHostedService<BillCheckerService>();
+builder.Services.AddHostedService<ReservationCheckerService>();
+
 
 var app = builder.Build();
 

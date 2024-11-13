@@ -24,5 +24,11 @@ namespace FHotel.Service.Services.Interfaces
         public Task<List<BillResponse>> GetAllBillByStaffId(Guid staffId);
 
         public Task<List<BillResponse>> GetAllByOwnerId(Guid id);
+        //public Task CheckAndProcessBillsAsync();
+        //public Task ProcessBillAsync(BillResponse bill);
+
+        //public Task<BillResponse[]> GetEligibleBillsAsync();
+
+        //public bool Is60SecondsAfterBill(BillResponse bill);
     }
 }

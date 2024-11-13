@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.Reservations;
 using FHotel.Services.DTOs.Reservations;
 using System;
 using System.Collections.Generic;
@@ -35,5 +36,11 @@ namespace FHotel.Services.Services.Interfaces
         public Task<List<ReservationResponse>> SearchReservations(Guid staffId, string? query);
 
         public Task<string> Refund(Guid id);
+        public Task CheckAndProcessReservationsAsync();
+        public Task ProcessReservationAsync(ReservationResponse reservation);
+
+        public Task<ReservationResponse[]> GetEligibleReservationsAsync();
+
+        public bool Is60SecondsAfterReservation(ReservationResponse reservation);
     }
 }
