@@ -145,7 +145,68 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(ex.Message);
             }
         }
+       
+        public async Task<RoomResponse> Update2(Guid id, RoomRequest request)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
 
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+
+            try
+            {
+                // Find the room to update
+                Room room = _unitOfWork.Repository<Room>()
+                            .Find(x => x.RoomId == id);
+                if (room == null)
+                {
+                    throw new KeyNotFoundException("Room not found.");
+                }
+
+
+                // Map the update request to the room entity
+                room = _mapper.Map(request, room);
+                room.UpdatedDate = localTime;
+
+                // Update the room
+                await _unitOfWork.Repository<Room>().UpdateDetached(room);
+                await _unitOfWork.CommitAsync();
+
+                // If the status has changed, update RoomType availability
+                if (request.Status == "Occupied")
+                {
+                    var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
+                    var roomType = await _roomTypeService.Get((Guid)request.RoomTypeId);
+                    var updateRoomType = new RoomTypeUpdateRequest
+                    {
+                        RoomTypeId = roomType.RoomTypeId,
+                        AvailableRooms = roomType.AvailableRooms - 1,
+                        Description = roomType.Description,
+                        HotelId = roomType.HotelId,
+                        IsActive = roomType.IsActive,
+                        Note = roomType.Note,
+                        RoomSize = roomType.RoomSize,
+                        TotalRooms = roomType.TotalRooms,
+                        TypeId = roomType.TypeId,
+                        UpdatedDate = roomType.UpdatedDate
+                    };
+                    await _roomTypeService.Update(roomType.RoomTypeId, updateRoomType);
+                }
+
+                // Return the updated room
+                return _mapper.Map<Room, RoomResponse>(room);
+            }
+            catch (Exception ex)
+            {
+                // Log error (if logging is available)
+                throw new ApplicationException($"Error updating room: {ex.Message}", ex);
+            }
+        }
+        //room attendatn update room
         public async Task<RoomResponse> Update(Guid id, RoomRequest request)
         {
             // Set the UTC offset for UTC+7

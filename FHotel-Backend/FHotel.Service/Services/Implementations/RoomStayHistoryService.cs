@@ -126,7 +126,7 @@ namespace FHotel.Service.Services.Implementations
                         UpdatedDate = localTime,
                         Note = room.Note,
                     };
-                    await _roomService.Update(room.RoomId, updateRoom);
+                    await _roomService.Update2(room.RoomId, updateRoom);
                     
                     
                 }
