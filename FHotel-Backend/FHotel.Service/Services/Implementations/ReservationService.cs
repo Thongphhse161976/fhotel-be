@@ -132,6 +132,7 @@ namespace FHotel.Services.Services.Implementations
                 reservation.CreatedDate = localTime;
                 reservation.ReservationStatus = "Pending";
                 reservation.PaymentStatus = "Not Paid";
+                reservation.IsPrePaid = false;
 
                 await _unitOfWork.Repository<Reservation>().InsertAsync(reservation);
 

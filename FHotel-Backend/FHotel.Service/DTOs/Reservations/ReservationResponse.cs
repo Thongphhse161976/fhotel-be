@@ -23,6 +23,7 @@ namespace FHotel.Services.DTOs.Reservations
         public int? NumberOfRooms { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string? PaymentStatus { get; set; }
+        public bool? IsPrePaid { get; set; }
         public Guid? PaymentMethodId { get; set; }
 
         public virtual UserResponse? Customer { get; set; }
