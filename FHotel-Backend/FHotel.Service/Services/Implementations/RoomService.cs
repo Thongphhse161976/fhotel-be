@@ -177,25 +177,25 @@ namespace FHotel.Services.Services.Implementations
                 await _unitOfWork.CommitAsync();
 
                 // If the status has changed, update RoomType availability
-                if (request.Status == "Occupied")
-                {
-                    var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
-                    var roomType = await _roomTypeService.Get((Guid)request.RoomTypeId);
-                    var updateRoomType = new RoomTypeUpdateRequest
-                    {
-                        RoomTypeId = roomType.RoomTypeId,
-                        AvailableRooms = roomType.AvailableRooms - 1,
-                        Description = roomType.Description,
-                        HotelId = roomType.HotelId,
-                        IsActive = roomType.IsActive,
-                        Note = roomType.Note,
-                        RoomSize = roomType.RoomSize,
-                        TotalRooms = roomType.TotalRooms,
-                        TypeId = roomType.TypeId,
-                        UpdatedDate = roomType.UpdatedDate
-                    };
-                    await _roomTypeService.Update(roomType.RoomTypeId, updateRoomType);
-                }
+                //if (request.Status == "Occupied")
+                //{
+                //    var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
+                //    var roomType = await _roomTypeService.Get((Guid)request.RoomTypeId);
+                //    var updateRoomType = new RoomTypeUpdateRequest
+                //    {
+                //        RoomTypeId = roomType.RoomTypeId,
+                //        AvailableRooms = roomType.AvailableRooms - 1,
+                //        Description = roomType.Description,
+                //        HotelId = roomType.HotelId,
+                //        IsActive = roomType.IsActive,
+                //        Note = roomType.Note,
+                //        RoomSize = roomType.RoomSize,
+                //        TotalRooms = roomType.TotalRooms,
+                //        TypeId = roomType.TypeId,
+                //        UpdatedDate = roomType.UpdatedDate
+                //    };
+                //    await _roomTypeService.Update(roomType.RoomTypeId, updateRoomType);
+                //}
 
                 // Return the updated room
                 return _mapper.Map<Room, RoomResponse>(room);
