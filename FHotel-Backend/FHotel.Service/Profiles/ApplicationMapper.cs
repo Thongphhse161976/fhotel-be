@@ -5,8 +5,6 @@ using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.Facilities;
-using FHotel.Service.DTOs.HolidayPricingRules;
-using FHotel.Service.DTOs.Holidays;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.HotelVerifications;
@@ -132,11 +130,6 @@ namespace FHotel.Service.Profiles
             CreateMap<UserDocument, UserDocumentResponse>().ReverseMap();
             CreateMap<Payment, PaymentRequest>().ReverseMap();
             CreateMap<Payment, PaymentResponse>().ReverseMap();
-            CreateMap<HolidayPricingRule, HolidayPricingRuleCreateRequest>().ReverseMap();
-            CreateMap<HolidayPricingRule, HolidayPricingRuleUpdateRequest>().ReverseMap();
-            CreateMap<HolidayPricingRule, HolidayPricingRuleResponse>().ReverseMap();
-            CreateMap<Holiday, HolidayRequest>().ReverseMap();
-            CreateMap<Holiday, HolidayResponse>().ReverseMap();
 
         }
           

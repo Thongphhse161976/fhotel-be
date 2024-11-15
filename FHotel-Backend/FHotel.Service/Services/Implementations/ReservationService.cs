@@ -932,14 +932,23 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task NotifyExpiration(ReservationResponse reservation)
         {
-            // Đặt ngưỡng thông báo trước 2 ngày
-            var expirationThreshold = reservation.CheckInDate?.AddDays(-2);
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
 
-            if (expirationThreshold.HasValue && DateTime.UtcNow >= expirationThreshold.Value)
+            // Get the current UTC time and convert it to UTC+7
+            DateTime localTime = DateTime.UtcNow + utcOffset;
+
+            // Set the notification threshold to exactly 2 days before check-in
+            var expirationThreshold = reservation.CheckInDate?.AddDays(-2);
+            if (expirationThreshold.HasValue &&
+              localTime >= expirationThreshold.Value.AddMinutes(-1) &&
+              localTime <= expirationThreshold.Value.AddMinutes(1))
             {
-                await SendEmail(reservation); // Gửi email thông báo
+                await SendEmail(reservation); // Send notification email
+                Console.WriteLine($"Email sent for Reservation ID: {reservation.ReservationId} at {localTime}");
             }
         }
+
 
         public async Task SendEmail(ReservationResponse reservation)
         {

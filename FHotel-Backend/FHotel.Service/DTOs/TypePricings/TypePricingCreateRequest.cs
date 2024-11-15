@@ -14,6 +14,7 @@ namespace FHotel.Service.DTOs.TypePricings
         public decimal? Price { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
+        public string? Description { get; set; }
         public decimal? PercentageIncrease { get; set; }
 
         public DateTime? CreatedDate { get; set; }

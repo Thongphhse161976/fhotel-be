@@ -12,6 +12,7 @@ namespace FHotel.Repository.Models
         public decimal? Price { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
+        public string? Description { get; set; }
         public decimal? PercentageIncrease { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }

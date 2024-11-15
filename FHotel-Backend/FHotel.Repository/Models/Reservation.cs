@@ -24,10 +24,10 @@ namespace FHotel.Repository.Models
         public int? NumberOfRooms { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string? PaymentStatus { get; set; }
+        public bool? IsPrePaid { get; set; }
         public Guid? PaymentMethodId { get; set; }
 
         public virtual User? Customer { get; set; }
-        public bool? IsPrePaid { get; set; }
         public virtual PaymentMethod? PaymentMethod { get; set; }
         public virtual RoomType? RoomType { get; set; }
         public virtual Bill? Bill { get; set; }

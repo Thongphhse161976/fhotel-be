@@ -7,7 +7,6 @@ namespace FHotel.Repository.Models
     {
         public District()
         {
-            HolidayPricingRules = new HashSet<HolidayPricingRule>();
             Hotels = new HashSet<Hotel>();
             TypePricings = new HashSet<TypePricing>();
         }
@@ -17,7 +16,6 @@ namespace FHotel.Repository.Models
         public Guid? CityId { get; set; }
 
         public virtual City? City { get; set; }
-        public virtual ICollection<HolidayPricingRule> HolidayPricingRules { get; set; }
         public virtual ICollection<Hotel> Hotels { get; set; }
         public virtual ICollection<TypePricing> TypePricings { get; set; }
     }
