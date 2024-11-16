@@ -84,7 +84,7 @@ namespace FHotel.Service.Services.Implementations
 
             if (existingPricing.Any())
             {
-                validationResult.Errors.Add(new ValidationFailure("DistrictId and TypeId", "Giá Của Loại Phòng Này Đã Tồn Tại."));
+                validationResult.Errors.Add(new ValidationFailure("DistrictId and TypeId", "Giá khoảng thời gian này đã tồn tại."));
             }
 
             // If there are any validation errors, throw a ValidationException
