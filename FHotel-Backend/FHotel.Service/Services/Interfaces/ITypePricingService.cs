@@ -23,7 +23,7 @@ namespace FHotel.Service.Services.Interfaces
 
         public Task<List<TypePricingResponse>> GetAllByRoomTypeId(Guid roomTypeId);
 
-        public Task<TypePricingResponse> GetPricingByTypeAndDistrict(Guid typeId, Guid districtId, int dayOfWeek);
+        public Task<TypePricingResponse> GetPricingByTypeAndDistrict(Guid typeId, Guid districtId, DateTime currentDate);
         public Task<decimal> GetTodayPricingByRoomType(Guid roomTypeId);
         public Task<decimal> GetPricingByRoomTypeAndDate(Guid roomTypeId, DateTime date);
     }

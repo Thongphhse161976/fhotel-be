@@ -312,22 +312,28 @@ namespace FHotel.Services.Services.Implementations
             // Get the district ID from the room type
             var districtId = roomType.Hotel.DistrictId;
 
+            // Loop over each date from checkInDate to checkOutDate
             for (DateTime currentDate = checkInDate.Date; currentDate < checkOutDate.Date; currentDate = currentDate.AddDays(1))
             {
-                int dayOfWeek = (int)currentDate.DayOfWeek == 0 ? 7 : (int)currentDate.DayOfWeek;
+                // Get the pricing for the current date
+                var dailyPricing = await _typePricingService.GetPricingByTypeAndDistrict(roomType.TypeId ?? Guid.Empty, districtId ?? Guid.Empty, currentDate);
 
-                var dailyPricing = await _typePricingService.GetPricingByTypeAndDistrict(roomType.TypeId ?? Guid.Empty, districtId ?? Guid.Empty, dayOfWeek);
-
-                if (dailyPricing == null)
+                if (dailyPricing == null || dailyPricing.Price == null)
                 {
                     throw new Exception($"No pricing available for {currentDate.ToShortDateString()}.");
                 }
 
-                totalAmount += dailyPricing.Price.Value * numberOfRooms;
+                decimal dailyPrice = dailyPricing.Price.Value;
+
+                // Add the daily price for the number of rooms to the total amount
+                totalAmount += dailyPrice * numberOfRooms;
             }
 
             return totalAmount;
         }
+
+
+
 
         public async Task<List<ReservationResponse>> GetAllByHotelId(Guid id)
         {

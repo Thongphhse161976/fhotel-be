@@ -291,6 +291,7 @@ namespace FHotel.Services.Services.Implementations
                             .ThenInclude(x => x.ServiceType)
                         .Include(x => x.Order)
                             .ThenInclude(x=> x.Reservation)
+                                .ThenInclude(x => x.Customer)
                     .Where(x => x.Service.ServiceName == "Hoàn tiền")
                     .ToListAsync();
 

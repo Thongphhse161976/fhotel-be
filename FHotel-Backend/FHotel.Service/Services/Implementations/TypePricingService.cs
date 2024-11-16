@@ -77,7 +77,6 @@ namespace FHotel.Service.Services.Implementations
             var existingPricing = (await GetAll())
                 .Where(u => u.DistrictId == request.DistrictId &&
                             u.TypeId == request.TypeId &&
-                            u.DayOfWeek == request.DayOfWeek && // Include DayOfWeek in the check
                             ((u.From <= request.To && u.To >= request.From) ||
                              (request.From <= u.To && request.To >= u.From)))
                 .ToList();
@@ -198,19 +197,36 @@ namespace FHotel.Service.Services.Implementations
             return typePricings;
         }
 
-        public async Task<TypePricingResponse> GetPricingByTypeAndDistrict(Guid typeId, Guid districtId, int dayOfWeek)
+        public async Task<TypePricingResponse> GetPricingByTypeAndDistrict(Guid typeId, Guid districtId, DateTime currentDate)
         {
             try
             {
+                // Fetch pricing for the given date range
                 var pricing = await _unitOfWork.Repository<TypePricing>()
                     .GetAll()
-                    .Where(tp => tp.TypeId == typeId && tp.DistrictId == districtId && tp.DayOfWeek == dayOfWeek)
+                    .Where(tp => tp.TypeId == typeId
+                                 && tp.DistrictId == districtId
+                                 && tp.From <= currentDate
+                                 && tp.To >= currentDate)  // Ensure the pricing is within the current date range
                     .FirstOrDefaultAsync();
 
                 if (pricing == null)
                 {
-                    throw new Exception("No pricing found for the specified criteria.");
+                    throw new Exception($"No pricing found for the specified criteria on {currentDate.ToShortDateString()}.");
                 }
+
+                // Adjust price based on the day of the week
+                int dayOfWeek = (int)currentDate.DayOfWeek == 0 ? 7 : (int)currentDate.DayOfWeek; // 7 for Sunday (adjusted logic)
+                decimal adjustedPrice = pricing.Price ?? 0;
+
+                // Apply weekend increase if it's Saturday or Sunday
+                if (dayOfWeek == 6 || dayOfWeek == 7)
+                {
+                    decimal percentageIncrease = pricing.PercentageIncrease ?? 0;
+                    adjustedPrice *= (1 + (percentageIncrease / 100));
+                }
+
+                pricing.Price = adjustedPrice;
 
                 return _mapper.Map<TypePricing, TypePricingResponse>(pricing);
             }
@@ -219,6 +235,9 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception($"Error fetching pricing: {ex.Message}");
             }
         }
+
+
+
 
 
         public async Task<decimal> GetTodayPricingByRoomType(Guid roomTypeId)
@@ -235,18 +254,15 @@ namespace FHotel.Service.Services.Implementations
                 // Step 2: Get the district ID from the room type
                 var districtId = roomType.Hotel.DistrictId;
 
-                // Step 3: Get today's day of the week (1 = Monday, ..., 7 = Sunday)
-                int dayOfWeek = (int)DateTime.Now.DayOfWeek == 0 ? 7 : (int)DateTime.Now.DayOfWeek;
-
-                // Step 4: Fetch today's pricing for the specific room type and district
-                var todayPricing = await GetPricingByTypeAndDistrict(roomType.TypeId.Value, districtId.Value, dayOfWeek);
+                // Step 3: Fetch today's pricing for the room type and district
+                var todayPricing = await GetPricingByTypeAndDistrict(roomType.TypeId.Value, districtId.Value, DateTime.Now);
 
                 if (todayPricing == null)
                 {
                     throw new Exception("No pricing available for today.");
                 }
 
-                // Step 5: Return the price
+                // Step 4: Return the price
                 return todayPricing.Price ?? throw new Exception("Price for today is not set.");
             }
             catch (Exception ex)
@@ -254,6 +270,7 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception($"Error fetching today's pricing: {ex.Message}");
             }
         }
+
 
         public async Task<decimal> GetPricingByRoomTypeAndDate(Guid roomTypeId, DateTime date)
         {
@@ -269,25 +286,34 @@ namespace FHotel.Service.Services.Implementations
                 // Step 2: Get the district ID from the room type
                 var districtId = roomType.Hotel.DistrictId;
 
-                // Step 3: Get the day of the week for the specified date (1 = Monday, ..., 7 = Sunday)
-                int dayOfWeek = (int)date.DayOfWeek == 0 ? 7 : (int)date.DayOfWeek;
-
-                // Step 4: Fetch pricing for the specified room type, district, and day of the week
-                var pricing = await GetPricingByTypeAndDistrict(roomType.TypeId.Value, districtId.Value, dayOfWeek);
+                // Step 3: Fetch pricing for the room type and district on the specified date
+                var pricing = await GetPricingByTypeAndDistrict(roomType.TypeId.Value, districtId.Value, date);
 
                 if (pricing == null)
                 {
                     throw new Exception($"No pricing available for the specified date: {date.ToShortDateString()}.");
                 }
 
-                // Step 5: Return the price
-                return pricing.Price ?? throw new Exception($"Price for the specified date ({date.ToShortDateString()}) is not set.");
+                // Step 4: Apply weekend price increase (if applicable)
+                decimal adjustedPrice = pricing.Price ?? 0;
+
+                // Get the day of the week (1 = Monday, ..., 7 = Sunday)
+                int dayOfWeek = (int)date.DayOfWeek == 0 ? 7 : (int)date.DayOfWeek;
+
+                // If the date is Saturday (6) or Sunday (7), apply the percentage increase
+                if (dayOfWeek == 6 || dayOfWeek == 7)  // Saturday or Sunday
+                {
+                    adjustedPrice *= (1 + (pricing.PercentageIncrease ?? 0) / 100);
+                }
+
+                return adjustedPrice;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error fetching pricing for the specified date: {ex.Message}");
             }
         }
+
 
 
 

@@ -10,7 +10,6 @@ namespace FHotel.Service.DTOs.TypePricings
     {
         public Guid? TypeId { get; set; }
         public Guid? DistrictId { get; set; }
-        public int? DayOfWeek { get; set; }
         public decimal? Price { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
