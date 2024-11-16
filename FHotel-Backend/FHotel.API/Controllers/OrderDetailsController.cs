@@ -94,5 +94,30 @@ namespace FHotel.API.Controllers
             var rs = await _orderDetailService.Delete(id);
             return Ok(rs);
         }
+        /// <summary>
+        /// Get all refund.
+        /// </summary>
+        [HttpGet("refunds")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<OrderDetailResponse>>> GetAllRefund()
+        {
+            try
+            {
+                var orderDetails = await _orderDetailService.GetAllRefund();
+
+                if (orderDetails == null || !orderDetails.Any())
+                {
+                    return NotFound(new { message = "No refund" });
+                }
+
+                return Ok(orderDetails);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
 }

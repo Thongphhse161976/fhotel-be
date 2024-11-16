@@ -283,6 +283,19 @@ namespace FHotel.Services.Services.Implementations
 
             return _mapper.Map<IEnumerable<OrderDetail>, IEnumerable<OrderDetailResponse>>(orderDetails);
         }
+        public async Task<IEnumerable<OrderDetailResponse>> GetAllRefund()
+        {
+            var orderDetails = await _unitOfWork.Repository<OrderDetail>().GetAll()
+                     .AsNoTracking()
+                      .Include(x => x.Service)
+                            .ThenInclude(x => x.ServiceType)
+                        .Include(x => x.Order)
+                            .ThenInclude(x=> x.Reservation)
+                    .Where(x => x.Service.ServiceName == "Hoàn tiền")
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<OrderDetail>, IEnumerable<OrderDetailResponse>>(orderDetails);
+        }
 
     }
 }
