@@ -249,7 +249,7 @@ namespace FHotel.Services.Services.Implementations
                     ReservationId = order.ReservationId,
                     TotalAmount = order.TotalAmount,
                     OrderedDate = order.OrderedDate,
-                    OrderStatus = "Paid"
+                    OrderStatus = "Confirmed"
                 };
                await Update(order.OrderId, updateOrder);
                 var bill = await billService.Get(createBillResponse.BillId);
