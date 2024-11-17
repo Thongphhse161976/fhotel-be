@@ -669,6 +669,48 @@ namespace FHotel.Services.Services.Implementations
                 await smtp.SendMailAsync(message);
             }
         }
+        
+        public async Task SendEmailTest(string toEmail, Guid userid)
+        {
+            // Retrieve email settings from appsettings.json
+            var emailSettings = GetEmailSettings();
+            var user = await Get(userid);
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(toEmail);
+            const string subject = "Hotel Registration Confirmation"; // Email subject
+
+            // Construct the email body with HTML template
+            string body = $@"
+        <h1>Hotel Registration Confirmation</h1>
+        <p>Dear {user.Name},</p>
+        <p>Thanks for giving time with us.</p>
+        <p>You now can access our system FHotel</p>
+        <p>Email: {user.Email}</p>
+        <p>Password: {user.Password}</p>     
+        <p>Best regards,<br>FHotel company.</p>";
+
+            // Set up the SMTP client
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            // Configure and send the email
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true // Specify that the email body is HTML
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
         public async Task SendSMS(string phoneNumber)
         {
             string otpCode = GenerateOTP();

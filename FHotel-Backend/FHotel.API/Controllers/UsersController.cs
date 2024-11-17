@@ -673,5 +673,23 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //[HttpGet("{customerId}/email")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult> SendEmailTest(string email ,Guid customerId)
+        //{
+        //    try
+        //    {
+        //        await _userService.SendEmailTest(email,customerId);
+
+        //        return Ok(customerId);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception if you have logging set up
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+        //    }
+        //}
     }
 }

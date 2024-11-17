@@ -171,6 +171,8 @@ builder.Services.Configure<HostOptions>(options =>
     options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
 
+builder.Services.AddMemoryCache();
+
 //builder.Services.AddHostedService<BillCheckerService>();
 builder.Services.AddHostedService<ReservationCheckerService>();
 

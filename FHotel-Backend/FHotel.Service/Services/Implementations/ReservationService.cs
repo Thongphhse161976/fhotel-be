@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FHotel.Repository.SMTPs.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -40,10 +41,12 @@ namespace FHotel.Services.Services.Implementations
         private readonly IServiceProvider _serviceProvider;
         private IWalletService _walletService;
         private readonly object _lockObject = new object();
+        private readonly IMemoryCache _cache;
 
         //private readonly IBillService _billService;
         public ReservationService(IUnitOfWork unitOfWork, IMapper mapper, IRoomTypeService roomTypeService,
-            ITypePricingService typePricingService, Lazy<IRoomStayHistoryService> roomStayHistoryService, IServiceProvider serviceProvider, IWalletService walletService)
+            ITypePricingService typePricingService, Lazy<IRoomStayHistoryService> roomStayHistoryService, IServiceProvider serviceProvider, IWalletService walletService,
+            IMemoryCache cache)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -52,6 +55,7 @@ namespace FHotel.Services.Services.Implementations
             _roomStayHistoryService = roomStayHistoryService;
             _serviceProvider = serviceProvider;
             _walletService = walletService;
+            _cache = cache;
         }
 
         public async Task<List<ReservationResponse>> GetAll()
@@ -938,7 +942,7 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task NotifyExpiration(ReservationResponse reservation)
         {
-            // Set the UTC offset for UTC+7
+            // Set UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 
             // Get the current UTC time and convert it to UTC+7
@@ -946,12 +950,30 @@ namespace FHotel.Services.Services.Implementations
 
             // Set the notification threshold to exactly 2 days before check-in
             var expirationThreshold = reservation.CheckInDate?.AddDays(-2);
-            if (expirationThreshold.HasValue &&
-              localTime >= expirationThreshold.Value.AddMinutes(-1) &&
-              localTime <= expirationThreshold.Value.AddMinutes(1))
+
+            if (expirationThreshold.HasValue && localTime.Date == expirationThreshold.Value.Date)
             {
-                await SendEmail(reservation); // Send notification email
-                Console.WriteLine($"Email sent for Reservation ID: {reservation.ReservationId} at {localTime}");
+                // Generate a unique cache key for this reservation
+                string cacheKey = $"NotificationSent_{reservation.ReservationId}";
+
+                // Check if the notification was already sent
+                if (!_cache.TryGetValue(cacheKey, out _))
+                {
+                    // Send the email
+                    await SendEmail(reservation);
+
+                    // Cache the result to avoid sending again
+                    _cache.Set(cacheKey, true, TimeSpan.FromDays(1)); // Cache for 1 day
+                    Console.WriteLine($"Email sent for Reservation ID: {reservation.ReservationId} at {localTime}");
+                }
+                else
+                {
+                    Console.WriteLine($"Email already sent for Reservation ID: {reservation.ReservationId}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No email sent. Local time: {localTime}, Expiration threshold: {expirationThreshold}");
             }
         }
 

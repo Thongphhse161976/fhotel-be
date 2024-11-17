@@ -34,6 +34,8 @@ namespace FHotel.Services.Services.Interfaces
 
         public Task SendActivationEmail(string toEmail);
 
+        public Task SendEmailTest(string toEmail, Guid userid);
+
         public Task ActivateUser(string email);
 
         public Task<List<HotelResponse>> GetHotelByUser(Guid id);
