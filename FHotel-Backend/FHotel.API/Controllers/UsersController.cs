@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.Wallets;
@@ -248,6 +249,62 @@ namespace FHotel.API.Controllers
                 if (staffList == null || !staffList.Any())
                 {
                     return NotFound(new { message = "No reservation found for this user." });
+                }
+
+                return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+        
+        /// <summary>
+        /// Get all reservations by customer id and staff id.
+        /// </summary>
+        /// <param name="Id">The ID of the user.</param>
+        /// <returns>A list of reservations.</returns>
+        [HttpGet("{customerId}/staff/{staffId}/reservations")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> GetAllReservationByUserStaffId(Guid customerId,Guid staffId)
+        {
+            try
+            {
+                var staffList = await _reservationService.GetAllByUserStaffId(customerId, staffId);
+
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No reservation found for this staff." });
+                }
+
+                return Ok(staffList);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all reservations by customer id and owner id.
+        /// </summary>
+        /// <param name="Id">The ID of the user.</param>
+        /// <returns>A list of reservations.</returns>
+        [HttpGet("{customerId}/owner/{ownerId}/reservations")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> GetAllReservationByUserOwnerId(Guid customerId, Guid ownerId)
+        {
+            try
+            {
+                var staffList = await _reservationService.GetAllByUserOwnerId(customerId, ownerId);
+
+                if (staffList == null || !staffList.Any())
+                {
+                    return NotFound(new { message = "No reservation found for this staff." });
                 }
 
                 return Ok(staffList);

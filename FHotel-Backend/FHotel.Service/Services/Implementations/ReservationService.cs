@@ -367,6 +367,46 @@ namespace FHotel.Services.Services.Implementations
             }
             return list;
         }
+        public async Task<List<ReservationResponse>> GetAllByUserStaffId(Guid customerId, Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+            var list = await _unitOfWork.Repository<Reservation>().GetAll()
+                                            .Where(r => r.CustomerId == customerId && r.RoomType.HotelId == hotelId)
+                                            .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            // Check if list is null or empty
+            if (list == null || !list.Any())
+            {
+                throw new Exception("No reservations found.");
+            }
+            return list;
+        }
+        public async Task<List<ReservationResponse>> GetAllByUserOwnerId(Guid customerId, Guid ownerId)
+        {
+            
+            var list = await _unitOfWork.Repository<Reservation>().GetAll()
+                                            .Where(r => r.CustomerId == customerId && r.RoomType.Hotel.OwnerId == ownerId)
+                                            .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
+                                            .ToListAsync();
+            // Check if list is null or empty
+            if (list == null || !list.Any())
+            {
+                throw new Exception("No reservations found.");
+            }
+            return list;
+        }
+
         public async Task<List<ReservationResponse>> GetAllByOwnerId(Guid id)
         {
 
