@@ -409,7 +409,7 @@ namespace FHotel.API.Controllers
         {
             try
             {
-                var rooms = await _hotelVerificationService.GetAllByHotelId(hotelId);
+                var rooms = await _roomService.GetAllRoomByHotelId(hotelId);
 
                 if (rooms == null || !rooms.Any())
                 {
