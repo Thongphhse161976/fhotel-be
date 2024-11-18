@@ -730,6 +730,26 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        /// <summary>
+        /// Get a list of all feedback by staff id.
+        /// </summary>
+        [HttpGet("{id}/staff-feedbacks")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<FeedbackResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<FeedbackResponse>>> GetAllFeedbackByStaffId(Guid id)
+        {
+            try
+            {
+                var rs = await _feedbackService.GetAllFeedbackByStaffId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         //[HttpGet("{customerId}/email")]
         //[ProducesResponseType(StatusCodes.Status200OK)]

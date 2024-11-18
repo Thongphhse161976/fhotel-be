@@ -24,5 +24,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByHotelId(Guid hotelId);
 
         public Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByOwnerId(Guid ownerId);
+
+        public Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByStaffId(Guid staffId);
     }
 }

@@ -719,8 +719,8 @@ namespace FHotel.Services.Services.Implementations
                         var transactionAdmin = new TransactionRequest
                         {
                             BillId = bill.BillId,
-                            Amount = bill.TotalAmount * 0.2m,
-                            Description = $@"Nhận {bill.TotalAmount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            Amount = amount * 0.2m,
+                            Description = $@"Nhận {amount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
                             TransactionDate = localTime,
                             WalletId = adminWallet.WalletId
                         };
@@ -744,8 +744,8 @@ namespace FHotel.Services.Services.Implementations
                         var transactionHotelOwner = new TransactionRequest
                         {
                             BillId = bill.BillId,
-                            Amount = bill.TotalAmount * 0.8m,
-                            Description = $@"Nhận {bill.TotalAmount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            Amount = amount * 0.8m,
+                            Description = $@"Nhận {amount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
                             TransactionDate = localTime,
                             WalletId = hotelOwnerWallet.WalletId
                         };
@@ -787,8 +787,8 @@ namespace FHotel.Services.Services.Implementations
                         var transactionAdmin = new TransactionRequest
                         {
                             BillId = createBillResponse.BillId,
-                            Amount = updateBillResponse.TotalAmount * 0.2m,
-                            Description = $@"Nhận {updateBillResponse.TotalAmount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            Amount = amount * 0.2m,
+                            Description = $@"Nhận {amount * 0.2m} từ đặt phòng {reservation.Code} lúc {localTime}",
                             TransactionDate = localTime,
                             WalletId = adminWallet.WalletId
                         };
@@ -808,8 +808,8 @@ namespace FHotel.Services.Services.Implementations
                         var transactionHotelOwner = new TransactionRequest
                         {
                             BillId = createBillResponse.BillId,
-                            Amount = updateBillResponse.TotalAmount * 0.8m,
-                            Description = $@"Nhận {updateBillResponse.TotalAmount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
+                            Amount = amount * 0.8m,
+                            Description = $@"Nhận {amount * 0.8m} từ đặt phòng {reservation.Code} lúc {localTime}",
                             TransactionDate = localTime,
                             WalletId = hotelOwnerWallet.WalletId
                         };

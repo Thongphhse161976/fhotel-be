@@ -164,5 +164,34 @@ namespace FHotel.Services.Services.Implementations
 
             return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
         }
+        
+        public async Task<IEnumerable<FeedbackResponse>> GetAllFeedbackByStaffId(Guid staffId)
+        {
+            // Retrieve the HotelID associated with the HotelStaff
+            var hotelStaff = await _unitOfWork.Repository<HotelStaff>()
+                                              .GetAll()
+                                              .Where(hs => hs.UserId == staffId)
+                                              .FirstOrDefaultAsync();
+
+            if (hotelStaff == null)
+            {
+                throw new Exception("Staff not found or not associated with any hotel.");
+            }
+
+            var hotelId = hotelStaff.HotelId;
+            var feedbacks = await _unitOfWork.Repository<Feedback>().GetAll()
+                     .AsNoTracking()
+                     .Include(x => x.Reservation)
+                        .ThenInclude(x => x.Customer)
+                    .Include(x => x.Reservation)
+                        .ThenInclude(x => x.RoomType)
+                            .ThenInclude(x => x.Hotel)
+                    .Where(x => x.Reservation.RoomType.HotelId == hotelId)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<Feedback>, IEnumerable<FeedbackResponse>>(feedbacks);
+        }
+
+
     }
 }
