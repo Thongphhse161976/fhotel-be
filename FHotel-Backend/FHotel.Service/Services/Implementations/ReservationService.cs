@@ -1026,15 +1026,14 @@ namespace FHotel.Services.Services.Implementations
             var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
             var toAddress = new MailAddress(reservation.Customer.Email);
             const string subject = "Sắp tới ngày nhận phòng!"; // Email subject
-
             // Construct the email body with HTML template
             string body = $@"
         <h1>Thông tin Đặt Phòng</h1>
         <p>Kính gửi {reservation.Customer.Name},</p>
         <p>Cảm ơn đã dành thời gian với chúng tôi.</p>
         <p>Còn 2 ngày nữa là tới ngày nhận phòng của mã đặt phòng này: {reservation.Code}</p>
-        <p>Ngày nhận phòng: {reservation.CheckInDate}</p>
-        <p>Ngày trả phòng: {reservation.CheckOutDate}</p>     
+        <p>Ngày nhận phòng: {reservation.CheckInDate?.ToString("dd/MM/yyyy")}</p>
+        <p>Ngày trả phòng: {reservation.CheckOutDate?.ToString("dd/MM/yyyy")}</p>
         <p>Số lượng phòng đặt: {reservation.NumberOfRooms}</p>     
         <p>Trân trọng nhất,<br>FHotel company.</p>";
 
