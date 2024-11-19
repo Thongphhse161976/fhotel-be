@@ -190,6 +190,7 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<ReservationResponse> Update(Guid id, ReservationUpdateRequest request)
         {
+            var orderService = _serviceProvider.GetService<IOrderService>();
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
 
@@ -287,6 +288,11 @@ namespace FHotel.Services.Services.Implementations
 
                         // Update each history one by one
                         await _roomStayHistoryService.Value.Update(history.RoomStayHistoryId, roomStayHistoryUpdate);
+                    }
+                    var orders = await orderService.GetAllByReservationId(updateReservation.ReservationId);
+                    if (updateReservation.IsPrePaid == true && orders.Count == 0)
+                    {
+                        updateReservation.PaymentStatus = "Paid";
                     }
                 }
 
@@ -572,9 +578,12 @@ namespace FHotel.Services.Services.Implementations
         {
             IEnumerable<ReservationResponse> reservations = null;
             IEnumerable<ReservationResponse> pendingReservations = null;
+            IEnumerable<ReservationResponse> notPaidReservations = null;
 
             try
             {
+                //  Hủy các reservation hết hạn
+                await CancelExpiredReservationsAsync();
                 // Lấy các reservation đủ điều kiện để xử lý
                 reservations = await GetEligibleReservationsAsync();
                 // Lấy các reservation ở trạng thái "Pending" để gửi thông báo
@@ -629,6 +638,7 @@ namespace FHotel.Services.Services.Implementations
                     Console.WriteLine($"An error occurred while notifying expiration: {ex.Message}");
                 }
             }
+            
         }
 
 
@@ -1082,6 +1092,55 @@ namespace FHotel.Services.Services.Implementations
                 await smtp.SendMailAsync(message);
             }
         }
+        
+        public async Task SendEmailCancel(ReservationResponse reservation)
+        {
+            // Retrieve email settings from appsettings.json
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(reservation.Customer.Email);
+            const string subject = "Đã hủy đặt phòng!"; // Email subject
+            // Construct the email body with HTML template
+            string body = $@"
+        <h1>Thông Báo Hủy Đặt Phòng</h1>
+<p>Kính gửi {reservation.Customer.Name},</p>
+
+<p>Chúng tôi rất tiếc phải thông báo rằng mã đặt phòng <strong>{reservation.Code}</strong> của quý khách đã bị hủy vì không nhận được thanh toán trong vòng 2 ngày kể từ ngày tạo đặt phòng: {reservation.CreatedDate?.ToString("dd/MM/yyyy")}.</p>
+
+<p><strong>Thông tin chi tiết về đặt phòng:</strong></p>
+<ul>
+    <li>Ngày nhận phòng: {reservation.CheckInDate?.ToString("dd/MM/yyyy")}</li>
+    <li>Ngày trả phòng: {reservation.CheckOutDate?.ToString("dd/MM/yyyy")}</li>
+    <li>Số lượng phòng đặt: {reservation.NumberOfRooms}</li>
+</ul>
+
+<p>Nếu đây là nhầm lẫn, quý khách vui lòng liên hệ với chúng tôi để được hỗ trợ.</p>
+
+<p>Trân trọng cảm ơn,<br>FHotel Company</p>";
+
+            // Set up the SMTP client
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            // Configure and send the email
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true // Specify that the email body is HTML
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
         private Email GetEmailSettings()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder()
@@ -1098,5 +1157,52 @@ namespace FHotel.Services.Services.Implementations
                 Host = configuration.GetSection("Email:Host").Value
             };
         }
+        //Cancel
+        public async Task CancelExpiredReservationsAsync()
+        {
+            // Set UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time and convert it to UTC+7
+            DateTime localTime = DateTime.UtcNow + utcOffset;
+
+            // Lấy danh sách tất cả các đặt phòng có trạng thái Pending và chưa được thanh toán
+            var reservationsToCancel = await _unitOfWork.Repository<Reservation>().GetAll()
+                .Where(reservation =>
+                    reservation.ReservationStatus == "Pending" &&
+                    reservation.IsPrePaid == false &&
+                    reservation.CreatedDate.HasValue &&
+                    reservation.CreatedDate.Value.AddDays(2) <= localTime) // Kiểm tra nếu đã quá 2 ngày kể từ ngày tạo
+                .ToListAsync();
+
+            if (reservationsToCancel.Any())
+            {
+                foreach (var reservation in reservationsToCancel)
+                {
+                    // Gọi hàm Update để cập nhật trạng thái của từng Reservation
+                    var updateRequest = new ReservationUpdateRequest
+                    {
+                        ReservationId = reservation.ReservationId,
+                        Code = reservation.Code,
+                        CheckOutDate = reservation.CheckOutDate,
+                        CheckInDate = reservation.CheckInDate,
+                        ReservationStatus = "Cancelled",
+                        CreatedDate = reservation.CreatedDate,
+                        CustomerId = reservation.CustomerId,
+                        IsPrePaid = reservation.IsPrePaid,
+                        NumberOfRooms = reservation.NumberOfRooms,
+                        PaymentMethodId = reservation.PaymentMethodId,
+                        PaymentStatus = reservation.PaymentStatus,
+                        RoomTypeId = reservation.RoomTypeId,
+                        TotalAmount = reservation.TotalAmount
+                    };
+                    await Update(reservation.ReservationId, updateRequest);
+                    var reservationResponse = await Get(reservation.ReservationId);
+                    await SendEmailCancel(reservationResponse);
+                }
+            }
+        }
+
+
     }
 }
