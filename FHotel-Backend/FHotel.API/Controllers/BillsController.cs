@@ -1,4 +1,5 @@
 ﻿using FHotel.API.VnPay;
+using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.DTOs.Transactions;
@@ -207,6 +208,7 @@ namespace FHotel.API.Controllers
             DateTime localTime = utcNow + utcOffset;
 
             var bill = await _billService.Get(id);
+            decimal amount = 0;
             if (bill == null)
             {
                 return NotFound();
@@ -214,9 +216,31 @@ namespace FHotel.API.Controllers
             else
             {
                 var customer = await _userService.Get(bill.Reservation.CustomerId.Value);
+                if (bill.Reservation.IsPrePaid == true)
+                {
+                    var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
+                    foreach (var order in orders)
+                    {
+                        amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
+                    }
+
+                }
+                else
+                {
+                    amount = (decimal)bill.Reservation.TotalAmount; // Assuming TotalAmount is part of ReservationResponse
+                    var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
+                    foreach (var order in orders)
+                    {
+                        amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
+                    }
+
+                }
+
+                // Retrieve all orders linked to this reservation to add any applicable amounts
+
                 var vnPayModel = new VnPaymentRequestModel
                 {
-                    Amount = (int)(bill.TotalAmount),
+                    Amount = (int)amount,
                     CreatedDate = localTime,
                     Description = "Payment-For-Bill:",
                     FullName = customer.Name,
