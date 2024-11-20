@@ -293,6 +293,9 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+
+            // Lưu trạng thái hiện tại
+            var previousStatus = user.IsActive;
             try
             {
                 await _roleService.Get((Guid)request.RoleId);
@@ -301,6 +304,31 @@ namespace FHotel.Services.Services.Implementations
 
                 await _unitOfWork.Repository<User>().UpdateDetached(user);
                 await _unitOfWork.CommitAsync();
+
+
+                // Gửi email nếu trạng thái `IsActive` thay đổi
+                if (previousStatus != user.IsActive)
+                {
+                    string subject = user.IsActive == true
+                        ? "Tài khoản của bạn đã được kích hoạt"
+                        : "Tài khoản của bạn đã bị cấm";
+
+                    string body = user.IsActive == true
+                        ? $@"
+<h1>Tài khoản đã được kích hoạt</h1>
+<p>Kính gửi {user.Name},</p>
+<p>Tài khoản của bạn đã được kích hoạt. Bây giờ bạn có thể đăng nhập vào hệ thống và truy cập tất cả các tính năng.</p>
+<p>Mọi thắc mắc xin liên hệ qua email sau: companyfhotel@gmail.com </p>
+<p>Trân trọng,<br>FHotel</p>"
+                        : $@"
+<h1>Tài khoản của bạn đã bị cấm</h1>
+<p>Kính gửi {user.Name},</p>
+<p>Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ với bộ phận hỗ trợ nếu bạn có bất kỳ câu hỏi nào.</p>
+<p>Mọi thắc mắc xin liên hệ qua email sau: companyfhotel@gmail.com </p>
+<p>Trân trọng,<br>FHotel</p>";
+
+                    await SendEmailUpdate(user.Email, body, subject);
+                }
 
                 return _mapper.Map<User, UserResponse>(user);
             }
@@ -803,6 +831,33 @@ namespace FHotel.Services.Services.Implementations
             return customers;
         }
 
+        public async Task SendEmailUpdate(string toEmail, string body, string subject)
+        {
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(toEmail);
+
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
 
     }
 

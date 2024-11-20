@@ -20,10 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using User = FHotel.Repository.Models.User;
+using FHotel.Repository.SMTPs.Models;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -237,44 +240,60 @@ namespace FHotel.Services.Services.Implementations
 
             if (!validationResult.IsValid)
             {
-                // Combine validation errors into a single message
                 var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new ValidationException(errors);
             }
 
             // Set the UTC offset for UTC+7
             TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-            // Get the current UTC time
             DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+
             try
             {
-                Hotel hotel = _unitOfWork.Repository<Hotel>()
-                            .Find(x => x.HotelId == id);
+                // Retrieve hotel details from database
+                Hotel hotel = _unitOfWork.Repository<Hotel>().Find(x => x.HotelId == id);
                 if (hotel == null)
                 {
-                    throw new Exception("Not Found");
+                    throw new Exception("Hotel not found");
                 }
+
+                // Store the current status for comparison
+                var previousStatus = hotel.IsActive;
+
+                // Map updated data to the existing hotel object
                 hotel = _mapper.Map(request, hotel);
+                hotel.UpdatedDate = localTime;
 
-              
-
-                hotel.UpdatedDate = localTime; // Ensure you update this field automatically
                 await _unitOfWork.Repository<Hotel>().UpdateDetached(hotel);
                 await _unitOfWork.CommitAsync();
 
+                // Check if the status has changed and send email notification
+                if (previousStatus != hotel.IsActive)
+                {
+                    var hotelOwner = await _unitOfWork.Repository<User>().FindAsync(x => x.UserId == hotel.OwnerId); // Assuming OwnerId links to the user
+                    if (hotelOwner != null)
+                    {
+                        string subject = hotel.IsActive == true
+                            ? "Thông báo kích hoạt khách sạn"
+                            : "Thông báo cấm khách sạn";
+
+                        string emailBody = hotel.IsActive == true
+                            ? $"Kính gửi {hotelOwner.Name},<br><br>Khách sạn '{hotel.HotelName}' của bạn đã được kích hoạt và hiện đang hoạt động trên hệ thống của chúng tôi.<br>Mọi thắc mắc xin liên hệ qua email sau: companyfhotel@gmail.com<br><br>Trân trọng,<br>FHotel"
+                            : $"Kính gửi {hotelOwner.Name},<br><br>Khách sạn '{hotel.HotelName}' của bạn đã bị cấm. Vui lòng liên hệ với bộ phận hỗ trợ để biết thêm thông tin.<br>Mọi thắc mắc xin liên hệ qua email sau: companyfhotel@gmail.com<br><br>Trân trọng,<br>FHotel";
+
+                        await SendEmail(hotelOwner.Email, emailBody, subject);
+                    }
+                }
+
                 return _mapper.Map<Hotel, HotelResponse>(hotel);
             }
-
-            
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
         public async Task<string> UploadImage(IFormFile file)
         {
             string link = "";
@@ -407,6 +426,51 @@ namespace FHotel.Services.Services.Implementations
             }
 
             return availableHotels;
+        }
+
+        public async Task SendEmail(string toEmail, string body, string subject)
+        {
+            var emailSettings = GetEmailSettings();
+
+            var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
+            var toAddress = new MailAddress(toEmail);
+
+            var smtp = new SmtpClient
+            {
+                Host = emailSettings.Host,
+                Port = emailSettings.Port,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, emailSettings.Password)
+            };
+
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            })
+            {
+                await smtp.SendMailAsync(message);
+            }
+        }
+
+        private Email GetEmailSettings()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                                          .SetBasePath(Directory.GetCurrentDirectory())
+                                          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+
+            return new Email()
+            {
+                SystemName = configuration.GetSection("Email:SystemName").Value,
+                Sender = configuration.GetSection("Email:Sender").Value,
+                Password = configuration.GetSection("Email:Password").Value,
+                Port = int.Parse(configuration.GetSection("Email:Port").Value),
+                Host = configuration.GetSection("Email:Host").Value
+            };
         }
     }
 }
