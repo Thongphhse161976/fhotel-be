@@ -218,27 +218,27 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
-            var validator = new RoomRequestValidator();
-            var validationResult = await validator.ValidateAsync(request);
-            var roomResponse = await Get(request.RoomId);
+            //var validator = new RoomRequestValidator();
+            //var validationResult = await validator.ValidateAsync(request);
+            //var roomResponse = await Get(request.RoomId);
 
-            // Use GetAll with a LINQ filter to check for duplicates
-            var existingRoomNumber = (await GetAll())
-                .Where(u => u.RoomType.HotelId == roomResponse.RoomType.HotelId &&
-                            u.RoomNumber == request.RoomNumber)
-                .ToList();
+            //// Use GetAll with a LINQ filter to check for duplicates
+            //var existingRoomNumber = (await GetAll())
+            //    .Where(u => u.RoomType.HotelId == roomResponse.RoomType.HotelId &&
+            //                u.RoomNumber == request.RoomNumber)
+            //    .ToList();
 
 
-            if (existingRoomNumber.Any())
-            {
-                validationResult.Errors.Add(new ValidationFailure("Room Number", "Số phòng đã tồn tại trong khách sạn!"));
-            }
+            //if (existingRoomNumber.Any())
+            //{
+            //    validationResult.Errors.Add(new ValidationFailure("Room Number", "Số phòng đã tồn tại trong khách sạn!"));
+            //}
 
-            // If there are any validation errors, throw a ValidationException
-            if (validationResult.Errors.Any())
-            {
-                throw new ValidationException(validationResult.Errors);
-            }
+            //// If there are any validation errors, throw a ValidationException
+            //if (validationResult.Errors.Any())
+            //{
+            //    throw new ValidationException(validationResult.Errors);
+            //}
 
             try
             {
