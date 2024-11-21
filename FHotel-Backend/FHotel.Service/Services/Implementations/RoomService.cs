@@ -6,6 +6,7 @@ using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.RoomTypes;
 using FHotel.Service.Validators.ReservationValidator;
 using FHotel.Service.Validators.RoomValidator;
+using FHotel.Service.Validators.TypePricingValidator;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.DTOs.RoomTypes;
 using FHotel.Services.Services.Interfaces;
@@ -217,6 +218,26 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+            var validator = new RoomRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // Use GetAll with a LINQ filter to check for duplicates
+            var existingRoomNumber = (await GetAll())
+                .Where(u => u.RoomTypeId == request.RoomTypeId &&
+                            u.RoomNumber == request.RoomNumber)
+                .ToList();
+
+
+            if (existingRoomNumber.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("Room Number", "Số phòng đã tồn tại trong khách sạn!"));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
 
             try
             {
