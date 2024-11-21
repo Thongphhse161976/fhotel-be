@@ -220,10 +220,11 @@ namespace FHotel.Services.Services.Implementations
             DateTime localTime = utcNow + utcOffset;
             var validator = new RoomRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
+            var roomResponse = await Get(request.RoomId);
 
             // Use GetAll with a LINQ filter to check for duplicates
             var existingRoomNumber = (await GetAll())
-                .Where(u => u.RoomTypeId == request.RoomTypeId &&
+                .Where(u => u.RoomType.HotelId == roomResponse.RoomType.HotelId &&
                             u.RoomNumber == request.RoomNumber)
                 .ToList();
 
