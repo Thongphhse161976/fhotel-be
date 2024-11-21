@@ -278,6 +278,68 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
+        public async Task<RoomResponse> Update3(Guid id, RoomRequest request)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
+            var validator = new RoomRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+            var roomResponse = await Get(request.RoomId);
+
+            // Use GetAll with a LINQ filter to check for duplicates
+            var existingRoomNumber = (await GetAll())
+                .Where(u => u.RoomType.HotelId == roomResponse.RoomType.HotelId &&
+                            u.RoomNumber == request.RoomNumber)
+                .ToList();
+
+
+            if (existingRoomNumber.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("Room Number", "Số phòng đã tồn tại trong khách sạn!"));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
+            try
+            {
+                // Find the room to update
+                Room room = _unitOfWork.Repository<Room>()
+                            .Find(x => x.RoomId == id);
+                if (room == null)
+                {
+                    throw new KeyNotFoundException("Room not found.");
+                }
+
+                // Map the update request to the room entity
+                room = _mapper.Map(request, room);
+                room.UpdatedDate = localTime;
+
+                // Update the room
+                await _unitOfWork.Repository<Room>().UpdateDetached(room);
+                await _unitOfWork.CommitAsync();
+
+
+                // Return the updated room
+                return _mapper.Map<Room, RoomResponse>(room);
+            }
+            catch (Exception ex)
+            {
+                // Log error (if logging is available)
+                throw new ApplicationException($"Error updating room: {ex.Message}", ex);
+            }
+        }
+
+
         private async Task UpdateRoomTypeAvailability(Guid roomTypeId, string newStatus, string previousStatus)
         {
             var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();

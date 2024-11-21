@@ -122,5 +122,34 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Update room number by room id.
+        /// </summary>
+        [HttpPut("{id}/room-number")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<RoomResponse>> Update3(Guid id, [FromBody] RoomRequest request)
+        {
+            try
+            {
+                var rs = await _roomService.Update3(id, request);
+                return Ok(rs);
+            }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+        }
     }
 }

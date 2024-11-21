@@ -38,8 +38,7 @@
               "RelativeToolTip": "FHotel.API\\Controllers\\RoomsController.cs",
               "ViewState": "AgIAAFYAAAAAAAAAAAAkwGsAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T02:43:38.435Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T02:43:38.435Z"
             },
             {
               "$type": "Document",
@@ -63,8 +62,7 @@
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\TypePricingService.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAgwF0AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T02:35:51.308Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-21T02:35:51.308Z"
             },
             {
               "$type": "Document",
@@ -74,7 +72,7 @@
               "RelativeDocumentMoniker": "FHotel.Service\\Services\\Implementations\\RoomService.cs",
               "ToolTip": "C:\\Users\\nhattpam\\Documents\\Uni\\Code\\fhotel-be\\FHotel-Backend\\FHotel.Service\\Services\\Implementations\\RoomService.cs",
               "RelativeToolTip": "FHotel.Service\\Services\\Implementations\\RoomService.cs",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAowOEAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAJUAAAAAAAAAAAA1wOcAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-21T02:34:09.441Z",
               "EditorCaption": ""
