@@ -246,8 +246,9 @@ namespace FHotel.Service.Services.Implementations
             {
                 // Step 1: Fetch Room Type details
                 var roomType = await _roomTypeService.Get(roomTypeId);
-                if (roomType == null || roomType.IsActive != true)
-                {
+                //if (roomType == null || roomType.IsActive != true)
+                if (roomType == null)
+                    {
                     throw new ArgumentException("Invalid or inactive room type.");
                 }
 
