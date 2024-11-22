@@ -518,9 +518,9 @@ namespace FHotel.Services.Services.Implementations
             try
             {
 
-                if (reservation.ReservationStatus != "CheckIn" || reservation.ReservationStatus != "CheckOut" || reservation.ReservationStatus != "Cancelled")
+                if (reservation.ReservationStatus == "Pending")
                 {
-                    if (reservation.PaymentStatus == "Paid")
+                    if (reservation.IsPrePaid == true)
                     {
                         var _serviceService = _serviceProvider.GetService<IServiceService>();
                         var _orderService = _serviceProvider.GetService<IOrderService>();
