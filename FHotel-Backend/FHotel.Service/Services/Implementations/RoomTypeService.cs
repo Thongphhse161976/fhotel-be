@@ -120,30 +120,30 @@ namespace FHotel.Services.Services.Implementations
                 await _unitOfWork.Repository<RoomType>().InsertAsync(roomType);
                 await _unitOfWork.CommitAsync();
 
-                // Retrieve all rooms for the specified hotel
-                var roomsInHotel = await _roomService.GetAllRoomByHotelId(roomType.HotelId.Value);
+                //// Retrieve all rooms for the specified hotel
+                //var roomsInHotel = await _roomService.GetAllRoomByHotelId(roomType.HotelId.Value);
 
-                // Find the highest room number among the retrieved rooms
-                var highestRoomNumber = roomsInHotel
-                    .Max(r => (int?)r.RoomNumber) ?? 0; // If no rooms exist, start from 0
+                //// Find the highest room number among the retrieved rooms
+                //var highestRoomNumber = roomsInHotel
+                //    .Max(r => (int?)r.RoomNumber) ?? 0; // If no rooms exist, start from 0
 
-                // Now create the individual rooms based on the total room count
-                for (int i = 0; i < request.TotalRooms; i++)
-                {
-                    var room = new RoomRequest
-                    {
-                        RoomNumber = highestRoomNumber + i + 1, // Start numbering from the highest room number
-                        RoomTypeId = roomType.RoomTypeId,
-                        Status = "Available", // Set default status
-                        CreatedDate = localTime
-                    };
+                //// Now create the individual rooms based on the total room count
+                //for (int i = 0; i < request.TotalRooms; i++)
+                //{
+                //    var room = new RoomRequest
+                //    {
+                //        RoomNumber = highestRoomNumber + i + 1, // Start numbering from the highest room number
+                //        RoomTypeId = roomType.RoomTypeId,
+                //        Status = "Available", // Set default status
+                //        CreatedDate = localTime
+                //    };
 
-                    // Map and insert the Room into the database
-                    await _roomService.Create(room);
-                }
+                //    // Map and insert the Room into the database
+                //    await _roomService.Create(room);
+                //}
 
-                // Commit the transaction after creating all rooms
-                await _unitOfWork.CommitAsync();
+                //// Commit the transaction after creating all rooms
+                //await _unitOfWork.CommitAsync();
 
                 // Return the created RoomType as a response
                 return _mapper.Map<RoomType, RoomTypeResponse>(roomType);

@@ -104,7 +104,21 @@ namespace FHotel.Services.Services.Implementations
             {
                 validationResult.Errors.Add(new ValidationFailure("TotalRooms", "No more Room can be added."));
             }
-            
+            var _roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
+            var roomTypeResponse = await _roomTypeService.Get(request.RoomTypeId.Value);
+
+            // Use GetAll with a LINQ filter to check for duplicates
+            var existingRoomNumber = (await GetAll())
+                .Where(u => u.RoomType.HotelId == roomTypeResponse.HotelId &&
+                            u.RoomNumber == request.RoomNumber)
+                .ToList();
+
+
+            if (existingRoomNumber.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("Room Number", "Số phòng đã tồn tại trong khách sạn!"));
+                await _roomTypeService.Delete(request.RoomTypeId.Value);
+            }
 
             if (!validationResult.IsValid)
             {
@@ -125,6 +139,27 @@ namespace FHotel.Services.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+        public async Task<bool> CheckDuplicateRoomNumbers(List<int> roomNumbers, Guid hotelId)
+        {
+            if (roomNumbers == null || roomNumbers.Count == 0)
+            {
+                // If the list of room numbers is empty or null, no duplicates exist
+                return false;
+            }
+
+            // Convert the roomNumbers list to a HashSet for faster lookups
+            var roomNumbersSet = new HashSet<int>(roomNumbers);
+
+            // Query the database to check if any of the room numbers are already taken in the hotel
+            var duplicateRooms = await _unitOfWork.Repository<Room>()
+                .AsNoTracking()
+                .Where(r => roomNumbersSet.Contains(r.RoomNumber.Value) && r.RoomType.HotelId == hotelId)
+                .AnyAsync(); // Use AnyAsync to check if there are any duplicates
+
+            return duplicateRooms; // Return true if duplicates exist, false if not
+        }
+
+
 
         public async Task<RoomResponse> Delete(Guid id)
         {

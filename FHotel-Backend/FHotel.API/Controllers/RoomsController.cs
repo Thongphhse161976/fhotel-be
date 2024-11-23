@@ -1,4 +1,5 @@
-﻿using FHotel.Services.DTOs.Cities;
+﻿using FHotel.Repository.Models;
+using FHotel.Services.DTOs.Cities;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Rooms;
 using FHotel.Services.Services.Interfaces;
@@ -75,9 +76,18 @@ namespace FHotel.API.Controllers
                 var result = await _roomService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
+            catch (ValidationException ex)
+            {
+                // Access validation errors from ex.Errors
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ex.Errors.Select(e => e.ErrorMessage).ToList()
+                });
+            }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
 
@@ -151,5 +161,16 @@ namespace FHotel.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
             }
         }
+
+        [HttpPost("check-duplicates")]
+        public async Task<IActionResult> CheckDuplicateRoomNumbers([FromQuery] Guid hotelId, [FromBody] List<int> roomNumbers)
+        {
+            // Await the async method and check for duplicates
+            var hasDuplicates = await _roomService.CheckDuplicateRoomNumbers(roomNumbers, hotelId);
+
+            // Return the result (true if duplicates found, false otherwise)
+            return Ok(hasDuplicates);
+        }
+
     }
 }

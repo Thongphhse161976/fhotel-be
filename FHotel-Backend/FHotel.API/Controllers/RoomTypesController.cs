@@ -116,6 +116,9 @@ namespace FHotel.API.Controllers
         /// Delete room-type by room-type id.
         /// </summary>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RoomTypeResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<RoomTypeResponse>> Delete(Guid id)
         {
             var rs = await _roomTypeService.Delete(id);
