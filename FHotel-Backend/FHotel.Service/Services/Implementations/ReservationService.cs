@@ -1162,7 +1162,7 @@ namespace FHotel.Services.Services.Implementations
                 Host = configuration.GetSection("Email:Host").Value
             };
         }
-        //Cancel if 2 days not paid
+        //Cancel if 7 days not paid
         public async Task CancelExpiredReservationsAsync()
         {
             // Set UTC offset for UTC+7
@@ -1177,7 +1177,7 @@ namespace FHotel.Services.Services.Implementations
                     reservation.ReservationStatus == "Pending" &&
                     reservation.IsPrePaid == false &&
                     reservation.CreatedDate.HasValue &&
-                    reservation.CreatedDate.Value.AddDays(2) <= localTime) // Kiểm tra nếu đã quá 2 ngày kể từ ngày tạo
+                    reservation.CreatedDate.Value.AddDays(7) <= localTime) // Kiểm tra nếu đã quá 7 ngày kể từ ngày tạo
                 .ToListAsync();
 
             if (reservationsToCancel.Any())
