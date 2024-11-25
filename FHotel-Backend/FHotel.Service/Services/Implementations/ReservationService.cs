@@ -584,6 +584,7 @@ namespace FHotel.Services.Services.Implementations
             {
                 //  Hủy các reservation hết hạn
                 await CancelExpiredReservationsAsync();
+                await CancelPrepaidReservationAftefCheckoutDate();
                 // Lấy các reservation đủ điều kiện để xử lý
                 reservations = await GetEligibleReservationsAsync();
                 // Lấy các reservation ở trạng thái "Pending" để gửi thông báo
@@ -617,6 +618,10 @@ namespace FHotel.Services.Services.Implementations
                         // Xử lý mỗi reservation đồng bộ
                         ProcessReservationAsync(reservation).Wait();
                     }
+                    foreach (var pendingReservation in pendingReservations)
+                    {
+                        NotifyExpiration(pendingReservation).Wait();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -626,18 +631,18 @@ namespace FHotel.Services.Services.Implementations
             }
 
             // Gửi thông báo sắp hết hạn cho các reservation ở trạng thái "Pending"
-            foreach (var pendingReservation in pendingReservations)
-            {
-                try
-                {
-                    await NotifyExpiration(pendingReservation);
-                }
-                catch (Exception ex)
-                {
-                    // Xử lý lỗi khi gửi thông báo hết hạn
-                    Console.WriteLine($"An error occurred while notifying expiration: {ex.Message}");
-                }
-            }
+            //foreach (var pendingReservation in pendingReservations)
+            //{
+            //    try
+            //    {
+            //        await NotifyExpiration(pendingReservation);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // Xử lý lỗi khi gửi thông báo hết hạn
+            //        Console.WriteLine($"An error occurred while notifying expiration: {ex.Message}");
+            //    }
+            //}
             
         }
 
@@ -1157,7 +1162,7 @@ namespace FHotel.Services.Services.Implementations
                 Host = configuration.GetSection("Email:Host").Value
             };
         }
-        //Cancel
+        //Cancel if 2 days not paid
         public async Task CancelExpiredReservationsAsync()
         {
             // Set UTC offset for UTC+7
@@ -1199,6 +1204,155 @@ namespace FHotel.Services.Services.Implementations
                     await Update(reservation.ReservationId, updateRequest);
                     var reservationResponse = await Get(reservation.ReservationId);
                     await SendEmailCancel(reservationResponse);
+                }
+            }
+        }
+
+        //Cancel if prepaid but not come (exprired checkout)
+        public async Task CancelPrepaidReservationAftefCheckoutDate()
+        {
+            // Set UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time and convert it to UTC+7
+            DateTime localTime = DateTime.UtcNow + utcOffset;
+
+            // Lấy danh sách tất cả các đặt phòng có trạng thái Pending và chưa được thanh toán
+            var reservations = await _unitOfWork.Repository<Reservation>().GetAll()
+     .Where(reservation =>
+         reservation.ReservationStatus != "Cancelled" &&
+         reservation.IsPrePaid == true &&
+         reservation.CheckOutDate.HasValue)
+     .ToListAsync();
+
+            var reservationsToCancel = reservations.Where(reservation =>
+                localTime >= reservation.CheckOutDate.Value.Date.AddHours(12))
+                .ToList();
+
+            if (reservationsToCancel.Any())
+            {
+                foreach (var reservation in reservationsToCancel)
+                {
+                    // Gọi hàm Update để cập nhật trạng thái của từng Reservation
+                    var updateRequest = new ReservationUpdateRequest
+                    {
+                        ReservationId = reservation.ReservationId,
+                        Code = reservation.Code,
+                        CheckOutDate = reservation.CheckOutDate,
+                        CheckInDate = reservation.CheckInDate,
+                        ReservationStatus = "Cancelled",
+                        CreatedDate = reservation.CreatedDate,
+                        CustomerId = reservation.CustomerId,
+                        IsPrePaid = reservation.IsPrePaid,
+                        NumberOfRooms = reservation.NumberOfRooms,
+                        PaymentMethodId = reservation.PaymentMethodId,
+                        PaymentStatus = reservation.PaymentStatus,
+                        RoomTypeId = reservation.RoomTypeId,
+                        TotalAmount = reservation.TotalAmount
+                    };
+                    await Update(reservation.ReservationId, updateRequest);
+                    var reservationResponse = await Get(reservation.ReservationId);
+                    await SendEmailCancel(reservationResponse);
+
+                    //transfer
+                    var billService = _serviceProvider.GetService<IBillService>();
+                    var orderService = _serviceProvider.GetService<IOrderService>();
+                    var transactionService = _serviceProvider.GetService<ITransactionService>();
+
+                    // Retrieve all wallets and identify the admin and hotel owner wallets
+                    var wallets = await _walletService.GetAll();
+                    var adminWallet = wallets.Find(x => x.User.Role.RoleName == "Admin");
+                    var hotelOwnerWallet = wallets.Find(x => x.UserId == reservationResponse.RoomType.Hotel.Owner.UserId);
+
+                    // Verify that the required wallets exist
+                    if (adminWallet == null || hotelOwnerWallet == null)
+                    {
+                        throw new Exception("Không tìm thấy tài khoản FHotel hoặc chủ khách sạn");
+                    }
+
+                    decimal amount = 0;
+                    // If the reservation is paid, calculate the amount from the reservation's total and orders
+                    amount = (decimal)reservationResponse.TotalAmount; // Assuming TotalAmount is part of ReservationResponse
+
+                    // Retrieve all orders linked to this reservation to add any applicable amounts
+                    var orders = await orderService.GetAllByReservationId(reservationResponse.ReservationId);
+                    foreach (var order in orders)
+                    {
+                        amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
+                    }
+                    //create bill
+                    var createBill = new BillRequest
+                    {
+                        ReservationId = reservationResponse.ReservationId,
+                        BillStatus = "Paid",
+                        CreatedDate = localTime,
+                        TotalAmount = amount
+                    };
+                    var createBillResponse = await billService.Create(createBill);
+                    var updateBill = new BillRequest
+                    {
+                        ReservationId = reservationResponse.ReservationId,
+                        BillStatus = "Paid",
+                        CreatedDate = localTime,
+                        TotalAmount = amount
+                    };
+                    var updateBillResponse = await billService.Update(createBillResponse.BillId, updateBill);
+                    var bill = await billService.GetBillByReservation(reservationResponse.ReservationId);
+                    if (bill != null)
+                    {
+                        if (bill.BillStatus == "Paid")
+                        {
+                            var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
+                            if (existingTransactionAdmin == null)
+                            {
+                                var transactionAdmin = new TransactionRequest
+                                {
+                                    BillId = bill.BillId,
+                                    Amount = amount * 0.2m,
+                                    Description = $@"Nhận {amount * 0.2m:F0}₫ từ đặt phòng {reservationResponse.Code} lúc {localTime}",
+                                    TransactionDate = localTime,
+                                    WalletId = adminWallet.WalletId
+                                };
+                                await transactionService.Create(transactionAdmin);
+                                var updateAdminWallet = new WalletRequest
+                                {
+                                    Balance = adminWallet.Balance += (amount * 0.2m),
+                                    UserId = adminWallet.UserId,
+                                    BankAccountNumber = adminWallet.BankAccountNumber,
+                                    BankName = adminWallet.BankName
+                                };
+                                await _walletService.Update(adminWallet.WalletId, updateAdminWallet);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Transaction already exists. Creation stopped.");
+                            }
+                            var existingTransactionHotelOwner = await transactionService.GetTransactionByWalletAndBillId(hotelOwnerWallet.WalletId, bill.BillId);
+                            if (existingTransactionHotelOwner == null)
+                            {
+                                var transactionHotelOwner = new TransactionRequest
+                                {
+                                    BillId = bill.BillId,
+                                    Amount = amount * 0.8m,
+                                    Description = $@"Nhận {amount * 0.8m:F0}₫ từ đặt phòng {reservationResponse.Code} lúc {localTime}",
+                                    TransactionDate = localTime,
+                                    WalletId = hotelOwnerWallet.WalletId
+                                };
+                                await transactionService.Create(transactionHotelOwner);
+
+                                var updateHotelOwnerWallet = new WalletRequest
+                                {
+                                    Balance = hotelOwnerWallet.Balance += (amount * 0.8m),
+                                    UserId = hotelOwnerWallet.UserId,
+                                    BankAccountNumber = hotelOwnerWallet.BankAccountNumber,
+                                    BankName = hotelOwnerWallet.BankName
+                                };
+                                await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+                            }
+                        }
+
+                    }
+
                 }
             }
         }

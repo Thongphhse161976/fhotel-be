@@ -303,7 +303,7 @@ namespace FHotel.Services.Services.Implementations
                     PaymentStatus = reservation.PaymentStatus,
                     RoomTypeId = reservation.RoomTypeId,
                     TotalAmount = reservation.TotalAmount,
-                    ReservationStatus = "Cancelled"
+                    ReservationStatus = "Refunded"
                 };
                 await reservationService.Update(reservation.ReservationId, updateReservation);
                 return order;
