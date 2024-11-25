@@ -3,6 +3,8 @@ using AutoMapper.QueryableExtensions;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.Payments;
+using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.Transactions;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Service.Services.Interfaces;
@@ -25,14 +27,16 @@ namespace FHotel.Service.Services.Implementations
         private IOrderService _orderService;
         private IReservationService _reservationService;
         private IWalletService _walletService;
+        private IPaymentService _paymentService;
         private readonly object _lockObject = new object();
-        public BillService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IReservationService reservationService, IWalletService walletService)
+        public BillService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IReservationService reservationService, IWalletService walletService, IPaymentService paymentService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _orderService = orderService;
             _reservationService = reservationService;
             _walletService = walletService;
+            _paymentService = paymentService;
         }
 
         public async Task<List<BillResponse>> GetAll()
@@ -87,9 +91,49 @@ namespace FHotel.Service.Services.Implementations
                 bill.BillStatus = "Pending";
                 await _unitOfWork.Repository<Bill>().InsertAsync(bill);
                 await _unitOfWork.CommitAsync();
-
-                
-
+                //if reservation isPrePaid = true
+                var reservation = await _reservationService.Get(bill.ReservationId.Value);
+                var orders = await _orderService.GetAllByReservationId(reservation.ReservationId);
+                var billResponse = await GetBillByReservation(reservation.ReservationId);
+                if (reservation != null)
+                {
+                    if (reservation.IsPrePaid == true && orders.Count == 0)
+                    {
+                        var updateBill = new BillRequest()
+                        {
+                            ReservationId = billResponse.ReservationId,
+                            BillStatus = "Paid",
+                            CreatedDate = billResponse.CreatedDate,
+                            LastUpdated = localTime,
+                            TotalAmount = billResponse.TotalAmount
+                        };
+                        await Update(billResponse.BillId, updateBill);
+                        var updateReservation = new ReservationUpdateRequest()
+                        {
+                            ReservationId = reservation.ReservationId,
+                            CheckInDate = reservation.CheckInDate,
+                            CheckOutDate = reservation.CheckOutDate,    
+                            Code = reservation.Code,
+                            CreatedDate = reservation.CreatedDate,
+                            CustomerId = reservation.CustomerId,
+                            IsPrePaid = reservation.IsPrePaid,
+                            NumberOfRooms = reservation.NumberOfRooms,
+                            PaymentMethodId = reservation.PaymentMethodId,
+                            PaymentStatus = "Paid",
+                            ReservationStatus = reservation.ReservationStatus,
+                            RoomTypeId = reservation.RoomTypeId,
+                            TotalAmount = reservation.TotalAmount
+                        };
+                        await _reservationService.Update(reservation.ReservationId, updateReservation);
+                        var createPayment = new PaymentRequest()
+                        {
+                            BillId = billResponse.BillId,   
+                            PaymentStatus = "Done",
+                            PaymentMethodId = reservation.PaymentMethodId
+                        };
+                        await _paymentService.Create(createPayment);
+                    }
+                }
                 return _mapper.Map<Bill, BillResponse>(bill);
             }
             catch (Exception e)

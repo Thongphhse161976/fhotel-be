@@ -84,7 +84,7 @@ namespace FHotel.Services.Services.Implementations
 
             if (await _unitOfWork.Repository<Repository.Models.User>().FindAsync(u => u.Email == request.OwnerEmail) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email chủ khách sạn đã tồn tại."));
             }
 
             // If there are any validation errors, throw a ValidationException
@@ -157,11 +157,11 @@ namespace FHotel.Services.Services.Implementations
 
             if (await _unitOfWork.Repository<Hotel>().FindAsync(u => u.Email == request.Email) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email đã tồn tại."));
             }
             if (await _unitOfWork.Repository<Hotel>().FindAsync(u => u.Phone == request.Phone) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("Phone", "Phone already exists."));
+                validationResult.Errors.Add(new ValidationFailure("Phone", "Số điện thoại đã tồn tại."));
             }
 
             // If there are any validation errors, throw a ValidationException

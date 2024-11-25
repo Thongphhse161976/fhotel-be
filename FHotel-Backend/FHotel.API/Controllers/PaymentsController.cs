@@ -92,6 +92,9 @@ namespace FHotel.API.Controllers
         /// Update payment by payment id.
         /// </summary>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<PaymentResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<PaymentResponse>> Update(Guid id, [FromBody] PaymentRequest request)
         {
             try
