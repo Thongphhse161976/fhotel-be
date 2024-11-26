@@ -21,9 +21,10 @@ namespace FHotel.Service.Validators.ReservationValidator
                 .When(x => x.TotalAmount.HasValue); // Validate if TotalAmount is provided
 
             RuleFor(x => x.ReservationStatus)
-                .NotEmpty().WithMessage("Reservation status is required.")
-                .Must(status => status == "Pending" || status == "CheckIn" || status == "CheckOut" || status == "Cancelled")
-                .WithMessage("Reservation status must be either 'Pending', 'CheckIn', 'CheckOut', or 'Cancelled'.");
+    .NotEmpty().WithMessage("Reservation status is required.")
+    .Must(status => status == "Pending" || status == "CheckIn" || status == "CheckOut" || status == "Cancelled" || status == "Refunded")
+    .WithMessage("Reservation status must be either 'Pending', 'CheckIn', 'CheckOut', 'Cancelled', 'Refunded'.");
+
             //// Allow ActualCheckInTime to be equal to CheckInDate
             //RuleFor(x => x.ActualCheckInTime)
             //    .GreaterThanOrEqualTo(x => x.CheckInDate).When(x => x.ActualCheckInTime.HasValue && x.CheckInDate.HasValue)
