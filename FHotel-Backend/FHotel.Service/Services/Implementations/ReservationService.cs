@@ -312,35 +312,66 @@ namespace FHotel.Services.Services.Implementations
         {
             var roomType = await _roomTypeService.Get(roomTypeId);
 
-            if (roomType == null || roomType.IsActive != true || numberOfRooms <= 0)
-            {
-                throw new ArgumentException("Invalid room type or number of rooms.");
-            }
+            if (roomType == null || roomType.IsActive != true)
+                throw new ArgumentException("Invalid or inactive room type.");
+
+            if (numberOfRooms <= 0)
+                throw new ArgumentException("Number of rooms must be greater than zero.");
+
+            var districtId = roomType.Hotel.DistrictId ?? throw new Exception("Room type has no associated district.");
 
             decimal totalAmount = 0;
 
-            // Get the district ID from the room type
-            var districtId = roomType.Hotel.DistrictId;
+            // Batch-fetch all pricing data for the date range
+            var allPricing = await _unitOfWork.Repository<TypePricing>()
+                .GetAll()
+                .Where(tp => tp.TypeId == roomType.TypeId
+                             && tp.DistrictId == districtId
+                             && tp.From <= checkOutDate
+                             && tp.To >= checkInDate)
+                .ToListAsync();
 
-            // Loop over each date from checkInDate to checkOutDate
+            // Iterate over the date range
             for (DateTime currentDate = checkInDate.Date; currentDate < checkOutDate.Date; currentDate = currentDate.AddDays(1))
             {
-                // Get the pricing for the current date
-                var dailyPricing = await _typePricingService.GetPricingByTypeAndDistrict(roomType.TypeId ?? Guid.Empty, districtId ?? Guid.Empty, currentDate);
+                var dailyPricing = allPricing
+                    .FirstOrDefault(tp => tp.From <= currentDate && tp.To >= currentDate);
 
-                if (dailyPricing == null || dailyPricing.Price == null)
+                if (dailyPricing == null)
                 {
-                    throw new Exception($"No pricing available for {currentDate.ToShortDateString()}.");
+                    Console.WriteLine($"No pricing available for {currentDate.ToShortDateString()}.");
+                    continue; // Skip missing pricing instead of throwing
                 }
 
-                decimal dailyPrice = dailyPricing.Price.Value;
+                // Log the pricing details
+                Console.WriteLine($"Price for {currentDate.ToShortDateString()}: {dailyPricing.Price} (Base Price)");
+
+                // Adjust price based on weekend
+                decimal adjustedPrice = AdjustPriceForWeekend(dailyPricing.Price ?? 0, dailyPricing.PercentageIncrease, currentDate);
+
+                Console.WriteLine($"Adjusted Price for {currentDate.ToShortDateString()}: {adjustedPrice}");
 
                 // Add the daily price for the number of rooms to the total amount
-                totalAmount += dailyPrice * numberOfRooms;
+                totalAmount += adjustedPrice * numberOfRooms;
             }
 
+            Console.WriteLine($"Total Amount: {totalAmount}");
             return totalAmount;
         }
+
+        private decimal AdjustPriceForWeekend(decimal basePrice, decimal? percentageIncrease, DateTime currentDate)
+        {
+            if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                // Apply the weekend price increase if it's Saturday or Sunday
+                Console.WriteLine($"Weekend adjustment applied. Base Price: {basePrice}, Increase: {percentageIncrease}%");
+                return basePrice * (1 + (percentageIncrease ?? 0) / 100);
+            }
+
+            // No weekend adjustment for weekdays
+            return basePrice;
+        }
+
 
 
 
