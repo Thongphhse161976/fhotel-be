@@ -453,7 +453,8 @@ namespace FHotel.Services.Services.Implementations
             var reservations = await _unitOfWork.Repository<Reservation>().GetAll()
                 .Where(r => r.RoomTypeId == id &&
                             r.CheckInDate <= checkOut && r.CheckOutDate >= checkIn
-                            && r.ReservationStatus != "Cancelled")
+                            && r.ReservationStatus != "Cancelled"
+                            && r.ReservationStatus != "Refunded")
                 .ToListAsync();
 
             // Tính tổng số phòng đang bận trong khoảng thời gian đó
