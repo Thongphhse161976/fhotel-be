@@ -145,6 +145,16 @@ namespace FHotel.Service.Services.Implementations
             return list;
         }
 
+        public async Task<List<TransactionResponse>> GetAllTransactionByEscrowWalletId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<Transaction>().GetAll()
+                                            .ProjectTo<TransactionResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.EscrowWalletId == id)
+                                            .ToListAsync();
+            return list;
+        }
+
 
         public async Task<List<TransactionResponse>> GetAllTransactionByBillId(Guid id)
         {

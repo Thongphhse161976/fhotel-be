@@ -73,6 +73,7 @@ namespace FHotel.Services.Services.Implementations
         public async Task<RoomResponse> Create(RoomRequest request)
         {
             request.Status = "Available";
+            request.IsCleaned = true;
             var validator = new RoomRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
             // Set the UTC offset for UTC+7

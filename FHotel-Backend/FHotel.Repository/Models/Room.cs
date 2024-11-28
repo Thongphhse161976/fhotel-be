@@ -17,6 +17,7 @@ namespace FHotel.Repository.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? Note { get; set; }
+        public bool? IsCleaned { get; set; }
 
         public virtual RoomType? RoomType { get; set; }
         public virtual ICollection<RoomStayHistory> RoomStayHistories { get; set; }

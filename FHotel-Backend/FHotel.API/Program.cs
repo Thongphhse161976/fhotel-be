@@ -77,6 +77,11 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
+builder.Services.AddScoped<IEscrowWalletService, EscrowWalletService>();
+builder.Services.AddScoped<IHotelPolicyService, HotelPolicyService>();
+builder.Services.AddScoped<IPolicyService, PolicyService>();
+
+
 builder.Services.AddSingleton<InMemoryOtpStore>();
 
 //mapper

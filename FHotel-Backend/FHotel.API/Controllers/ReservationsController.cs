@@ -165,13 +165,13 @@ namespace FHotel.API.Controllers
         {
             try
             {
-                var totalAmount = await _reservationService.CalculateTotalAmount(
+                var result = await _reservationService.CalculateTotalAmount(
                     request.RoomTypeId,
                     request.CheckInDate,
                     request.CheckOutDate,
                     request.NumberOfRooms);
 
-                return Ok(new { TotalAmount = totalAmount });
+                return Ok(result); // This will return both TotalAmount and PriceBreakdown
             }
             catch (ArgumentException ex)
             {
@@ -182,6 +182,7 @@ namespace FHotel.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         /// <summary>
         /// Get a list of all orders by reservation id.
         /// </summary>

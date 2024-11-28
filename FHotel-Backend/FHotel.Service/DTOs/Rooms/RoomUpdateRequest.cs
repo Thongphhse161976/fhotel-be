@@ -15,5 +15,6 @@ namespace FHotel.Service.DTOs.Rooms
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? Note { get; set; }
+        public bool? IsCleaned { get; set; }
     }
 }

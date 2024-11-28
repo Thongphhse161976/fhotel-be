@@ -10,6 +10,7 @@ namespace FHotel.Repository.Models
             HotelAmenities = new HashSet<HotelAmenity>();
             HotelDocuments = new HashSet<HotelDocument>();
             HotelImages = new HashSet<HotelImage>();
+            HotelPolicies = new HashSet<HotelPolicy>();
             HotelStaffs = new HashSet<HotelStaff>();
             HotelVerifications = new HashSet<HotelVerification>();
             RoomTypes = new HashSet<RoomType>();
@@ -38,6 +39,7 @@ namespace FHotel.Repository.Models
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
         public virtual ICollection<HotelDocument> HotelDocuments { get; set; }
         public virtual ICollection<HotelImage> HotelImages { get; set; }
+        public virtual ICollection<HotelPolicy> HotelPolicies { get; set; }
         public virtual ICollection<HotelStaff> HotelStaffs { get; set; }
         public virtual ICollection<HotelVerification> HotelVerifications { get; set; }
         public virtual ICollection<RoomType> RoomTypes { get; set; }

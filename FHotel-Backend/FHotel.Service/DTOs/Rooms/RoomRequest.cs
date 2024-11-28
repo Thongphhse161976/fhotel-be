@@ -13,6 +13,7 @@ namespace FHotel.Services.DTOs.Rooms
         public int? RoomNumber { get; set; }
         public Guid? RoomTypeId { get; set; }
         public string? Status { get; set; }
+        public bool? IsCleaned { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? Note { get; set; }

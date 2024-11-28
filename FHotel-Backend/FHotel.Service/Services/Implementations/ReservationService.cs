@@ -308,7 +308,7 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<decimal> CalculateTotalAmount(Guid roomTypeId, DateTime checkInDate, DateTime checkOutDate, int numberOfRooms)
+        public async Task<object> CalculateTotalAmount(Guid roomTypeId, DateTime checkInDate, DateTime checkOutDate, int numberOfRooms)
         {
             var roomType = await _roomTypeService.Get(roomTypeId);
 
@@ -321,6 +321,7 @@ namespace FHotel.Services.Services.Implementations
             var districtId = roomType.Hotel.DistrictId ?? throw new Exception("Room type has no associated district.");
 
             decimal totalAmount = 0;
+            var priceBreakdown = new StringBuilder();
 
             // Batch-fetch all pricing data for the date range
             var allPricing = await _unitOfWork.Repository<TypePricing>()
@@ -349,15 +350,30 @@ namespace FHotel.Services.Services.Implementations
                 // Adjust price based on weekend
                 decimal adjustedPrice = AdjustPriceForWeekend(dailyPricing.Price ?? 0, dailyPricing.PercentageIncrease, currentDate);
 
-                Console.WriteLine($"Adjusted Price for {currentDate.ToShortDateString()}: {adjustedPrice}");
+                // Format the price with commas and no decimal places
+                string formattedPrice = (adjustedPrice * numberOfRooms).ToString("N0");
+
+                Console.WriteLine($"Adjusted Price for {currentDate.ToShortDateString()}: {formattedPrice}");
 
                 // Add the daily price for the number of rooms to the total amount
                 totalAmount += adjustedPrice * numberOfRooms;
+
+                // Append the daily pricing breakdown with formatted price
+                priceBreakdown.AppendLine($"Ngày: {currentDate:yyyy/MM/dd} có giá {formattedPrice}₫");
+                Console.WriteLine(priceBreakdown.ToString());
+
             }
 
             Console.WriteLine($"Total Amount: {totalAmount}");
-            return totalAmount;
+
+            // Return both total amount and price breakdown
+            return new
+            {
+                TotalAmount = totalAmount,
+                PriceBreakdown = priceBreakdown.ToString()
+            };
         }
+
 
         private decimal AdjustPriceForWeekend(decimal basePrice, decimal? percentageIncrease, DateTime currentDate)
         {

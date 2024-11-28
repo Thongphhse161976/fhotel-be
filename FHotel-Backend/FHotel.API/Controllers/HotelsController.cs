@@ -1,6 +1,8 @@
 ﻿using FHotel.Service.DTOs.Amenities;
+using FHotel.Service.DTOs.HotelPolicies;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Feedbacks;
 using FHotel.Services.DTOs.HotelAmenities;
@@ -36,8 +38,9 @@ namespace FHotel.API.Controllers
         private readonly IHotelVerificationService _hotelVerificationService;
         private readonly IRoomService _roomService;
         private readonly IFeedbackService _feedbackService;
+        private readonly IHotelPolicyService _hotelPolicyService;
         public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService, IReservationService reservationService, IHotelDocumentService hotelDocumentService
-            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService , IRoomService roomService, IFeedbackService feedbackService)
+            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService , IRoomService roomService, IFeedbackService feedbackService, IHotelPolicyService hotelPolicyService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
@@ -49,6 +52,7 @@ namespace FHotel.API.Controllers
             _hotelVerificationService = hotelVerificationService;
             _roomService = roomService;
             _feedbackService = feedbackService;
+            _hotelPolicyService = hotelPolicyService;
         }
 
         /// <summary>
@@ -437,6 +441,26 @@ namespace FHotel.API.Controllers
             try
             {
                 var rs = await _feedbackService.GetAllFeedbackByHotelId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all hotel policies by hotel id.
+        /// </summary>
+        [HttpGet("{id}/hotel-policies")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelPolicyResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<HotelPolicyResponse>>> GetAllHotelPolicyByHotelId(Guid id)
+        {
+            try
+            {
+                var rs = await _hotelPolicyService.GetAllHotelPolicyByHotelId(id);
                 return Ok(rs);
             }
             catch (Exception ex)
