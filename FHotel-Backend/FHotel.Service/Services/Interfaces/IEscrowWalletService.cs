@@ -20,5 +20,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<EscrowWalletResponse> Delete(Guid id);
 
         public Task<EscrowWalletResponse> Update(Guid id, EscrowWalletRequest request);
+        public Task<EscrowWalletResponse> IncreaseBalance(Guid reservationId, decimal amount);
+        public Task<EscrowWalletResponse> DescreaseBalance(Guid reservationId, decimal amount);
     }
 }

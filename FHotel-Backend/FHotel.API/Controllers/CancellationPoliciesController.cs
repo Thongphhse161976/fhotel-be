@@ -1,4 +1,4 @@
-﻿using FHotel.Service.DTOs.HotelPolicies;
+﻿using FHotel.Service.DTOs.CancellationPolicies;
 using FHotel.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,31 +6,31 @@ using Microsoft.AspNetCore.Mvc;
 namespace FHotel.API.Controllers
 {
     /// <summary>
-    /// Controller for managing hotel policy.
+    /// Controller for managing cancellation policy.
     /// </summary>
-    [Route("api/hotel-policies")]
+    [Route("api/cancellation-policies")]
     [ApiController]
-    public class HotelPoliciesController : ControllerBase
+    public class CancellationPoliciesController : ControllerBase
     {
-        private readonly IHotelPolicyService _hotelPolicyService;
+        private readonly ICancellationPolicyService _cancellationPolicyService;
 
-        public HotelPoliciesController(IHotelPolicyService hotelPolicyService)
+        public CancellationPoliciesController(ICancellationPolicyService cancellationPolicyService)
         {
-            _hotelPolicyService = hotelPolicyService;
+            _cancellationPolicyService = cancellationPolicyService;
         }
 
         /// <summary>
-        /// Get a list of all hotelPolicys.
+        /// Get a list of all cancellation policies.
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelPolicyResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CancellationPolicyResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<HotelPolicyResponse>>> GetAll()
+        public async Task<ActionResult<List<CancellationPolicyResponse>>> GetAll()
         {
             try
             {
-                var rs = await _hotelPolicyService.GetAll();
+                var rs = await _cancellationPolicyService.GetAll();
                 return Ok(rs);
             }
             catch (Exception ex)
@@ -40,17 +40,17 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get hotelPolicy by hotelPolicy id.
+        /// Get cancellation policy by cancellation policy id.
         /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelPolicyResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CancellationPolicyResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<HotelPolicyResponse>> Get(Guid id)
+        public async Task<ActionResult<CancellationPolicyResponse>> Get(Guid id)
         {
             try
             {
-                var rs = await _hotelPolicyService.Get(id);
+                var rs = await _cancellationPolicyService.Get(id);
                 return Ok(rs);
             }
             catch
@@ -60,16 +60,16 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Create new hotelPolicy.
+        /// Create new cancellation policy.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<HotelPolicyResponse>> Create([FromBody] HotelPolicyRequest request)
+        public async Task<ActionResult<CancellationPolicyResponse>> Create([FromBody] CancellationPolicyRequest request)
         {
             try
             {
-                var result = await _hotelPolicyService.Create(request);
+                var result = await _cancellationPolicyService.Create(request);
                 return CreatedAtAction(nameof(Create), result);
             }
             catch (Exception ex)
@@ -79,24 +79,24 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Delete hotelPolicy by hotelPolicy id.
+        /// Delete cancellation policy by cancellation policy id.
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HotelPolicyResponse>> Delete(Guid id)
+        public async Task<ActionResult<CancellationPolicyResponse>> Delete(Guid id)
         {
-            var rs = await _hotelPolicyService.Delete(id);
+            var rs = await _cancellationPolicyService.Delete(id);
             return Ok(rs);
         }
 
         /// <summary>
-        /// Update hotelPolicy by hotelPolicy id.
+        /// Update cancellation policy by cancellation policy id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<HotelPolicyResponse>> Update(Guid id, [FromBody] HotelPolicyRequest request)
+        public async Task<ActionResult<CancellationPolicyResponse>> Update(Guid id, [FromBody] CancellationPolicyRequest request)
         {
             try
             {
-                var rs = await _hotelPolicyService.Update(id, request);
+                var rs = await _cancellationPolicyService.Update(id, request);
                 return Ok(rs);
             }
             catch (Exception ex)

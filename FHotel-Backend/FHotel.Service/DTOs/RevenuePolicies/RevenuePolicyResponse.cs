@@ -1,5 +1,4 @@
 ﻿using FHotel.Repository.Models;
-using FHotel.Service.DTOs.Policies;
 using FHotel.Services.DTOs.Hotels;
 using System;
 using System.Collections.Generic;
@@ -7,19 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FHotel.Service.DTOs.HotelPolicies
+namespace FHotel.Service.DTOs.RevenuePolicies
 {
-    public class HotelPolicyResponse
+    public class RevenuePolicyResponse
     {
-        public Guid HotelPolicyId { get; set; }
+        public Guid RevenuePolicyId { get; set; }
         public Guid? HotelId { get; set; }
-        public Guid? PolicyId { get; set; }
-        public string? SpecificDetails { get; set; }
-        public decimal? Percentage { get; set; }
+        public decimal? AdminPercentage { get; set; }
+        public decimal? HotelPercentage { get; set; }
+        public DateTime? EffectiveDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
         public virtual HotelResponse? Hotel { get; set; }
-        public virtual PolicyResponse? Policy { get; set; }
     }
 }

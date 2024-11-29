@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FHotel.Service.DTOs.RefundPolicies
+namespace FHotel.Service.DTOs.CancellationPolicies
 {
-    public class RefundPolicyResponse
+    public class CancellationPolicyRequest
     {
-        public Guid RefundPolicyId { get; set; }
-        public string? CancellationTime { get; set; }
+        public Guid? HotelId { get; set; }
         public decimal? RefundPercentage { get; set; }
-        public string? Description { get; set; }
+        public int? CancellationDays { get; set; }
+        public TimeSpan? CancellationTime { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
     }

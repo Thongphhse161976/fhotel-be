@@ -19,6 +19,7 @@ namespace FHotel.Repository.Models
         public virtual DbSet<Amenity> Amenities { get; set; } = null!;
         public virtual DbSet<Bill> Bills { get; set; } = null!;
         public virtual DbSet<BillTransactionImage> BillTransactionImages { get; set; } = null!;
+        public virtual DbSet<CancellationPolicy> CancellationPolicies { get; set; } = null!;
         public virtual DbSet<City> Cities { get; set; } = null!;
         public virtual DbSet<District> Districts { get; set; } = null!;
         public virtual DbSet<Document> Documents { get; set; } = null!;
@@ -29,15 +30,14 @@ namespace FHotel.Repository.Models
         public virtual DbSet<HotelAmenity> HotelAmenities { get; set; } = null!;
         public virtual DbSet<HotelDocument> HotelDocuments { get; set; } = null!;
         public virtual DbSet<HotelImage> HotelImages { get; set; } = null!;
-        public virtual DbSet<HotelPolicy> HotelPolicies { get; set; } = null!;
         public virtual DbSet<HotelStaff> HotelStaffs { get; set; } = null!;
         public virtual DbSet<HotelVerification> HotelVerifications { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
         public virtual DbSet<Payment> Payments { get; set; } = null!;
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; } = null!;
-        public virtual DbSet<Policy> Policies { get; set; } = null!;
         public virtual DbSet<Reservation> Reservations { get; set; } = null!;
+        public virtual DbSet<RevenuePolicy> RevenuePolicies { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Room> Rooms { get; set; } = null!;
         public virtual DbSet<RoomFacility> RoomFacilities { get; set; } = null!;
@@ -79,7 +79,7 @@ namespace FHotel.Repository.Models
             {
                 entity.ToTable("Bill");
 
-                entity.HasIndex(e => e.ReservationId, "UQ__Bill__B7EE5F058CD1D6FF")
+                entity.HasIndex(e => e.ReservationId, "UQ__Bill__B7EE5F05E8B0708D")
                     .IsUnique();
 
                 entity.Property(e => e.BillId)
@@ -99,7 +99,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Reservation)
                     .WithOne(p => p.Bill)
                     .HasForeignKey<Bill>(d => d.ReservationId)
-                    .HasConstraintName("FK__Bill__Reservatio__42B89D23");
+                    .HasConstraintName("FK__Bill__Reservatio__343573A2");
             });
 
             modelBuilder.Entity<BillTransactionImage>(entity =>
@@ -117,7 +117,29 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Bill)
                     .WithMany(p => p.BillTransactionImages)
                     .HasForeignKey(d => d.BillId)
-                    .HasConstraintName("FK__BillTrans__BillI__459509CE");
+                    .HasConstraintName("FK__BillTrans__BillI__3711E04D");
+            });
+
+            modelBuilder.Entity<CancellationPolicy>(entity =>
+            {
+                entity.ToTable("CancellationPolicy");
+
+                entity.Property(e => e.CancellationPolicyId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CancellationPolicyID");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.HotelId).HasColumnName("HotelID");
+
+                entity.Property(e => e.RefundPercentage).HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Hotel)
+                    .WithMany(p => p.CancellationPolicies)
+                    .HasForeignKey(d => d.HotelId)
+                    .HasConstraintName("FK__Cancellat__Hotel__39EE4CF8");
             });
 
             modelBuilder.Entity<City>(entity =>
@@ -150,7 +172,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.City)
                     .WithMany(p => p.Districts)
                     .HasForeignKey(d => d.CityId)
-                    .HasConstraintName("FK__District__CityID__2CC95C04");
+                    .HasConstraintName("FK__District__CityID__1E463283");
             });
 
             modelBuilder.Entity<Document>(entity =>
@@ -205,7 +227,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Reservation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.ReservationId)
-                    .HasConstraintName("FK__Feedback__Reserv__25283A3C");
+                    .HasConstraintName("FK__Feedback__Reserv__16A510BB");
             });
 
             modelBuilder.Entity<Hotel>(entity =>
@@ -247,12 +269,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.District)
                     .WithMany(p => p.Hotels)
                     .HasForeignKey(d => d.DistrictId)
-                    .HasConstraintName("FK__Hotel__DistrictI__2DBD803D");
+                    .HasConstraintName("FK__Hotel__DistrictI__1F3A56BC");
 
                 entity.HasOne(d => d.Owner)
                     .WithMany(p => p.Hotels)
                     .HasForeignKey(d => d.OwnerId)
-                    .HasConstraintName("FK__Hotel__OwnerID__3282355A");
+                    .HasConstraintName("FK__Hotel__OwnerID__23FF0BD9");
             });
 
             modelBuilder.Entity<HotelAmenity>(entity =>
@@ -270,12 +292,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Amenity)
                     .WithMany(p => p.HotelAmenities)
                     .HasForeignKey(d => d.AmenityId)
-                    .HasConstraintName("FK__HotelAmen__Ameni__3B177B5B");
+                    .HasConstraintName("FK__HotelAmen__Ameni__2C9451DA");
 
                 entity.HasOne(d => d.Hotel)
                     .WithMany(p => p.HotelAmenities)
                     .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__HotelAmen__Hotel__3099ECE8");
+                    .HasConstraintName("FK__HotelAmen__Hotel__2216C367");
             });
 
             modelBuilder.Entity<HotelDocument>(entity =>
@@ -297,12 +319,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Document)
                     .WithMany(p => p.HotelDocuments)
                     .HasForeignKey(d => d.DocumentId)
-                    .HasConstraintName("FK__HotelDocu__Docum__41C478EA");
+                    .HasConstraintName("FK__HotelDocu__Docum__33414F69");
 
                 entity.HasOne(d => d.Hotel)
                     .WithMany(p => p.HotelDocuments)
                     .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__HotelDocu__Hotel__40D054B1");
+                    .HasConstraintName("FK__HotelDocu__Hotel__324D2B30");
             });
 
             modelBuilder.Entity<HotelImage>(entity =>
@@ -318,36 +340,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Hotel)
                     .WithMany(p => p.HotelImages)
                     .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__HotelImag__Hotel__3FDC3078");
-            });
-
-            modelBuilder.Entity<HotelPolicy>(entity =>
-            {
-                entity.ToTable("HotelPolicy");
-
-                entity.Property(e => e.HotelPolicyId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("HotelPolicyID");
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.HotelId).HasColumnName("HotelID");
-
-                entity.Property(e => e.Percentage).HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.PolicyId).HasColumnName("PolicyID");
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-
-                entity.HasOne(d => d.Hotel)
-                    .WithMany(p => p.HotelPolicies)
-                    .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__HotelPoli__Hotel__48717679");
-
-                entity.HasOne(d => d.Policy)
-                    .WithMany(p => p.HotelPolicies)
-                    .HasForeignKey(d => d.PolicyId)
-                    .HasConstraintName("FK__HotelPoli__Polic__477D5240");
+                    .HasConstraintName("FK__HotelImag__Hotel__315906F7");
             });
 
             modelBuilder.Entity<HotelStaff>(entity =>
@@ -365,12 +358,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Hotel)
                     .WithMany(p => p.HotelStaffs)
                     .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__HotelStaf__Hotel__3A235722");
+                    .HasConstraintName("FK__HotelStaf__Hotel__2BA02DA1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.HotelStaffs)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__HotelStaf__UserI__392F32E9");
+                    .HasConstraintName("FK__HotelStaf__UserI__2AAC0968");
             });
 
             modelBuilder.Entity<HotelVerification>(entity =>
@@ -396,12 +389,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.AssignedManager)
                     .WithMany(p => p.HotelVerifications)
                     .HasForeignKey(d => d.AssignedManagerId)
-                    .HasConstraintName("FK__HotelVeri__Assig__43ACC15C");
+                    .HasConstraintName("FK__HotelVeri__Assig__352997DB");
 
                 entity.HasOne(d => d.Hotel)
                     .WithMany(p => p.HotelVerifications)
                     .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__HotelVeri__Hotel__44A0E595");
+                    .HasConstraintName("FK__HotelVeri__Hotel__361DBC14");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -425,12 +418,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Bill)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.BillId)
-                    .HasConstraintName("FK__Order__BillID__383B0EB0");
+                    .HasConstraintName("FK__Order__BillID__29B7E52F");
 
                 entity.HasOne(d => d.Reservation)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ReservationId)
-                    .HasConstraintName("FK__Order__Reservati__261C5E75");
+                    .HasConstraintName("FK__Order__Reservati__179934F4");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -450,12 +443,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__OrderDeta__Order__271082AE");
+                    .HasConstraintName("FK__OrderDeta__Order__188D592D");
 
                 entity.HasOne(d => d.Service)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ServiceId)
-                    .HasConstraintName("FK__OrderDeta__Servi__28F8CB20");
+                    .HasConstraintName("FK__OrderDeta__Servi__1A75A19F");
             });
 
             modelBuilder.Entity<Payment>(entity =>
@@ -477,12 +470,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Bill)
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.BillId)
-                    .HasConstraintName("FK__Payment__BillID__2AE11392");
+                    .HasConstraintName("FK__Payment__BillID__1C5DEA11");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK__Payment__Payment__2BD537CB");
+                    .HasConstraintName("FK__Payment__Payment__1D520E4A");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>
@@ -494,21 +487,6 @@ namespace FHotel.Repository.Models
                     .HasColumnName("PaymentMethodID");
 
                 entity.Property(e => e.PaymentMethodName).HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<Policy>(entity =>
-            {
-                entity.ToTable("Policy");
-
-                entity.Property(e => e.PolicyId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("PolicyID");
-
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-
-                entity.Property(e => e.PolicyName).HasMaxLength(255);
-
-                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Reservation>(entity =>
@@ -542,17 +520,45 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("FK__Reservati__Custo__233FF1CA");
+                    .HasConstraintName("FK__Reservati__Custo__14BCC849");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK__Reservati__Payme__29ECEF59");
+                    .HasConstraintName("FK__Reservati__Payme__1B69C5D8");
 
                 entity.HasOne(d => d.RoomType)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.RoomTypeId)
-                    .HasConstraintName("FK__Reservati__RoomT__24341603");
+                    .HasConstraintName("FK__Reservati__RoomT__15B0EC82");
+            });
+
+            modelBuilder.Entity<RevenuePolicy>(entity =>
+            {
+                entity.ToTable("RevenuePolicy");
+
+                entity.Property(e => e.RevenuePolicyId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("RevenuePolicyID");
+
+                entity.Property(e => e.AdminPercentage).HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.EffectiveDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
+
+                entity.Property(e => e.HotelId).HasColumnName("HotelID");
+
+                entity.Property(e => e.HotelPercentage).HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Hotel)
+                    .WithMany(p => p.RevenuePolicies)
+                    .HasForeignKey(d => d.HotelId)
+                    .HasConstraintName("FK__RevenuePo__Hotel__38FA28BF");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -585,7 +591,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.RoomType)
                     .WithMany(p => p.Rooms)
                     .HasForeignKey(d => d.RoomTypeId)
-                    .HasConstraintName("FK__Room__RoomTypeID__33765993");
+                    .HasConstraintName("FK__Room__RoomTypeID__24F33012");
             });
 
             modelBuilder.Entity<RoomFacility>(entity =>
@@ -603,12 +609,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Facility)
                     .WithMany(p => p.RoomFacilities)
                     .HasForeignKey(d => d.FacilityId)
-                    .HasConstraintName("FK__RoomFacil__Facil__3C0B9F94");
+                    .HasConstraintName("FK__RoomFacil__Facil__2D887613");
 
                 entity.HasOne(d => d.RoomType)
                     .WithMany(p => p.RoomFacilities)
                     .HasForeignKey(d => d.RoomTypeId)
-                    .HasConstraintName("FK__RoomFacil__RoomT__318E1121");
+                    .HasConstraintName("FK__RoomFacil__RoomT__230AE7A0");
             });
 
             modelBuilder.Entity<RoomImage>(entity =>
@@ -624,7 +630,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.RoomType)
                     .WithMany(p => p.RoomImages)
                     .HasForeignKey(d => d.RoomTypeId)
-                    .HasConstraintName("FK__RoomImage__RoomT__224BCD91");
+                    .HasConstraintName("FK__RoomImage__RoomT__13C8A410");
             });
 
             modelBuilder.Entity<RoomStayHistory>(entity =>
@@ -650,12 +656,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Reservation)
                     .WithMany(p => p.RoomStayHistories)
                     .HasForeignKey(d => d.ReservationId)
-                    .HasConstraintName("FK__RoomStayH__Reser__3652C63E");
+                    .HasConstraintName("FK__RoomStayH__Reser__27CF9CBD");
 
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.RoomStayHistories)
                     .HasForeignKey(d => d.RoomId)
-                    .HasConstraintName("FK__RoomStayH__RoomI__3746EA77");
+                    .HasConstraintName("FK__RoomStayH__RoomI__28C3C0F6");
             });
 
             modelBuilder.Entity<RoomType>(entity =>
@@ -681,12 +687,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Hotel)
                     .WithMany(p => p.RoomTypes)
                     .HasForeignKey(d => d.HotelId)
-                    .HasConstraintName("FK__RoomType__HotelI__2157A958");
+                    .HasConstraintName("FK__RoomType__HotelI__12D47FD7");
 
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.RoomTypes)
                     .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("FK__RoomType__TypeID__3CFFC3CD");
+                    .HasConstraintName("FK__RoomType__TypeID__2E7C9A4C");
             });
 
             modelBuilder.Entity<Service>(entity =>
@@ -710,7 +716,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.ServiceType)
                     .WithMany(p => p.Services)
                     .HasForeignKey(d => d.ServiceTypeId)
-                    .HasConstraintName("FK__Service__Service__2804A6E7");
+                    .HasConstraintName("FK__Service__Service__19817D66");
             });
 
             modelBuilder.Entity<ServiceType>(entity =>
@@ -747,17 +753,17 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Bill)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.BillId)
-                    .HasConstraintName("FK__Transacti__BillI__46892E07");
+                    .HasConstraintName("FK__Transacti__BillI__38060486");
 
                 entity.HasOne(d => d.EscrowWallet)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.EscrowWalletId)
-                    .HasConstraintName("FK__Transacti__Escro__49659AB2");
+                    .HasConstraintName("FK__Transacti__Escro__3AE27131");
 
                 entity.HasOne(d => d.Wallet)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.WalletId)
-                    .HasConstraintName("FK__Transacti__Walle__355EA205");
+                    .HasConstraintName("FK__Transacti__Walle__26DB7884");
             });
 
             modelBuilder.Entity<Type>(entity =>
@@ -808,22 +814,22 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.District)
                     .WithMany(p => p.TypePricings)
                     .HasForeignKey(d => d.DistrictId)
-                    .HasConstraintName("FK__TypePrici__Distr__3EE80C3F");
+                    .HasConstraintName("FK__TypePrici__Distr__3064E2BE");
 
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.TypePricings)
                     .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("FK__TypePrici__TypeI__3DF3E806");
+                    .HasConstraintName("FK__TypePrici__TypeI__2F70BE85");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.PhoneNumber, "UQ__User__85FB4E38FAE33D3C")
+                entity.HasIndex(e => e.PhoneNumber, "UQ__User__85FB4E38C1399895")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534D305E008")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D10534C699B0A5")
                     .IsUnique();
 
                 entity.Property(e => e.UserId)
@@ -853,7 +859,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK__User__RoleID__2063851F");
+                    .HasConstraintName("FK__User__RoleID__11E05B9E");
             });
 
             modelBuilder.Entity<UserDocument>(entity =>
@@ -875,12 +881,12 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.Document)
                     .WithMany(p => p.UserDocuments)
                     .HasForeignKey(d => d.DocumentId)
-                    .HasConstraintName("FK__UserDocum__Docum__2FA5C8AF");
+                    .HasConstraintName("FK__UserDocum__Docum__21229F2E");
 
                 entity.HasOne(d => d.Reservation)
                     .WithMany(p => p.UserDocuments)
                     .HasForeignKey(d => d.ReservationId)
-                    .HasConstraintName("FK__UserDocum__Reser__2EB1A476");
+                    .HasConstraintName("FK__UserDocum__Reser__202E7AF5");
             });
 
             modelBuilder.Entity<Wallet>(entity =>
@@ -902,7 +908,7 @@ namespace FHotel.Repository.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Wallet__UserID__346A7DCC");
+                    .HasConstraintName("FK__Wallet__UserID__25E7544B");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -60,10 +60,19 @@ namespace FHotel.Services.Services.Implementations
 
         public async Task<FeedbackResponse> Create(FeedbackRequest request)
         {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+
+            // Get the current UTC time
+            DateTime utcNow = DateTime.UtcNow;
+
+            // Convert the UTC time to UTC+7
+            DateTime localTime = utcNow + utcOffset;
             try
             {
                 var feedback = _mapper.Map<FeedbackRequest, Feedback>(request);
                 feedback.FeedbackId = Guid.NewGuid();
+                feedback.CreatedDate = localTime;
                 await _unitOfWork.Repository<Feedback>().InsertAsync(feedback);
                 await _unitOfWork.CommitAsync();
 

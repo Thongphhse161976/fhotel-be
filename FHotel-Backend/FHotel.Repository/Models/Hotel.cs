@@ -7,12 +7,13 @@ namespace FHotel.Repository.Models
     {
         public Hotel()
         {
+            CancellationPolicies = new HashSet<CancellationPolicy>();
             HotelAmenities = new HashSet<HotelAmenity>();
             HotelDocuments = new HashSet<HotelDocument>();
             HotelImages = new HashSet<HotelImage>();
-            HotelPolicies = new HashSet<HotelPolicy>();
             HotelStaffs = new HashSet<HotelStaff>();
             HotelVerifications = new HashSet<HotelVerification>();
+            RevenuePolicies = new HashSet<RevenuePolicy>();
             RoomTypes = new HashSet<RoomType>();
         }
 
@@ -36,12 +37,13 @@ namespace FHotel.Repository.Models
 
         public virtual District? District { get; set; }
         public virtual User? Owner { get; set; }
+        public virtual ICollection<CancellationPolicy> CancellationPolicies { get; set; }
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
         public virtual ICollection<HotelDocument> HotelDocuments { get; set; }
         public virtual ICollection<HotelImage> HotelImages { get; set; }
-        public virtual ICollection<HotelPolicy> HotelPolicies { get; set; }
         public virtual ICollection<HotelStaff> HotelStaffs { get; set; }
         public virtual ICollection<HotelVerification> HotelVerifications { get; set; }
+        public virtual ICollection<RevenuePolicy> RevenuePolicies { get; set; }
         public virtual ICollection<RoomType> RoomTypes { get; set; }
     }
 }

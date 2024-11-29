@@ -104,5 +104,32 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Increase Escro wallet balance.
+        /// </summary>
+        [HttpPost("increase-balance")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<EscrowWalletResponse>> IncreaseBalance([FromBody] IncreaseBalanceRequest request)
+        {
+            try
+            {
+                var result = await _escrowWalletService.IncreaseBalance(request.ReservationId, request.Amount);
+                return CreatedAtAction(nameof(Create), result);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public class IncreaseBalanceRequest
+        {
+            public Guid ReservationId { get; set; }
+            public decimal Amount { get; set; }
+        }
+
     }
 }

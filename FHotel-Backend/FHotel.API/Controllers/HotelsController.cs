@@ -1,7 +1,8 @@
 ﻿using FHotel.Service.DTOs.Amenities;
-using FHotel.Service.DTOs.HotelPolicies;
+using FHotel.Service.DTOs.CancellationPolicies;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
+using FHotel.Service.DTOs.RevenuePolicies;
 using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Feedbacks;
@@ -38,9 +39,10 @@ namespace FHotel.API.Controllers
         private readonly IHotelVerificationService _hotelVerificationService;
         private readonly IRoomService _roomService;
         private readonly IFeedbackService _feedbackService;
-        private readonly IHotelPolicyService _hotelPolicyService;
+        private readonly ICancellationPolicyService _cancellationPolicyService;
+        private readonly IRevenuePolicyService _revenuePolicyService;
         public HotelsController(IHotelService hotelService, IHotelStaffService hotelStaffService, IRoomTypeService roomTypeService, IHotelAmenityService hotelAmenityService, IReservationService reservationService, IHotelDocumentService hotelDocumentService
-            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService , IRoomService roomService, IFeedbackService feedbackService, IHotelPolicyService hotelPolicyService)
+            , IHotelImageService hotelImageService, IHotelVerificationService hotelVerificationService , IRoomService roomService, IFeedbackService feedbackService, ICancellationPolicyService cancellationPolicyService, IRevenuePolicyService revenuePolicyService)
         {
             _hotelService = hotelService;
             _hotelStaffService = hotelStaffService;
@@ -52,7 +54,8 @@ namespace FHotel.API.Controllers
             _hotelVerificationService = hotelVerificationService;
             _roomService = roomService;
             _feedbackService = feedbackService;
-            _hotelPolicyService = hotelPolicyService;
+            _cancellationPolicyService = cancellationPolicyService;
+            _revenuePolicyService = revenuePolicyService;
         }
 
         /// <summary>
@@ -450,17 +453,37 @@ namespace FHotel.API.Controllers
         }
 
         /// <summary>
-        /// Get a list of all hotel policies by hotel id.
+        /// Get a list of all cancellation policies by hotel id.
         /// </summary>
-        [HttpGet("{id}/hotel-policies")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelPolicyResponse>))]
+        [HttpGet("{id}/cancellation-policies")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CancellationPolicyResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<HotelPolicyResponse>>> GetAllHotelPolicyByHotelId(Guid id)
+        public async Task<ActionResult<List<CancellationPolicyResponse>>> GetAllCancellationPolicyByHotelId(Guid id)
         {
             try
             {
-                var rs = await _hotelPolicyService.GetAllHotelPolicyByHotelId(id);
+                var rs = await _cancellationPolicyService.GetAllCancellationPolicyByHotelId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all revenue policies by hotel id.
+        /// </summary>
+        [HttpGet("{id}/revenue-policies")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RevenuePolicyResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<RevenuePolicyResponse>>> GetAllRevenuePolicyByHotelId(Guid id)
+        {
+            try
+            {
+                var rs = await _revenuePolicyService.GetAllRevenuePolicyByHotelId(id);
                 return Ok(rs);
             }
             catch (Exception ex)

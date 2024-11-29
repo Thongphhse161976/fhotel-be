@@ -3,17 +3,17 @@ using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Amenities;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
+using FHotel.Service.DTOs.CancellationPolicies;
 using FHotel.Service.DTOs.Districts;
 using FHotel.Service.DTOs.EscrowWallets;
 using FHotel.Service.DTOs.Facilities;
-using FHotel.Service.DTOs.HotelPolicies;
 using FHotel.Service.DTOs.Hotels;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.HotelVerifications;
 using FHotel.Service.DTOs.Orders;
 using FHotel.Service.DTOs.Payments;
-using FHotel.Service.DTOs.Policies;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.RevenuePolicies;
 using FHotel.Service.DTOs.Rooms;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.RoomTypes;
@@ -135,10 +135,10 @@ namespace FHotel.Service.Profiles
             CreateMap<Payment, PaymentResponse>().ReverseMap();
 
             //new
-            CreateMap<HotelPolicy, HotelPolicyRequest>().ReverseMap();
-            CreateMap<HotelPolicy, HotelPolicyResponse>().ReverseMap();
-            CreateMap<Policy, PolicyRequest>().ReverseMap();
-            CreateMap<Policy, PolicyResponse>().ReverseMap();
+            CreateMap<CancellationPolicy, CancellationPolicyRequest>().ReverseMap();
+            CreateMap<CancellationPolicy, CancellationPolicyResponse>().ReverseMap();
+            CreateMap<RevenuePolicy, RevenuePolicyRequest>().ReverseMap();
+            CreateMap<RevenuePolicy, RevenuePolicyResponse>().ReverseMap();
             CreateMap<EscrowWallet, EscrowWalletRequest>().ReverseMap();
             CreateMap<EscrowWallet, EscrowWalletResponse>().ReverseMap();
         }
