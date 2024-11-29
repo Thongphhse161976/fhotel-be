@@ -144,24 +144,7 @@ namespace FHotel.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Accept transaction refund.
-        /// </summary>
-        [HttpPost("accept-refund")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<OrderResponse>> AcceptRefund([FromBody] AcceptRefundRequest order)
-        {
-            try
-            {
-                var result = await _orderService.AcceptRefund(order.OrderId);
-                return CreatedAtAction(nameof(Create), result);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+       
         
     }
 }

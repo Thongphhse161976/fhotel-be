@@ -1,6 +1,12 @@
 ﻿using FHotel.Service.DTOs.VnPayConfigs;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FHotel.API.VnPay
+namespace FHotel.Service.Services.Interfaces
 {
     public interface IVnPayService
     {

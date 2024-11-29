@@ -1,4 +1,5 @@
 ﻿using FHotel.Service.DTOs.Bills;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,5 +31,6 @@ namespace FHotel.Service.Services.Interfaces
         //public Task<BillResponse[]> GetEligibleBillsAsync();
 
         //public bool Is60SecondsAfterBill(BillResponse bill);
+        public Task<string?> Pay(Guid id, HttpContext httpContext);
     }
 }

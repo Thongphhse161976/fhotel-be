@@ -1,4 +1,3 @@
-using FHotel.API.VnPay;
 using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Repository.SMS;

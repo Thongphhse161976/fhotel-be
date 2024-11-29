@@ -1,5 +1,4 @@
-﻿using FHotel.API.VnPay;
-using FHotel.Repository.Models;
+﻿using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.BillTransactionImages;
 using FHotel.Service.DTOs.Transactions;
@@ -27,17 +26,15 @@ namespace FHotel.API.Controllers
         private readonly ITransactionService _transactionService;
         private readonly IUserService _userService;
         private readonly IBillTransactionImageService _billTransactionImageService;
-        private readonly IVnPayService _vnPayService;
 
         public BillsController(IBillService billService, IBillTransactionImageService billTransactionImageService
-            , IOrderService orderService, ITransactionService transactionService, IUserService userService, IVnPayService vnPayService)
+            , IOrderService orderService, ITransactionService transactionService, IUserService userService)
         {
             _billService = billService;
             _billTransactionImageService = billTransactionImageService;
             _orderService = orderService;
             _transactionService = transactionService;
             _userService = userService;
-            _vnPayService = vnPayService;
         }
 
         /// <summary>
@@ -198,57 +195,21 @@ namespace FHotel.API.Controllers
         [HttpPost("{id}/pay")]
         public async Task<ActionResult<string>> Pay(Guid id)
         {
-            // Set the UTC offset for UTC+7
-            TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-            // Get the current UTC time
-            DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
-            DateTime localTime = utcNow + utcOffset;
-
-            var bill = await _billService.Get(id);
-            decimal amount = 0;
-            if (bill == null)
+            try
             {
-                return NotFound();
-            }
-            else
-            {
-                var customer = await _userService.Get(bill.Reservation.CustomerId.Value);
-                if (bill.Reservation.IsPrePaid == true)
+                var paymentUrl = await _billService.Pay(id, HttpContext);
+                if (paymentUrl == null)
                 {
-                    var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
-                    foreach (var order in orders)
-                    {
-                        amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
-                    }
-
-                }
-                else
-                {
-                    amount = (decimal)bill.Reservation.TotalAmount; // Assuming TotalAmount is part of ReservationResponse
-                    var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
-                    foreach (var order in orders)
-                    {
-                        amount += order.TotalAmount.Value; // Assuming each order has a TotalAmount property
-                    }
-
+                    return NotFound("Bill not found.");
                 }
 
-                // Retrieve all orders linked to this reservation to add any applicable amounts
-
-                var vnPayModel = new VnPaymentRequestModel
-                {
-                    Amount = (int)amount,
-                    CreatedDate = localTime,
-                    Description = "Payment-For-Bill:",
-                    FullName = customer.Name,
-                    OrderId = id
-                };
-                return _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
+                return Ok(paymentUrl);
             }
-
+            catch (Exception ex)
+            {
+                // Log the error if necessary
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

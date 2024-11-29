@@ -28,6 +28,9 @@ using System.Threading.Tasks;
 using FHotel.Repository.SMTPs.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Caching.Memory;
+using FHotel.Service.DTOs.VnPayConfigs;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -581,7 +584,7 @@ namespace FHotel.Services.Services.Implementations
 
                         if (cancellationPolicy == null)
                         {
-                            throw new Exception("Cancellation policy not found for this hotel.");
+                            throw new Exception("Không tìm thấy chính sách hoàn tiền của khách sạn này.");
                         }
 
                         // Calculate the cancellation deadline (one day before check-in)
@@ -622,7 +625,7 @@ namespace FHotel.Services.Services.Implementations
                             {
                                 WalletId = customerWallet.WalletId,
                                 Amount = refundAmount,
-                                Description = $@"Refund {refundAmount} for reservation {reservationResponse.Code} at {localTime}",
+                                Description = $@"Nhận hoàn tiền {refundAmount} từ đặt phòng {reservationResponse.Code} lúc {localTime}",
                                 TransactionDate = localTime,
                             };
                             await _transactionService.Create(createTransaction);
@@ -655,7 +658,9 @@ namespace FHotel.Services.Services.Implementations
                         }
                         else
                         {
-                            message = "Không hoàn lại tiền vì đã hết thời gian cho phép.";
+                            // Thông báo chi tiết thời gian hết hạn hủy đặt phòng được hoàn tiền
+                            message = $@"Không hoàn lại tiền vì thời gian cho phép đã hết. 
+                            Thời hạn hủy là trước {cancellationTimeLimit.ToString("HH:mm")} ngày {cancellationTimeLimit.ToString("dd/MM/yyyy")}.";
                         }
                     }
                     else
@@ -1247,11 +1252,41 @@ namespace FHotel.Services.Services.Implementations
                                 await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
                             }
                         }
-
                     }
-
                 }
             }
+        }
+
+        public async Task<string?> Pay(Guid id, HttpContext httpContext)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+            DateTime utcNow = DateTime.UtcNow;
+            DateTime localTime = utcNow + utcOffset;
+            var _userService = _serviceProvider.GetService<IUserService>();
+            var _vnPayService = _serviceProvider.GetService<IVnPayService>();
+            var reservation = await Get(id); // Assuming `Get` is a method in the service.
+            if (reservation == null)
+            {
+                return null; // Return null if reservation is not found.
+            }
+
+            var customer = await _userService.Get(reservation.CustomerId.Value);
+            if (customer == null)
+            {
+                throw new InvalidOperationException("Customer not found for the reservation.");
+            }
+
+            var vnPayModel = new VnPaymentRequestModel
+            {
+                Amount = (int)(reservation.TotalAmount),
+                CreatedDate = localTime,
+                Description = "Payment-For-Reservation:",
+                FullName = customer.Name,
+                OrderId = id
+            };
+
+            return _vnPayService.CreatePaymentUrl(httpContext, vnPayModel);
         }
 
 

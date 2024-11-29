@@ -1,6 +1,7 @@
 ﻿using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Services.DTOs.Reservations;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,5 +47,6 @@ namespace FHotel.Services.Services.Interfaces
         public Task<ReservationResponse[]> GetEligibleReservationsAsync();
 
         public bool Is60SecondsAfterReservation(ReservationResponse reservation);
+        public Task<string?> Pay(Guid id, HttpContext httpContext);
     }
 }

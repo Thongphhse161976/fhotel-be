@@ -26,6 +26,5 @@ namespace FHotel.Services.Services.Interfaces
         public Task<List<OrderResponse>> GetAllOrderByStaffId(Guid staffId);
         public Task<List<OrderResponse>> GetAllOrderByCustomerId(Guid id);
         public Task<List<OrderResponse>> GetAllOrderByBillId(Guid id);
-        public Task<OrderResponse> AcceptRefund(Guid id);
     }
 }

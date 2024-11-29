@@ -6,12 +6,16 @@ using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Payments;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.Transactions;
+using FHotel.Service.DTOs.VnPayConfigs;
 using FHotel.Service.DTOs.Wallets;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.DTOs.Orders;
 using FHotel.Services.DTOs.Reservations;
+using FHotel.Services.Services.Implementations;
 using FHotel.Services.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +33,8 @@ namespace FHotel.Service.Services.Implementations
         private IWalletService _walletService;
         private IPaymentService _paymentService;
         private readonly object _lockObject = new object();
-        public BillService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IReservationService reservationService, IWalletService walletService, IPaymentService paymentService)
+        private readonly IServiceProvider _serviceProvider;
+        public BillService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IReservationService reservationService, IWalletService walletService, IPaymentService paymentService, IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -37,6 +42,7 @@ namespace FHotel.Service.Services.Implementations
             _reservationService = reservationService;
             _walletService = walletService;
             _paymentService = paymentService;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<List<BillResponse>> GetAll()
@@ -282,12 +288,12 @@ namespace FHotel.Service.Services.Implementations
 
         //    foreach (var bill in bills)
         //    {
-               
+
         //            if (bill.BillStatus == "Paid" && Is60SecondsAfterBill(bill))
         //            {
         //                billsToProcess.Add(bill);
         //            }
-               
+
         //    }
 
         //    // Only one thread should execute this part at a time
@@ -376,6 +382,52 @@ namespace FHotel.Service.Services.Implementations
         //        await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
         //    }
         //}
+
+        public async Task<string?> Pay(Guid id, HttpContext httpContext)
+        {
+            // Set the UTC offset for UTC+7
+            TimeSpan utcOffset = TimeSpan.FromHours(7);
+            DateTime localTime = DateTime.UtcNow + utcOffset;
+            var _userService = _serviceProvider.GetService<IUserService>();
+            var _vnPayService = _serviceProvider.GetService<IVnPayService>();
+            var bill = await Get(id); // Assuming `Get` retrieves the bill by ID
+            if (bill == null)
+            {
+                return null; // Indicate the bill was not found
+            }
+
+            decimal amount = 0;
+            var customer = await _userService.Get(bill.Reservation.CustomerId.Value);
+
+            if (bill.Reservation.IsPrePaid == true)
+            {
+                var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
+                foreach (var order in orders)
+                {
+                    amount += order.TotalAmount ?? 0; // Ensure null safety
+                }
+            }
+            else
+            {
+                amount = bill.Reservation.TotalAmount ?? 0; // Ensure null safety
+                var orders = await _orderService.GetAllByReservationId(bill.ReservationId.Value);
+                foreach (var order in orders)
+                {
+                    amount += order.TotalAmount ?? 0; // Ensure null safety
+                }
+            }
+
+            var vnPayModel = new VnPaymentRequestModel
+            {
+                Amount = (int)amount,
+                CreatedDate = localTime,
+                Description = "Payment-For-Bill:",
+                FullName = customer.Name,
+                OrderId = id
+            };
+
+            return _vnPayService.CreatePaymentUrl(httpContext, vnPayModel);
+        }
 
     }
 }

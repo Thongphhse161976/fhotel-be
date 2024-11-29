@@ -1,5 +1,4 @@
-﻿using FHotel.API.VnPay;
-using FHotel.Repository.Models;
+﻿using FHotel.Repository.Models;
 using FHotel.Service.DTOs.Bills;
 using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.RoomStayHistories;
@@ -32,7 +31,6 @@ namespace FHotel.API.Controllers
         private readonly IReservationService _reservationService;
         private readonly IOrderService _orderService;
         private readonly IUserDocumentService _userDocumentService;
-        private readonly IVnPayService _vnPayService;
         private readonly IUserService _userService;
         private readonly IRoomStayHistoryService _roomStayHistoryService;
         private readonly IOrderDetailService _orderDetailService;
@@ -42,14 +40,13 @@ namespace FHotel.API.Controllers
         private readonly IHotelService _hotelService;
 
         public ReservationsController(IReservationService reservationService, IOrderService orderService,
-            IUserDocumentService userDocumentService, IVnPayService vnPayService, IUserService userService, 
+            IUserDocumentService userDocumentService, IUserService userService, 
             IRoomStayHistoryService roomStayHistoryService, IOrderDetailService orderDetailService, IFeedbackService feedbackService
             , IBillService billService, IRoomTypeService roomTypeService, IHotelService hotelService)
         {
             _reservationService = reservationService;
             _orderService = orderService;
             _userDocumentService = userDocumentService;
-            _vnPayService = vnPayService;
             _userService = userService;
             _roomStayHistoryService = roomStayHistoryService;
             _orderDetailService = orderDetailService;
@@ -320,36 +317,21 @@ namespace FHotel.API.Controllers
         [HttpPost("{id}/pay")]
         public async Task<ActionResult<string>> Pay(Guid id)
         {
-            // Set the UTC offset for UTC+7
-            TimeSpan utcOffset = TimeSpan.FromHours(7);
-
-            // Get the current UTC time
-            DateTime utcNow = DateTime.UtcNow;
-
-            // Convert the UTC time to UTC+7
-            DateTime localTime = utcNow + utcOffset;
-
-            var reservation = await _reservationService.Get(id);
-            if (reservation == null)
+            try
             {
-                return NotFound();
-            }
-            else
-            {
-                var customer = await _userService.Get(reservation.CustomerId.Value);
-                var vnPayModel = new VnPaymentRequestModel
+                var paymentUrl = await _reservationService.Pay(id, HttpContext);
+                if (paymentUrl == null)
                 {
-                    Amount = (int)(reservation.TotalAmount),
-                    CreatedDate = localTime,
-                    Description = "Payment-For-Reservation:",
-                    FullName = customer.Name,
-                    OrderId = id
-                };
-                return _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
+                    return NotFound("Reservation not found.");
+                }
+
+                return Ok(paymentUrl);
             }
-
-            
-
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                return StatusCode(500, ex.Message);
+            }
         }
         [HttpGet("api/roomtypes/{roomTypeId}/available-on-date")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
