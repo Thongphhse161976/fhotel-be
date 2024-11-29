@@ -652,7 +652,8 @@ namespace FHotel.Services.Services.Implementations
                                 PaymentStatus = reservationResponse.PaymentStatus,
                                 RoomTypeId = reservationResponse.RoomTypeId,
                                 TotalAmount = reservationResponse.TotalAmount,
-                                ReservationStatus = "Refunded"
+                                ReservationStatus = "Refunded",
+                                IsPrePaid = reservationResponse.IsPrePaid
                             };
                             await Update(reservation.ReservationId, updateReservation);
                         }
