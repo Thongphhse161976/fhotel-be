@@ -9,7 +9,7 @@ namespace FHotel.Repository.Models
         public Guid? HotelId { get; set; }
         public decimal? RefundPercentage { get; set; }
         public int? CancellationDays { get; set; }
-        public TimeSpan? CancellationTime { get; set; }
+        public string? CancellationTime { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 

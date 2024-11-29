@@ -4,6 +4,10 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.CancellationPolicies;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Service.Validators.CancellationPolicyValidator;
+using FHotel.Service.Validators.TypePricingValidator;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -67,14 +71,36 @@ namespace FHotel.Service.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+            var validator = new CancellationPolicyCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+            // Check if a cancellation policy already exists for the hotel
+            var existingPolicy = (await GetAll())
+            .Where(u => u.HotelId == request.HotelId)
+            .ToList();
+            if (existingPolicy.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("Hotel ID", "Chính sách hoàn tiền của khách sạn đã tồn tại."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
             try
             {
+               
+                // Map request to entity
                 var cancellationPolicy = _mapper.Map<CancellationPolicyRequest, CancellationPolicy>(request);
                 cancellationPolicy.CancellationPolicyId = Guid.NewGuid();
                 cancellationPolicy.CreatedDate = localTime;
+
+                // Insert the new cancellation policy
                 await _unitOfWork.Repository<CancellationPolicy>().InsertAsync(cancellationPolicy);
                 await _unitOfWork.CommitAsync();
 
+                // Map entity to response and return
                 return _mapper.Map<CancellationPolicy, CancellationPolicyResponse>(cancellationPolicy);
             }
             catch (Exception e)
@@ -82,6 +108,7 @@ namespace FHotel.Service.Services.Implementations
                 throw new Exception(e.Message);
             }
         }
+
 
         public async Task<CancellationPolicyResponse> Delete(Guid id)
         {

@@ -553,6 +553,7 @@ namespace FHotel.Services.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+
             // Fetch the existing reservation
             var reservation = await _unitOfWork.Repository<Reservation>().FindAsync(x => x.ReservationId == id);
 
@@ -564,61 +565,117 @@ namespace FHotel.Services.Services.Implementations
 
             try
             {
-
                 if (reservation.ReservationStatus == "Pending")
                 {
                     if (reservation.IsPrePaid == true)
                     {
-                        var _serviceService = _serviceProvider.GetService<IServiceService>();
-                        var _orderService = _serviceProvider.GetService<IOrderService>();
-                        var _orderdetailService = _serviceProvider.GetService<IOrderDetailService>();
-                        var serviceList = await _serviceService.GetAll();
-                        var service = serviceList.Find(s => s.ServiceName == "Hoàn tiền");
-                        var order = new OrderCreateRequest
-                        {
-                            ReservationId = reservation.ReservationId,
-                            OrderedDate = localTime,
-                            OrderStatus = "Pending",
-                            TotalAmount = reservation.TotalAmount
-                        };
-                        var orderResponse = await _orderService.Create(order);
-                        var orderDetail = new OrderDetailRequest
-                        {
-                            OrderId = orderResponse.OrderId,
-                            Price = reservation.TotalAmount,
-                            Quantity = 1,
-                            ServiceId = service.ServiceId
+                        var _cancellationPolicyService = _serviceProvider.GetService<ICancellationPolicyService>();
+                        var _walletService = _serviceProvider.GetService<IWalletService>();
+                        var _transactionService = _serviceProvider.GetService<ITransactionService>();
+                        var reservationResponse = await Get(id);
+                        // Retrieve cancellation policies for the hotel
+                        var cancellationPolicies = await _cancellationPolicyService.GetAllCancellationPolicyByHotelId(reservationResponse.RoomType.HotelId.Value);
 
-                        };
-                        var orderDetailResponse = await _orderdetailService.Create(orderDetail);
-                        if (orderDetailResponse != null)
+                        // Assume we only have one cancellation policy per hotel for simplicity
+                        var cancellationPolicy = cancellationPolicies.FirstOrDefault();
+
+                        if (cancellationPolicy == null)
                         {
-                            message = "Bạn đã gửi yêu cầu thành công! Vui lòng chờ ...";
+                            throw new Exception("Cancellation policy not found for this hotel.");
+                        }
+
+                        // Calculate the cancellation deadline (one day before check-in)
+                        DateTime checkInDate = (DateTime)reservationResponse.CheckInDate;
+                        DateTime cancellationDeadline = checkInDate.AddDays(-1);  // One day before check-in
+                        TimeSpan cancellationTime = TimeSpan.Parse(cancellationPolicy.CancellationTime);
+                        DateTime cancellationTimeLimit = cancellationDeadline.Add(cancellationTime);
+
+                        // Compare the current time to the cancellation time limit
+                        decimal refundPercentage = 0;
+
+                        if (localTime < cancellationTimeLimit)
+                        {
+                            refundPercentage = (decimal)cancellationPolicy.RefundPercentage;  // Full refund (e.g., 100%) if before 9 AM
                         }
                         else
                         {
-                            message = "Có lỗi xảy ra trong quá trình gửi yêu cầu ...";
+                            refundPercentage = 0;  // No refund after the cancellation time
+                        }
+
+                        // Calculate refund amount
+                        var refundAmount = reservationResponse.TotalAmount * refundPercentage / 100;
+
+                        // Process refund if applicable
+                        if (refundAmount > 0)
+                        {
+                            var wallets = await _walletService.GetAll();
+                            var customerWallet = wallets.Find(x => x.UserId == reservationResponse.CustomerId);
+
+                            // Verify that the required wallet exists
+                            if (customerWallet == null)
+                            {
+                                throw new Exception("Customer wallet not found.");
+                            }
+
+                            // Create a transaction for refund
+                            var createTransaction = new TransactionRequest
+                            {
+                                WalletId = customerWallet.WalletId,
+                                Amount = refundAmount,
+                                Description = $@"Refund {refundAmount} for reservation {reservationResponse.Code} at {localTime}",
+                                TransactionDate = localTime,
+                            };
+                            await _transactionService.Create(createTransaction);
+
+                            // Update wallet balance
+                            var updateWallet = new WalletRequest
+                            {
+                                Balance = customerWallet.Balance + refundAmount,
+                                UserId = customerWallet.UserId,
+                                BankAccountNumber = customerWallet.BankAccountNumber,
+                                BankName = customerWallet.BankName
+                            };
+                            await _walletService.Update(customerWallet.WalletId, updateWallet);
+                            var updateReservation = new ReservationUpdateRequest
+                            {
+                                ReservationId = reservationResponse.ReservationId,
+                                CheckInDate = reservationResponse.CheckInDate,
+                                CheckOutDate = reservationResponse.CheckOutDate,
+                                Code = reservationResponse.Code,
+                                CreatedDate = reservationResponse.CreatedDate,
+                                CustomerId = reservationResponse.CustomerId,
+                                NumberOfRooms = reservationResponse.NumberOfRooms,
+                                PaymentMethodId = reservationResponse.PaymentMethodId,
+                                PaymentStatus = reservationResponse.PaymentStatus,
+                                RoomTypeId = reservationResponse.RoomTypeId,
+                                TotalAmount = reservationResponse.TotalAmount,
+                                ReservationStatus = "Refunded"
+                            };
+                            await Update(reservation.ReservationId, updateReservation);
+                        }
+                        else
+                        {
+                            message = "Không hoàn lại tiền vì đã hết thời gian cho phép.";
                         }
                     }
                     else
                     {
-                        throw new Exception("Not found");
+                        throw new Exception("Chưa thanh toán trước.");
                     }
                 }
                 else
                 {
-                    throw new Exception("Not found");
+                    message = "Hoàn tiền không chấp nhận.";
                 }
-
 
                 return message;
             }
-
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
 
 
         public async Task CheckAndProcessReservationsAsync()
