@@ -663,17 +663,18 @@ namespace FHotel.Services.Services.Implementations
 
             var fromAddress = new MailAddress(emailSettings.Sender, emailSettings.SystemName);
             var toAddress = new MailAddress(toEmail);
-            const string subject = "Hotel Registration Confirmation"; // Email subject
+            const string subject = "Xác Nhận Đăng Ký Khách Sạn"; // Email subject
 
             // Construct the email body with HTML template
             string body = $@"
-        <h1>Hotel Registration Confirmation</h1>
-        <p>Dear {user.Name},</p>
-        <p>Thanks for giving time with us.</p>
-        <p>You now can access our system FHotel</p>
+        <h1>Xác Nhận Đăng Ký Khách Sạn</h1>
+        <p>Kính gửi {user.Name},</p>
+        <p>Cảm ơn bạn đã dành thời gian với chúng tôi.</p>
+        <p>Bây giờ bạn có thể truy cập hệ thống FHotel của chúng tôi.</p>
         <p>Email: {user.Email}</p>
-        <p>Password: {user.Password}</p>     
-        <p>Best regards,<br>FHotel company.</p>";
+        <p>Mật khẩu: {user.Password}</p>     
+        <p>Trân trọng,<br>Công ty FHotel.</p>";
+
 
             // Set up the SMTP client
             var smtp = new SmtpClient

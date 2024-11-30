@@ -21,5 +21,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<RevenuePolicyResponse> Update(Guid id, RevenuePolicyRequest request);
 
         public Task<List<RevenuePolicyResponse>> GetAllRevenuePolicyByHotelId(Guid id);
+
+        public Task<List<RevenuePolicyResponse>> GetAllRevenuePolicyByOwnerId(Guid id);
     }
 }

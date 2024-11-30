@@ -656,12 +656,13 @@ namespace FHotel.Services.Services.Implementations
                                 IsPrePaid = reservationResponse.IsPrePaid
                             };
                             await Update(reservation.ReservationId, updateReservation);
+                            message = $@"<h1>Hoàn tiền thành công: {refundAmount}₫</h1>";
                         }
                         else
                         {
                             // Thông báo chi tiết thời gian hết hạn hủy đặt phòng được hoàn tiền
-                            message = $@"Không hoàn lại tiền vì thời gian cho phép đã hết. 
-                            Thời hạn hủy là trước {cancellationTimeLimit.ToString("HH:mm")} ngày {cancellationTimeLimit.ToString("dd/MM/yyyy")}.";
+                            message = $@"<h1>Không hoàn lại tiền vì thời gian cho phép đã hết.</h1>
+                            <p>Thời hạn hủy là trước {cancellationTimeLimit.ToString("HH:mm")} ngày {cancellationTimeLimit.ToString("dd/MM/yyyy")}.</p>";
                         }
                     }
                     else
@@ -671,7 +672,7 @@ namespace FHotel.Services.Services.Implementations
                 }
                 else
                 {
-                    message = "Hoàn tiền không chấp nhận.";
+                    message = $@"<h1>Hoàn tiền không chấp nhận.</h1>";
                 }
 
                 return message;

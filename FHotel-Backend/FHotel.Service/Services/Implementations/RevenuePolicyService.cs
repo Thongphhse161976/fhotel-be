@@ -137,5 +137,15 @@ namespace FHotel.Service.Services.Implementations
                                             .ToListAsync();
             return list;
         }
+        
+        public async Task<List<RevenuePolicyResponse>> GetAllRevenuePolicyByOwnerId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<RevenuePolicy>().GetAll()
+                                            .ProjectTo<RevenuePolicyResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.Hotel.OwnerId == id)
+                                            .ToListAsync();
+            return list;
+        }
     }
 }

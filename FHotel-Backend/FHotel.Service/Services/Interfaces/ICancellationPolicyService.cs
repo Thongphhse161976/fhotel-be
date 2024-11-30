@@ -21,5 +21,7 @@ namespace FHotel.Service.Services.Interfaces
         public Task<CancellationPolicyResponse> Update(Guid id, CancellationPolicyRequest request);
 
         public Task<List<CancellationPolicyResponse>> GetAllCancellationPolicyByHotelId(Guid id);
+
+        public Task<List<CancellationPolicyResponse>> GetAllCancellationPolicyByOwnerId(Guid id);
     }
 }

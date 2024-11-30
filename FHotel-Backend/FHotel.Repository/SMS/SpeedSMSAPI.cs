@@ -119,7 +119,7 @@ namespace FHotel.Repository.SMS
 
         public string SendOTP(string phoneNumber, string otpCode)
         {
-            string content = $"Your verification code is {otpCode}. Please enter it to verify your phone number.";
+            string content = $"Mã xác minh của bạn là {otpCode}. Vui lòng nhập mã này để xác minh số điện thoại của bạn.";
             return sendSMS(new string[] { phoneNumber }, content, 2, "e23ce1a827f36cfa");
         }
         

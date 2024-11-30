@@ -1,6 +1,8 @@
 ﻿using FHotel.Service.DTOs.Bills;
+using FHotel.Service.DTOs.CancellationPolicies;
 using FHotel.Service.DTOs.HotelStaffs;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.RevenuePolicies;
 using FHotel.Service.DTOs.RoomStayHistories;
 using FHotel.Service.DTOs.Users;
 using FHotel.Service.DTOs.Wallets;
@@ -50,8 +52,10 @@ namespace FHotel.API.Controllers
         private readonly IWalletService _walletService;
         private readonly IOrderDetailService _orderDetailService;
         private readonly IFeedbackService _feedbackService;
+        private readonly ICancellationPolicyService _cancellationPolicyService;
+        private readonly IRevenuePolicyService _revenuePolicyService;
         public UsersController(IUserService userService, IReservationService reservationService,IHotelStaffService hotelStaffService, IHotelVerificationService hotelVerificationService, IOrderService orderService, IRoomStayHistoryService roomStayHistoryService, IRoomTypeService roomTypeService, IRoomService roomService, 
-            IBillService billService, IWalletService walletService, IOrderDetailService orderDetailService, IFeedbackService feedbackService)
+            IBillService billService, IWalletService walletService, IOrderDetailService orderDetailService, IFeedbackService feedbackService, ICancellationPolicyService cancellationPolicyService, IRevenuePolicyService revenuePolicyService)
         {
             _userService = userService;
             _reservationService = reservationService;
@@ -65,6 +69,8 @@ namespace FHotel.API.Controllers
             _walletService = walletService;
             _orderDetailService = orderDetailService; 
             _feedbackService = feedbackService;
+            _cancellationPolicyService = cancellationPolicyService;
+            _revenuePolicyService = revenuePolicyService;
         }
 
         /// <summary>
@@ -768,5 +774,44 @@ namespace FHotel.API.Controllers
         //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An unexpected error occurred.", details = ex.Message });
         //    }
         //}
+        /// <summary>
+        /// Get a list of all cancellation policies by owner id.
+        /// </summary>
+        [HttpGet("{id}/cancellation-policies")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CancellationPolicyResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<CancellationPolicyResponse>>> GetAllCancellationPolicyByOwnerId(Guid id)
+        {
+            try
+            {
+                var rs = await _cancellationPolicyService.GetAllCancellationPolicyByOwnerId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get a list of all revenue policies by owner id.
+        /// </summary>
+        [HttpGet("{id}/revenue-policies")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RevenuePolicyResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<RevenuePolicyResponse>>> GetAllRevenuePolicyByOwnerId(Guid id)
+        {
+            try
+            {
+                var rs = await _revenuePolicyService.GetAllRevenuePolicyByOwnerId(id);
+                return Ok(rs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

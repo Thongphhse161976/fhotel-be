@@ -164,5 +164,16 @@ namespace FHotel.Service.Services.Implementations
                                             .ToListAsync();
             return list;
         }
+        
+        public async Task<List<CancellationPolicyResponse>> GetAllCancellationPolicyByOwnerId(Guid id)
+        {
+
+            var list = await _unitOfWork.Repository<CancellationPolicy>().GetAll()
+                                            .ProjectTo<CancellationPolicyResponse>(_mapper.ConfigurationProvider)
+                                            .Where(d => d.Hotel.OwnerId == id)
+                                            .ToListAsync();
+            return list;
+        }
+
     }
 }
