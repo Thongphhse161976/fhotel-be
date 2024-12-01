@@ -7,6 +7,7 @@ using FHotel.Service.DTOs.Transactions;
 using FHotel.Service.Services.Interfaces;
 using FHotel.Services.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,12 @@ namespace FHotel.Service.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public TransactionService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IServiceProvider _serviceProvider;
+        public TransactionService(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<List<TransactionResponse>> GetAll()
@@ -145,12 +148,20 @@ namespace FHotel.Service.Services.Implementations
             return list;
         }
 
-        public async Task<List<TransactionResponse>> GetAllTransactionByEscrowWalletId(Guid id)
+        public async Task<List<TransactionResponse>> GetAllTransactionByEscrowWallet()
         {
+            var _escrowWalletService = _serviceProvider.GetService<IEscrowWalletService>();
+            var escrowWallets = await _escrowWalletService.GetAll();
+            var escrowWalletId = escrowWallets.FirstOrDefault()?.EscrowWalletId;
 
+            // Check if no wallet is found
+            if (escrowWalletId == null)
+            {
+                throw new Exception("No escrow wallet found.");
+            }
             var list = await _unitOfWork.Repository<Transaction>().GetAll()
                                             .ProjectTo<TransactionResponse>(_mapper.ConfigurationProvider)
-                                            .Where(d => d.EscrowWalletId == id)
+                                            .Where(d => d.EscrowWalletId == escrowWalletId)
                                             .ToListAsync();
             return list;
         }

@@ -31,6 +31,8 @@ using Microsoft.Extensions.Caching.Memory;
 using FHotel.Service.DTOs.VnPayConfigs;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
+using FHotel.Service.DTOs.Rooms;
+using FHotel.Services.DTOs.Rooms;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -42,7 +44,7 @@ namespace FHotel.Services.Services.Implementations
         private readonly ITypePricingService _typePricingService;
         private readonly Lazy<IRoomStayHistoryService> _roomStayHistoryService;
         private readonly IServiceProvider _serviceProvider;
-        private IWalletService _walletService;
+        private readonly IWalletService _walletService;
         private readonly object _lockObject = new object();
         private readonly IMemoryCache _cache;
 
@@ -291,6 +293,21 @@ namespace FHotel.Services.Services.Implementations
 
                         // Update each history one by one
                         await _roomStayHistoryService.Value.Update(history.RoomStayHistoryId, roomStayHistoryUpdate);
+                        var _roomService = _serviceProvider.GetService<IRoomService>();
+                        var roomResponse = await _roomService.Get(history.RoomId.Value);
+                        var roomUpdate = new RoomRequest()
+                        {
+                            RoomId = roomResponse.RoomId,
+                            CreatedDate = roomResponse.CreatedDate,
+                            IsCleaned = roomResponse.IsCleaned,
+                            Note = roomResponse.Note,
+                            RoomNumber = roomResponse.RoomNumber,
+                            RoomTypeId = roomResponse.RoomTypeId,
+                            Status = "Available",
+                            UpdatedDate = localTime
+                        };
+                        await _roomService.Update(roomResponse.RoomId, roomUpdate);
+
                     }
                     var orders = await orderService.GetAllByReservationId(updateReservation.ReservationId);
                     if (updateReservation.IsPrePaid == true && orders.Count == 0)

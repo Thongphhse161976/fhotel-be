@@ -1,4 +1,6 @@
 ﻿using FHotel.Service.DTOs.EscrowWallets;
+using FHotel.Service.DTOs.Transactions;
+using FHotel.Service.Services.Implementations;
 using FHotel.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +15,12 @@ namespace FHotel.API.Controllers
     public class EscrowWalletsController : ControllerBase
     {
         private readonly IEscrowWalletService _escrowWalletService;
+        private readonly ITransactionService _transactionService;
 
-        public EscrowWalletsController(IEscrowWalletService escrowWalletService)
+        public EscrowWalletsController(IEscrowWalletService escrowWalletService, ITransactionService transactionService)
         {
             _escrowWalletService = escrowWalletService;
+            _transactionService = transactionService;
         }
 
         /// <summary>
@@ -129,6 +133,26 @@ namespace FHotel.API.Controllers
         {
             public Guid ReservationId { get; set; }
             public decimal Amount { get; set; }
+        }
+
+        /// <summary>
+        /// Get all transaction by escrow wallet.
+        /// </summary>
+        [HttpGet("transactions")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TransactionResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<TransactionResponse>>> GetAllTransactionByEscrowWallet()
+        {
+            try
+            {
+                var transactions = await _transactionService.GetAllTransactionByEscrowWallet();
+                return Ok(transactions);
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
 
     }
