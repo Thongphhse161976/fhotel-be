@@ -4,6 +4,10 @@ using FHotel.Repository.Infrastructures;
 using FHotel.Repository.Models;
 using FHotel.Service.DTOs.RevenuePolicies;
 using FHotel.Service.Services.Interfaces;
+using FHotel.Service.Validators.RevenuePolicyValidator;
+using FHotel.Service.Validators.TypePricingValidator;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -67,6 +71,28 @@ namespace FHotel.Service.Services.Implementations
 
             // Convert the UTC time to UTC+7
             DateTime localTime = utcNow + utcOffset;
+            var validator = new RevenuePolicyCreateRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            // Use GetAll with a LINQ filter to check for duplicates
+            // Modified validation for existingPricing to include DayOfWeek
+            var existingPolicy = (await GetAll())
+                .Where(u => u.HotelId == request.HotelId &&
+                            ((u.EffectiveDate <= request.ExpiryDate && u.ExpiryDate >= request.EffectiveDate) ||
+                             (request.EffectiveDate <= u.ExpiryDate && request.ExpiryDate >= u.EffectiveDate)))
+                .ToList();
+
+
+            if (existingPolicy.Any())
+            {
+                validationResult.Errors.Add(new ValidationFailure("Date", "Chính sách khoảng thời gian này đã tồn tại."));
+            }
+
+            // If there are any validation errors, throw a ValidationException
+            if (validationResult.Errors.Any())
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
             try
             {
                 var revenuePolicy = _mapper.Map<RevenuePolicyRequest, RevenuePolicy>(request);

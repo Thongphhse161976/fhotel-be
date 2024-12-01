@@ -454,7 +454,8 @@ namespace FHotel.Services.Services.Implementations
                 .Where(r => r.RoomTypeId == id &&
                             r.CheckInDate <= checkOut && r.CheckOutDate >= checkIn
                             && r.ReservationStatus != "Cancelled"
-                            && r.ReservationStatus != "Refunded")
+                            && r.ReservationStatus != "Refunded"
+                            && r.ReservationStatus != "CheckOut")
                 .ToListAsync();
 
             // Tính tổng số phòng đang bận trong khoảng thời gian đó
