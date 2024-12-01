@@ -850,7 +850,6 @@ namespace FHotel.Services.Services.Implementations
                 {
                     amount += order.TotalAmount.Value;
                 }
-                await _escrowWalletService.DescreaseBalance(reservation.ReservationId, amount);
 
                 // Retrieve and process the bill if needed
                 var bill = await billService.GetBillByReservation(reservation.ReservationId);
@@ -862,6 +861,8 @@ namespace FHotel.Services.Services.Implementations
                         var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
                         if (existingTransactionAdmin == null)
                         {
+                            await _escrowWalletService.DescreaseBalance(reservation.ReservationId, amount);
+
                             var transactionAdmin = new TransactionRequest
                             {
                                 BillId = bill.BillId,
