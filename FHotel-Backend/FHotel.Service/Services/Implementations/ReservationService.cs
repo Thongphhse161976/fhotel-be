@@ -31,7 +31,6 @@ using Microsoft.Extensions.Caching.Memory;
 using FHotel.Service.DTOs.VnPayConfigs;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
-using FHotel.Service.DTOs.EscrowWallets;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -842,8 +841,6 @@ namespace FHotel.Services.Services.Implementations
             if (reservation.PaymentStatus == "Paid")
             {
                 var orders = await orderService.GetAllByReservationId(reservation.ReservationId);
-                decimal amountToTransfer = 0;
-                //escrow
 
                 // If the reservation is paid, calculate the amount from the reservation's total and orders
                 amount = (decimal)reservation.TotalAmount;
@@ -852,9 +849,8 @@ namespace FHotel.Services.Services.Implementations
                 foreach (var order in orders)
                 {
                     amount += order.TotalAmount.Value;
-                    amountToTransfer += order.TotalAmount.Value;
                 }
-                
+                await _escrowWalletService.DescreaseBalance(reservation.ReservationId, amount);
 
                 // Retrieve and process the bill if needed
                 var bill = await billService.GetBillByReservation(reservation.ReservationId);
@@ -866,22 +862,6 @@ namespace FHotel.Services.Services.Implementations
                         var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
                         if (existingTransactionAdmin == null)
                         {
-                            if (reservation.IsPrePaid == true && orders.Count == 0)
-                            {
-                                await _escrowWalletService.DescreaseBalance(reservation.ReservationId, reservation.TotalAmount.Value);
-                            }
-                            if (reservation.IsPrePaid == true && orders.Count != 0)
-                            {
-                                await _escrowWalletService.DescreaseBalance(reservation.ReservationId, amountToTransfer);
-                            }
-                            if (reservation.IsPrePaid == false && orders.Count == 0)
-                            {
-                                await _escrowWalletService.DescreaseBalance(reservation.ReservationId, amount);
-                            }
-                            if (reservation.IsPrePaid == false && orders.Count != 0)
-                            {
-                                await _escrowWalletService.DescreaseBalance(reservation.ReservationId, amount);
-                            }
                             var transactionAdmin = new TransactionRequest
                             {
                                 BillId = bill.BillId,
