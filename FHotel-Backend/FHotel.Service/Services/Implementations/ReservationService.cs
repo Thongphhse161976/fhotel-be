@@ -619,6 +619,8 @@ namespace FHotel.Services.Services.Implementations
                             {
                                 throw new Exception("Customer wallet not found.");
                             }
+                            var _escrowWalletService = _serviceProvider.GetService<IEscrowWalletService>();
+                            await _escrowWalletService.DescreaseBalance(reservationResponse.ReservationId, reservationResponse.TotalAmount.Value);
 
                             // Create a transaction for refund
                             var createTransaction = new TransactionRequest
