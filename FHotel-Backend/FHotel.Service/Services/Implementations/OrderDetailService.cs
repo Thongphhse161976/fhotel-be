@@ -27,7 +27,7 @@ namespace FHotel.Services.Services.Implementations
         private readonly ITypePricingService _typePricingService;
 
         public OrderDetailService(IUnitOfWork unitOfWork, IMapper mapper, IServiceProvider serviceProvider,
-            IServiceService serviceService , IReservationService reservationService, ITypePricingService typePricingService)
+            IServiceService serviceService, IReservationService reservationService, ITypePricingService typePricingService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -55,7 +55,7 @@ namespace FHotel.Services.Services.Implementations
                 OrderDetail orderDetail = null;
                 orderDetail = await _unitOfWork.Repository<OrderDetail>().GetAll()
                      .AsNoTracking()
-                     .Include(x => x.Service)   
+                     .Include(x => x.Service)
                         .ThenInclude(x => x.ServiceType)
                     .Where(x => x.OrderDetailId == id)
                     .FirstOrDefaultAsync();
@@ -83,54 +83,42 @@ namespace FHotel.Services.Services.Implementations
                 var orderDetail = _mapper.Map<OrderDetailRequest, OrderDetail>(request);
                 orderDetail.OrderDetailId = Guid.NewGuid();
 
-                // Resolve IOrderService dynamically at runtime
+                // Dynamically resolve dependencies
                 var orderService = _serviceProvider.GetService<IOrderService>();
+                var reservationService = _serviceProvider.GetService<IReservationService>();
+                var roomTypeService = _serviceProvider.GetService<IRoomTypeService>();
 
-                // Get the order details
+                if (orderService == null || reservationService == null || roomTypeService == null)
+                    throw new InvalidOperationException("Service dependencies could not be resolved.");
+
+                // Fetch associated order
                 var order = await orderService.Get(request.OrderId.Value);
+                if (order == null)
+                    throw new ArgumentException("Order not found.");
 
-                // Insert the new order detail record
+                // Insert new order detail
                 await _unitOfWork.Repository<OrderDetail>().InsertAsync(orderDetail);
                 await _unitOfWork.CommitAsync();
 
-                // Retrieve the created order detail to access the service details
+                // Retrieve the created order detail
                 var orderDetailResponse = await Get(orderDetail.OrderDetailId);
+                if (orderDetailResponse == null)
+                    throw new ArgumentException("Order detail creation failed.");
 
-                
+                decimal totalAmount = 0;
 
-                // Check if the service type is for late checkout
+                // Check service type
                 if (orderDetailResponse.Service.ServiceType.ServiceTypeName == "Trả phòng muộn")
                 {
-                    // Initialize total amount to zero
-                    decimal totalAmount = 0;
-                    // Retrieve the reservation to calculate late checkout fees
-                    var reservation = await _reservationService.Get(order.ReservationId.Value);
-
-                    // Parse the serviceName as the number of late days
-                    if (int.TryParse(orderDetailResponse.Service.ServiceName, out int lateDays) && lateDays > 0)
-                    {
-                        DateTime lateCheckoutDate = reservation.CheckOutDate.Value;
-
-                        // Calculate the additional fees for each late day
-                        for (int i = 0; i < lateDays; i++)
-                        {
-                            lateCheckoutDate = lateCheckoutDate.AddDays(1);
-
-                            // Fetch the daily pricing for this room type and date
-                            decimal dailyRate = await _typePricingService.GetPricingByRoomTypeAndDate(reservation.RoomTypeId.Value, lateCheckoutDate);
-
-                            // Accumulate the fee for each late day into totalAmount
-                            totalAmount += dailyRate * request.Quantity.Value;
-                        }
-                    }
-                    // Update the order's total amount with late checkout fees included
+                    totalAmount = await CalculateLateCheckoutFees(orderDetailResponse, order, reservationService, roomTypeService, request.Quantity.Value);
+                    // Update order and order detail
                     var updateOrder = new OrderRequest
                     {
                         OrderId = order.OrderId,
                         ReservationId = order.ReservationId,
                         OrderedDate = order.OrderedDate,
                         OrderStatus = "Confirmed",
-                        TotalAmount = totalAmount // Set the accumulated total amount
+                        TotalAmount = totalAmount
                     };
 
                     var updateOrderDetail = new OrderDetailRequest
@@ -138,23 +126,15 @@ namespace FHotel.Services.Services.Implementations
                         OrderId = orderDetail.OrderId,
                         ServiceId = orderDetail.ServiceId,
                         Quantity = orderDetail.Quantity,
-                        Price = totalAmount // Set the accumulated total amount
+                        Price = totalAmount
                     };
 
-                    // Update the order with the new total amount
                     await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
                     await Update(orderDetail.OrderDetailId, updateOrderDetail);
                 }
-                if (orderDetailResponse.Service.ServiceType.ServiceTypeName != "Trả phòng muộn")
+                else
                 {
-                    if (orderDetailResponse.Service.ServiceType.ServiceTypeName == "Hoàn tiền hủy đặt phòng")
-                    {
-                        return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
-
-                    }
-                    // Use the calculation service for TotalAmount calculation
-                    var totalAmount = orderDetailResponse.Service.Price * request.Quantity;
-
+                    totalAmount = (decimal)(orderDetailResponse.Service.Price * request.Quantity.Value);
                     var updateOrder = new OrderRequest
                     {
                         OrderId = order.OrderId,
@@ -174,19 +154,75 @@ namespace FHotel.Services.Services.Implementations
 
                     await orderService.Update(orderDetailResponse.OrderId.Value, updateOrder);
                     await Update(orderDetail.OrderDetailId, updateOrderDetail);
-
                 }
-                
 
-
+               
 
                 return _mapper.Map<OrderDetail, OrderDetailResponse>(orderDetail);
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                // Add proper logging before rethrowing
+                throw new Exception($"Error creating order detail: {e.Message}", e);
             }
         }
+
+        private async Task<decimal> CalculateLateCheckoutFees(
+            OrderDetailResponse orderDetailResponse,
+            OrderResponse order,
+            IReservationService reservationService,
+            IRoomTypeService roomTypeService,
+            int quantity)
+        {
+            var reservation = await reservationService.Get(order.ReservationId.Value);
+            if (reservation == null)
+                throw new ArgumentException("Reservation not found.");
+
+            var roomType = await roomTypeService.Get(reservation.RoomTypeId.Value);
+            if (roomType == null || roomType.IsActive == false)
+                throw new ArgumentException("Invalid or inactive room type.");
+
+            var districtId = roomType.Hotel.DistrictId ?? throw new Exception("Room type has no associated district.");
+
+            var allPricing = (await _typePricingService.GetAll())
+                .Where(tp => tp.TypeId == roomType.TypeId
+                             && tp.DistrictId == districtId
+                             && tp.From <= reservation.CheckOutDate
+                             && tp.To >= reservation.CheckInDate)
+                .ToList();
+
+
+            if (int.TryParse(orderDetailResponse.Service.ServiceName, out int lateDays) && lateDays > 0)
+            {
+                decimal totalAmount = 0;
+                DateTime lateCheckoutDate = reservation.CheckOutDate.Value;
+
+                for (int i = 0; i < lateDays; i++)
+                {
+                    lateCheckoutDate = lateCheckoutDate.AddDays(1);
+                    var dailyPricing = allPricing.FirstOrDefault(p => p.From <= lateCheckoutDate && p.To >= lateCheckoutDate);
+                    if (dailyPricing == null)
+                        throw new Exception($"No pricing found for date {lateCheckoutDate}.");
+
+                    decimal dailyRate = AdjustPriceForWeekend(dailyPricing.Price ?? 0, dailyPricing.PercentageIncrease, lateCheckoutDate);
+                    totalAmount += dailyRate * quantity;
+                }
+
+                return totalAmount;
+            }
+
+            return 0;
+        }
+
+        private decimal AdjustPriceForWeekend(decimal basePrice, decimal? percentageIncrease, DateTime currentDate)
+        {
+            if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return basePrice * (1 + (percentageIncrease ?? 0) / 100);
+            }
+            return basePrice;
+        }
+
 
 
 
@@ -277,13 +313,13 @@ namespace FHotel.Services.Services.Implementations
                       .Include(x => x.Service)
                             .ThenInclude(x => x.ServiceType)
                         .Include(x => x.Order)
-                            .ThenInclude(x=> x.Reservation)
+                            .ThenInclude(x => x.Reservation)
                     .Where(x => x.Order.Reservation.CustomerId == userId)
                     .ToListAsync();
 
             return _mapper.Map<IEnumerable<OrderDetail>, IEnumerable<OrderDetailResponse>>(orderDetails);
         }
-        
+
 
     }
 }
