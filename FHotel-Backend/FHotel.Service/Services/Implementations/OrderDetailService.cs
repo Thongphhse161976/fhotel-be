@@ -199,13 +199,14 @@ namespace FHotel.Services.Services.Implementations
 
                 for (int i = 0; i < lateDays; i++)
                 {
-                    lateCheckoutDate = lateCheckoutDate.AddDays(1);
+                    
                     var dailyPricing = allPricing.FirstOrDefault(p => p.From <= lateCheckoutDate && p.To >= lateCheckoutDate);
                     if (dailyPricing == null)
                         throw new Exception($"No pricing found for date {lateCheckoutDate}.");
 
                     decimal dailyRate = AdjustPriceForWeekend(dailyPricing.Price ?? 0, dailyPricing.PercentageIncrease, lateCheckoutDate);
                     totalAmount += dailyRate * quantity;
+                    lateCheckoutDate = lateCheckoutDate.AddDays(1);
                 }
 
                 return totalAmount;
