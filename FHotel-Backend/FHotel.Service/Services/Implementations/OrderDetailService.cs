@@ -199,7 +199,7 @@ namespace FHotel.Services.Services.Implementations
 
                 for (int i = 0; i < lateDays; i++)
                 {
-                    //lateCheckoutDate = lateCheckoutDate.AddDays(1);
+                    lateCheckoutDate = lateCheckoutDate.AddDays(1);
                     var dailyPricing = allPricing.FirstOrDefault(p => p.From <= lateCheckoutDate && p.To >= lateCheckoutDate);
                     if (dailyPricing == null)
                         throw new Exception($"No pricing found for date {lateCheckoutDate}.");
