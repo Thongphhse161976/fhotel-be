@@ -431,6 +431,7 @@ namespace FHotel.Services.Services.Implementations
 
             var list = await _unitOfWork.Repository<Reservation>().GetAll()
                                             .Where(r => r.CustomerId == id)
+                                            .Include(r => r.RoomType)
                                             .ProjectTo<ReservationResponse>(_mapper.ConfigurationProvider)
                                             .ToListAsync();
             // Check if list is null or empty
@@ -542,25 +543,58 @@ namespace FHotel.Services.Services.Implementations
             return list;
         }
 
+        //staff
         public async Task<List<ReservationResponse>> SearchReservations(Guid staffId, string? query)
         {
             if (string.IsNullOrEmpty(query))
                 return new List<ReservationResponse>();
 
-            query = query.ToLower();
-            var reservations = await GetAllReservationByStaffId(staffId); // Await the task to get List<Reservation>
+            query = query.Trim().ToLower();
+            var reservations = await GetAllReservationByStaffId(staffId);
+            if (reservations == null || !reservations.Any())
+                return new List<ReservationResponse>();
 
             var filteredList = reservations
-                                .Where(r => r.Code.ToLower().Contains(query)
-                                        || (r.Customer.Name?.ToLower().Contains(query) ?? false)
-                                        || (r.Customer.Email?.ToLower().Contains(query) ?? false)
-                                        || (r.Customer.PhoneNumber?.ToLower().Contains(query) ?? false)
-                                        || (r.Customer.IdentificationNumber?.ToLower().Contains(query) ?? false))
-                                .AsQueryable()
-                                .ToList();
+             .Where(r =>
+                 !string.IsNullOrWhiteSpace(r.Code) && r.Code.ToLower().Contains(query) ||
+                 (!string.IsNullOrWhiteSpace(r.Customer?.Name) && r.Customer.Name.ToLower().Contains(query)) ||
+                 (!string.IsNullOrWhiteSpace(r.Customer?.Email) && r.Customer.Email.ToLower().Contains(query)) ||
+                 (!string.IsNullOrWhiteSpace(r.Customer?.PhoneNumber) && r.Customer.PhoneNumber.ToLower().Contains(query)) ||
+                 (!string.IsNullOrWhiteSpace(r.Customer?.IdentificationNumber) && r.Customer.IdentificationNumber.ToLower().Contains(query))
+             )
+             .OrderByDescending(r => r.CreatedDate) // Sort by CreatedDate (ascending)
+             .ToList();
+
 
             return filteredList;
         }
+        //customer
+        public async Task<List<ReservationResponse>> SearchReservationsCustomer(Guid customerId, string? query)
+        {
+            // Return an empty list if the query is null or empty
+            if (string.IsNullOrWhiteSpace(query))
+                return new List<ReservationResponse>();
+
+            query = query.Trim().ToLower();
+
+            // Fetch reservations for the given customer
+            var reservations = await GetAllByUserId(customerId);
+            if (reservations == null || !reservations.Any())
+                return new List<ReservationResponse>();
+
+            // Normalize the query and filter the reservations
+            var filteredList = reservations
+                .Where(r =>
+                    (!string.IsNullOrWhiteSpace(r.Code) && r.Code.ToLower().Contains(query)) ||
+                    (!string.IsNullOrWhiteSpace(r.RoomType?.Hotel?.HotelName) && r.RoomType.Hotel.HotelName.ToLower().Contains(query))
+                )
+                .OrderByDescending(r => r.CreatedDate) // Sort by CreatedDate (ascending)
+                .ToList();
+
+            return filteredList;
+        }
+
+
 
         public async Task<string> Refund(Guid id)
         {

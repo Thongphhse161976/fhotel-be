@@ -333,6 +333,10 @@ namespace FHotel.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        /// <summary>
+        /// Check available rooms.
+        /// </summary>
         [HttpGet("api/roomtypes/{roomTypeId}/available-on-date")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -351,17 +355,26 @@ namespace FHotel.API.Controllers
             var availableHotels = await _hotelService.GetHotelsWithAvailableRoomTypesInRangeAsync(checkinDate, checkoutDate);
             return Ok(availableHotels);
         }
-        
+
+        /// <summary>
+        /// Search reservation for staff.
+        /// </summary>
         [HttpPost("search")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<ReservationResponse>>> SearchReservations([FromQuery] Guid staffId, [FromQuery] string? query)
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> SearchReservations([FromBody] SearchRequest request)
         {
             try
             {
+                // Validate the input
+                if (request == null || request.UserId == Guid.Empty || string.IsNullOrWhiteSpace(request.Query))
+                {
+                    return BadRequest("Invalid input. Please provide valid customerId and query.");
+                }
+
                 // Call the service to search with multiple room types and quantities
-                var result = await _reservationService.SearchReservations(staffId, query);
+                var result = await _reservationService.SearchReservations(request.UserId, request.Query);
 
                 if (result == null || !result.Any())
                 {
@@ -375,6 +388,40 @@ namespace FHotel.API.Controllers
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Search reservation for customer.
+        /// </summary>
+        [HttpPost("search-customer")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReservationResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<ReservationResponse>>> SearchReservationsCustomer([FromBody] SearchRequest request)
+        {
+            try
+            {
+                // Validate the input
+                if (request == null || request.UserId == Guid.Empty || string.IsNullOrWhiteSpace(request.Query))
+                {
+                    return BadRequest("Invalid input. Please provide valid customerId and query.");
+                }
+
+                // Call the service to search with multiple room types and quantities
+                var result = await _reservationService.SearchReservationsCustomer(request.UserId, request.Query);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound("No reservation matching the search criteria.");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
 
         /// <summary>
         /// Create refund request.
