@@ -299,7 +299,7 @@ namespace FHotel.Services.Services.Implementations
                         {
                             RoomId = roomResponse.RoomId,
                             CreatedDate = roomResponse.CreatedDate,
-                            IsCleaned = roomResponse.IsCleaned,
+                            IsCleaned = false,
                             Note = roomResponse.Note,
                             RoomNumber = roomResponse.RoomNumber,
                             RoomTypeId = roomResponse.RoomTypeId,
