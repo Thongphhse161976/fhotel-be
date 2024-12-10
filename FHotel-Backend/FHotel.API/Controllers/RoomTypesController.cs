@@ -308,5 +308,16 @@ namespace FHotel.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// Check available rooms.
+        /// </summary>
+        [HttpGet("{id}/available-on-date")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAvailableRoomsOnDate(Guid id, DateTime checkinDate, DateTime checkoutDate)
+        {
+            var availableRooms = await _roomTypeService.CountAvailableRoomsInRangeAsync(id, checkinDate, checkoutDate);
+            return Ok(new { AvailableRooms = availableRooms });
+        }
     }
 }

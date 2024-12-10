@@ -334,27 +334,27 @@ namespace FHotel.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Check available rooms.
-        /// </summary>
-        [HttpGet("api/roomtypes/{roomTypeId}/available-on-date")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAvailableRoomsOnDate(Guid roomTypeId, DateTime checkinDate, DateTime checkoutDate)
-        {
-            var availableRooms = await _roomTypeService.CountAvailableRoomsInRangeAsync(roomTypeId,checkinDate, checkoutDate);
-            return Ok(new { AvailableRooms = availableRooms });
-        }
+        ///// <summary>
+        ///// Check available rooms.
+        ///// </summary>
+        //[HttpGet("api/roomtypes/{roomTypeId}/available-on-date")]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> GetAvailableRoomsOnDate(Guid roomTypeId, DateTime checkinDate, DateTime checkoutDate)
+        //{
+        //    var availableRooms = await _roomTypeService.CountAvailableRoomsInRangeAsync(roomTypeId,checkinDate, checkoutDate);
+        //    return Ok(new { AvailableRooms = availableRooms });
+        //}
 
-        [HttpGet("api/hotels/available-on-date")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelResponse>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<HotelResponse>>> SearchAvailableRoomsOnDate([FromQuery]DateTime checkinDate, [FromQuery] DateTime checkoutDate)
-        {
-            var availableHotels = await _hotelService.GetHotelsWithAvailableRoomTypesInRangeAsync(checkinDate, checkoutDate);
-            return Ok(availableHotels);
-        }
+        //[HttpGet("hotels/available-on-date")]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HotelResponse>))]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<List<HotelResponse>>> SearchAvailableRoomsOnDate([FromQuery]DateTime checkinDate, [FromQuery] DateTime checkoutDate)
+        //{
+        //    var availableHotels = await _hotelService.GetHotelsWithAvailableRoomTypesInRangeAsync(checkinDate, checkoutDate);
+        //    return Ok(availableHotels);
+        //}
 
         /// <summary>
         /// Search reservation for staff.
