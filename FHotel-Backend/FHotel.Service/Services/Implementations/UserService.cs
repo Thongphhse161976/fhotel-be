@@ -130,19 +130,19 @@ namespace FHotel.Services.Services.Implementations
             // Check dupplicated IdentificationNumber
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.IdentificationNumber == request.IdentificationNumber) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Identification number already exists."));
+                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Số căn cước đã tồn tại."));
             }
 
             // Check dupplicated Email
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.Email == request.Email) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email đã tồn tại."));
             }
 
             // Check dupplicated PhoneNumber
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
+                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Sdt đã tồn tại."));
             }
 
             // If there are any validation errors, throw a ValidationException
@@ -265,19 +265,19 @@ namespace FHotel.Services.Services.Implementations
             // Check for duplicate IdentificationNumber (excluding current user)
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.IdentificationNumber == request.IdentificationNumber && u.UserId != id) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Identification number already exists."));
+                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Số căn cước đã tồn tại."));
             }
 
             // Check for duplicate Email (excluding current user)
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.Email == request.Email && u.UserId != id) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email đã tồn tại."));
             }
 
             // Check for duplicate PhoneNumber (excluding current user, if required)
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber && u.UserId != id) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
+                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Sdt đã tồn tại."));
             }
 
             // If there are any validation errors, throw a ValidationException
@@ -449,19 +449,19 @@ namespace FHotel.Services.Services.Implementations
             // Check dupplicated IdentificationNumber
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.IdentificationNumber == request.IdentificationNumber) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Identification number already exists."));
+                validationResult.Errors.Add(new ValidationFailure("IdentificationNumber", "Số căn cước đã tồn tại."));
             }
 
             // Check dupplicated Email
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.Email == request.Email) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("Email", "Email already exists."));
+                validationResult.Errors.Add(new ValidationFailure("Email", "Email đã tồn tại."));
             }
 
             // Check dupplicated PhoneNumber
             if (await _unitOfWork.Repository<User>().FindAsync(u => u.PhoneNumber == request.PhoneNumber) != null)
             {
-                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Phone number already exists."));
+                validationResult.Errors.Add(new ValidationFailure("PhoneNumber", "Số điện thoại đã tồn tại."));
             }
 
             // If there are any validation errors, throw a ValidationException

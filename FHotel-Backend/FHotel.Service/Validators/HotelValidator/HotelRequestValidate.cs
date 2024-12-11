@@ -13,35 +13,35 @@ namespace FHotel.Service.Validators.HotelValidator
         public HotelRequestValidate()
         {
             RuleFor(x => x.HotelName)
-            .NotEmpty().WithMessage("HotelName is required.")
-            .MaximumLength(50).WithMessage("HotelName cannot exceed 50 characters.");
+            .NotEmpty().WithMessage("Vui lòng nhập tên khách sạn.")
+            .MaximumLength(50).WithMessage("Tên khách sạn không được quá 50 kí tự.");
 
             // Validate OwnerName
             RuleFor(x => x.OwnerId)
-                .NotEmpty().WithMessage("Owner id is required.");
+                .NotEmpty().WithMessage("Vui lòng nhập chủ khách sạn.");
             // Validate Address
             RuleFor(x => x.Address)
-                .NotEmpty().WithMessage("Address is required.")
-                .MaximumLength(100).WithMessage("Address cannot exceed 100 characters.");
+                .NotEmpty().WithMessage("Vui lòng nhập địa chỉ khách sạn.")
+                .MaximumLength(100).WithMessage("Đại chỉ không vượt quá 100 kí tự");
 
             // Validate Phone
             RuleFor(x => x.Phone)
-                .NotEmpty().WithMessage("Phone number is required.")
-                .Matches(@"^\d{10}$").WithMessage("Phone number must be 10 digits.");
+                .NotEmpty().WithMessage("Vui lòng nhập sdt khách sạn.")
+                .Matches(@"^\d{10}$").WithMessage("Sdt phải đúng 10 kí tự.");
 
             // Validate Email
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.");
+                .NotEmpty().WithMessage("Vui lòng nhập địa chỉ email khách sạn.")
+                .EmailAddress().WithMessage("Sai định dạng email.");
 
             // Validate Description
             RuleFor(x => x.Description)
-                .NotEmpty().WithMessage("Description is required.");
+                .NotEmpty().WithMessage("Vui lòng nhập mô tả khách sạn.");
 
 
             // Validate DistrictId
             RuleFor(x => x.DistrictId)
-                .NotEmpty().WithMessage("District is required.");
+                .NotEmpty().WithMessage("Vui lòng nhập quận.");
         }
     }
 }
