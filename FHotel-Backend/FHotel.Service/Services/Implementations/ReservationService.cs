@@ -1181,11 +1181,11 @@ namespace FHotel.Services.Services.Implementations
 
             // Lấy danh sách tất cả các đặt phòng có trạng thái Pending và chưa được thanh toán
             var reservations = await _unitOfWork.Repository<Reservation>().GetAll()
-     .Where(reservation =>
-         reservation.ReservationStatus != "Cancelled" &&
-         reservation.IsPrePaid == true &&
-         reservation.CheckOutDate.HasValue)
-     .ToListAsync();
+             .Where(reservation =>
+                 reservation.ReservationStatus == "Pending" &&
+                 reservation.IsPrePaid == true &&
+                 reservation.CheckOutDate.HasValue)
+             .ToListAsync();
 
             var reservationsToCancel = reservations.Where(reservation =>
                 localTime >= reservation.CheckOutDate.Value.Date.AddHours(12))
@@ -1267,6 +1267,9 @@ namespace FHotel.Services.Services.Implementations
                             var existingTransactionAdmin = await transactionService.GetTransactionByWalletAndBillId(adminWallet.WalletId, bill.BillId);
                             if (existingTransactionAdmin == null)
                             {
+                                var _escrowWalletService = _serviceProvider.GetService<IEscrowWalletService>();
+                                await _escrowWalletService.DescreaseBalance(reservationResponse.ReservationId, reservationResponse.TotalAmount.Value);
+
                                 var transactionAdmin = new TransactionRequest
                                 {
                                     BillId = bill.BillId,
