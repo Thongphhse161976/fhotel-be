@@ -658,6 +658,7 @@ namespace FHotel.Services.Services.Implementations
 
                         // Calculate refund amount
                         var refundAmount = reservationResponse.TotalAmount * refundPercentage / 100;
+                        string formattedPrice = refundAmount.Value.ToString("N0");
 
                         // Process refund if applicable
                         if (refundAmount > 0)
@@ -709,7 +710,7 @@ namespace FHotel.Services.Services.Implementations
                                 IsPrePaid = reservationResponse.IsPrePaid
                             };
                             await Update(reservation.ReservationId, updateReservation);
-                            message = $@"Hoàn tiền thành công: {refundAmount}₫";
+                            message = $@"Hoàn tiền thành công: {formattedPrice}₫";
                         }
                         else
                         {
@@ -1268,7 +1269,7 @@ namespace FHotel.Services.Services.Implementations
                             if (existingTransactionAdmin == null)
                             {
                                 var _escrowWalletService = _serviceProvider.GetService<IEscrowWalletService>();
-                                await _escrowWalletService.DescreaseBalance(reservationResponse.ReservationId, reservationResponse.TotalAmount.Value);
+                                await _escrowWalletService.DescreaseBalance(reservationResponse.ReservationId, amount);
 
                                 var transactionAdmin = new TransactionRequest
                                 {
