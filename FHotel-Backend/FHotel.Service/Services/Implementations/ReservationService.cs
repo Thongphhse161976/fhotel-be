@@ -714,10 +714,10 @@ namespace FHotel.Services.Services.Implementations
                             await Update(reservation.ReservationId, updateReservation);
 
                             //divide system and hotel manager
-                            decimal leftRefundAmount = 100 - refundPercentage;
-                            Console.WriteLine($"leftRefundAmount: {leftRefundAmount}%");
-                            if (leftRefundAmount > 0)
+                            decimal leftRefundPercentage = 100 - refundPercentage;
+                            if (leftRefundPercentage > 0)
                             {
+                                var leftRefundAmount = reservation.TotalAmount * leftRefundPercentage / 100;
                                 var revenuePolicyService = _serviceProvider.GetService<IRevenuePolicyService>();
 
                                 // Retrieve all wallets and identify the admin and hotel owner wallets
