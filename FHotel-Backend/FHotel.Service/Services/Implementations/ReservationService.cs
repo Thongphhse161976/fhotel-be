@@ -609,7 +609,7 @@ namespace FHotel.Services.Services.Implementations
             DateTime localTime = utcNow + utcOffset;
 
             // Fetch the existing reservation
-            var reservation = await _unitOfWork.Repository<Reservation>().FindAsync(x => x.ReservationId == id);
+            var reservation = await Get(id);
 
             // Check if the reservation exists
             if (reservation == null)
@@ -626,9 +626,9 @@ namespace FHotel.Services.Services.Implementations
                         var _cancellationPolicyService = _serviceProvider.GetService<ICancellationPolicyService>();
                         var _walletService = _serviceProvider.GetService<IWalletService>();
                         var _transactionService = _serviceProvider.GetService<ITransactionService>();
-                        var reservationResponse = await Get(id);
+                        //var reservationResponse = await Get(id);
                         // Retrieve cancellation policies for the hotel
-                        var cancellationPolicies = await _cancellationPolicyService.GetAllCancellationPolicyByHotelId(reservationResponse.RoomType.HotelId.Value);
+                        var cancellationPolicies = await _cancellationPolicyService.GetAllCancellationPolicyByHotelId(reservation.RoomType.HotelId.Value);
 
                         // Assume we only have one cancellation policy per hotel for simplicity
                         var cancellationPolicy = cancellationPolicies.FirstOrDefault();
@@ -639,7 +639,7 @@ namespace FHotel.Services.Services.Implementations
                         }
 
                         // Calculate the cancellation deadline (one day before check-in)
-                        DateTime checkInDate = (DateTime)reservationResponse.CheckInDate;
+                        DateTime checkInDate = (DateTime)reservation.CheckInDate;
                         DateTime cancellationDeadline = checkInDate.AddDays(-1);  // One day before check-in
                         TimeSpan cancellationTime = TimeSpan.Parse(cancellationPolicy.CancellationTime);
                         DateTime cancellationTimeLimit = cancellationDeadline.Add(cancellationTime);
@@ -657,14 +657,14 @@ namespace FHotel.Services.Services.Implementations
                         }
 
                         // Calculate refund amount for customer
-                        var refundAmount = reservationResponse.TotalAmount * refundPercentage / 100;
+                        var refundAmount = reservation.TotalAmount * refundPercentage / 100;
                         string formattedPrice = refundAmount.Value.ToString("N0");
 
                         // Process refund if applicable
                         if (refundAmount > 0)
                         {
                             var wallets = await _walletService.GetAll();
-                            var customerWallet = wallets.Find(x => x.UserId == reservationResponse.CustomerId);
+                            var customerWallet = wallets.Find(x => x.UserId == reservation.CustomerId);
 
                             // Verify that the required wallet exists
                             if (customerWallet == null)
@@ -672,14 +672,14 @@ namespace FHotel.Services.Services.Implementations
                                 throw new Exception("Customer wallet not found.");
                             }
                             var _escrowWalletService = _serviceProvider.GetService<IEscrowWalletService>();
-                            await _escrowWalletService.DescreaseBalance(reservationResponse.ReservationId, reservationResponse.TotalAmount.Value);
+                            await _escrowWalletService.DescreaseBalance(reservation.ReservationId, reservation.TotalAmount.Value);
 
                             // Create a transaction for refund (customer)
                             var createTransactionCustomer = new TransactionRequest
                             {
                                 WalletId = customerWallet.WalletId,
                                 Amount = refundAmount,
-                                Description = $@"Nhận hoàn tiền {refundAmount} từ đặt phòng {reservationResponse.Code} lúc {localTime}",
+                                Description = $@"Nhận hoàn tiền {refundAmount} từ đặt phòng {reservation.Code} lúc {localTime}",
                                 TransactionDate = localTime,
                             };
                             await _transactionService.Create(createTransactionCustomer);
@@ -697,25 +697,26 @@ namespace FHotel.Services.Services.Implementations
 
                             var updateReservation = new ReservationUpdateRequest
                             {
-                                ReservationId = reservationResponse.ReservationId,
-                                CheckInDate = reservationResponse.CheckInDate,
-                                CheckOutDate = reservationResponse.CheckOutDate,
-                                Code = reservationResponse.Code,
-                                CreatedDate = reservationResponse.CreatedDate,
-                                CustomerId = reservationResponse.CustomerId,
-                                NumberOfRooms = reservationResponse.NumberOfRooms,
-                                PaymentMethodId = reservationResponse.PaymentMethodId,
-                                PaymentStatus = reservationResponse.PaymentStatus,
-                                RoomTypeId = reservationResponse.RoomTypeId,
-                                TotalAmount = reservationResponse.TotalAmount,
+                                ReservationId = reservation.ReservationId,
+                                CheckInDate = reservation.CheckInDate,
+                                CheckOutDate = reservation.CheckOutDate,
+                                Code = reservation.Code,
+                                CreatedDate = reservation.CreatedDate,
+                                CustomerId = reservation.CustomerId,
+                                NumberOfRooms = reservation.NumberOfRooms,
+                                PaymentMethodId = reservation.PaymentMethodId,
+                                PaymentStatus = reservation.PaymentStatus,
+                                RoomTypeId = reservation.RoomTypeId,
+                                TotalAmount = reservation.TotalAmount,
                                 ReservationStatus = "Refunded",
-                                IsPrePaid = reservationResponse.IsPrePaid
+                                IsPrePaid = reservation.IsPrePaid
                             };
                             await Update(reservation.ReservationId, updateReservation);
 
                             //divide system and hotel manager
                             decimal leftRefundAmount = 100 - refundPercentage;
-                            if(leftRefundAmount > 0)
+                            Console.WriteLine($"leftRefundAmount: {leftRefundAmount}%");
+                            if (leftRefundAmount > 0)
                             {
                                 var revenuePolicyService = _serviceProvider.GetService<IRevenuePolicyService>();
 
@@ -740,6 +741,8 @@ namespace FHotel.Services.Services.Implementations
 
                                 decimal adminPercentage = (decimal)applicablePolicy.AdminPercentage / 100m;
                                 decimal hotelPercentage = (decimal)applicablePolicy.HotelPercentage / 100m;
+                                Console.WriteLine($"percent admin: {adminPercentage}");
+                                Console.WriteLine($"percent hotel: {hotelPercentage}");
 
                                 //to admin
                                 var transactionAdmin = new TransactionRequest
@@ -776,6 +779,7 @@ namespace FHotel.Services.Services.Implementations
                                     BankName = hotelOwnerWallet.BankName
                                 };
                                 await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+                                message = $@"Hoàn tiền thành công: {formattedPrice}₫";
 
                             }
                             message = $@"Hoàn tiền thành công: {formattedPrice}₫";
