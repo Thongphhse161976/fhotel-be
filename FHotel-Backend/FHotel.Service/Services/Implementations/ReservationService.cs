@@ -656,7 +656,7 @@ namespace FHotel.Services.Services.Implementations
                             refundPercentage = 0;  // No refund after the cancellation time
                         }
 
-                        // Calculate refund amount
+                        // Calculate refund amount for customer
                         var refundAmount = reservationResponse.TotalAmount * refundPercentage / 100;
                         string formattedPrice = refundAmount.Value.ToString("N0");
 
@@ -674,25 +674,27 @@ namespace FHotel.Services.Services.Implementations
                             var _escrowWalletService = _serviceProvider.GetService<IEscrowWalletService>();
                             await _escrowWalletService.DescreaseBalance(reservationResponse.ReservationId, reservationResponse.TotalAmount.Value);
 
-                            // Create a transaction for refund
-                            var createTransaction = new TransactionRequest
+                            // Create a transaction for refund (customer)
+                            var createTransactionCustomer = new TransactionRequest
                             {
                                 WalletId = customerWallet.WalletId,
                                 Amount = refundAmount,
                                 Description = $@"Nhận hoàn tiền {refundAmount} từ đặt phòng {reservationResponse.Code} lúc {localTime}",
                                 TransactionDate = localTime,
                             };
-                            await _transactionService.Create(createTransaction);
+                            await _transactionService.Create(createTransactionCustomer);
 
-                            // Update wallet balance
-                            var updateWallet = new WalletRequest
+                            // Update wallet balance customer
+                            var updateWalletCustomer = new WalletRequest
                             {
                                 Balance = customerWallet.Balance + refundAmount,
                                 UserId = customerWallet.UserId,
                                 BankAccountNumber = customerWallet.BankAccountNumber,
                                 BankName = customerWallet.BankName
                             };
-                            await _walletService.Update(customerWallet.WalletId, updateWallet);
+                            await _walletService.Update(customerWallet.WalletId, updateWalletCustomer);
+
+
                             var updateReservation = new ReservationUpdateRequest
                             {
                                 ReservationId = reservationResponse.ReservationId,
@@ -710,6 +712,72 @@ namespace FHotel.Services.Services.Implementations
                                 IsPrePaid = reservationResponse.IsPrePaid
                             };
                             await Update(reservation.ReservationId, updateReservation);
+
+                            //divide system and hotel manager
+                            decimal leftRefundAmount = 100 - refundPercentage;
+                            if(leftRefundAmount > 0)
+                            {
+                                var revenuePolicyService = _serviceProvider.GetService<IRevenuePolicyService>();
+
+                                // Retrieve all wallets and identify the admin and hotel owner wallets
+                                var adminWallet = wallets.Find(x => x.User.Role.RoleName == "Admin");
+                                var hotelOwnerWallet = wallets.Find(x => x.UserId == reservation.RoomType.Hotel.Owner.UserId);
+
+                                // Verify that the required wallets exist
+                                if (adminWallet == null || hotelOwnerWallet == null)
+                                {
+                                    throw new Exception("Không tìm thấy tài khoản FHotel hoặc chủ khách sạn");
+                                }
+
+                                // Retrieve the applicable revenue policy
+                                var revenuePolicies = await revenuePolicyService.GetAllRevenuePolicyByHotelId(reservation.RoomType.HotelId.Value);
+                                var applicablePolicy = revenuePolicies.FirstOrDefault(x => x.EffectiveDate <= localTime && (x.ExpiryDate == null || x.ExpiryDate >= localTime));
+
+                                if (applicablePolicy == null)
+                                {
+                                    throw new Exception("Không tìm thấy chính sách doanh thu hợp lệ cho khách sạn này.");
+                                }
+
+                                decimal adminPercentage = (decimal)applicablePolicy.AdminPercentage / 100m;
+                                decimal hotelPercentage = (decimal)applicablePolicy.HotelPercentage / 100m;
+
+                                //to admin
+                                var transactionAdmin = new TransactionRequest
+                                {
+                                    Amount = leftRefundAmount * adminPercentage,
+                                    Description = $@"Nhận {leftRefundAmount * adminPercentage:F0}₫ từ hoàn tiền của đặt phòng {reservation.Code} lúc {localTime}",
+                                    TransactionDate = localTime,
+                                    WalletId = adminWallet.WalletId
+                                };
+                                await _transactionService.Create(transactionAdmin);
+                                var updateAdminWallet = new WalletRequest
+                                {
+                                    Balance = adminWallet.Balance += (leftRefundAmount * adminPercentage),
+                                    UserId = adminWallet.UserId,
+                                    BankAccountNumber = adminWallet.BankAccountNumber,
+                                    BankName = adminWallet.BankName
+                                };
+                                await _walletService.Update(adminWallet.WalletId, updateAdminWallet);
+                                //to hotel manager
+                                var transactionHotelOwner = new TransactionRequest
+                                {
+                                    Amount = leftRefundAmount * hotelPercentage,
+                                    Description = $@"Nhận {leftRefundAmount * hotelPercentage:F0}₫ từ hoàn tiền của đặt phòng {reservation.Code} lúc {localTime}",
+                                    TransactionDate = localTime,
+                                    WalletId = hotelOwnerWallet.WalletId
+                                };
+                                await _transactionService.Create(transactionHotelOwner);
+
+                                var updateHotelOwnerWallet = new WalletRequest
+                                {
+                                    Balance = hotelOwnerWallet.Balance += (leftRefundAmount * hotelPercentage),
+                                    UserId = hotelOwnerWallet.UserId,
+                                    BankAccountNumber = hotelOwnerWallet.BankAccountNumber,
+                                    BankName = hotelOwnerWallet.BankName
+                                };
+                                await _walletService.Update(hotelOwnerWallet.WalletId, updateHotelOwnerWallet);
+
+                            }
                             message = $@"Hoàn tiền thành công: {formattedPrice}₫";
                         }
                         else
