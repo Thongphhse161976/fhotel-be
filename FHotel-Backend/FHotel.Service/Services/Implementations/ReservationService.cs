@@ -33,6 +33,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using FHotel.Service.DTOs.Rooms;
 using FHotel.Services.DTOs.Rooms;
+using FHotel.Service.DTOs.TypePricings;
 
 namespace FHotel.Services.Services.Implementations
 {
@@ -328,7 +329,7 @@ namespace FHotel.Services.Services.Implementations
             }
         }
 
-        public async Task<object> CalculateTotalAmount(Guid roomTypeId, DateTime checkInDate, DateTime checkOutDate, int numberOfRooms)
+        public async Task<PricingResult> CalculateTotalAmount(Guid roomTypeId, DateTime checkInDate, DateTime checkOutDate, int numberOfRooms)
         {
             var roomType = await _roomTypeService.Get(roomTypeId);
 
@@ -342,6 +343,7 @@ namespace FHotel.Services.Services.Implementations
 
             decimal totalAmount = 0;
             var priceBreakdown = new StringBuilder();
+            bool hasMissingPricing = false;
 
             // Batch-fetch all pricing data for the date range
             var allPricing = await _unitOfWork.Repository<TypePricing>()
@@ -361,6 +363,8 @@ namespace FHotel.Services.Services.Implementations
                 if (dailyPricing == null)
                 {
                     Console.WriteLine($"No pricing available for {currentDate.ToShortDateString()}.");
+                    priceBreakdown.AppendLine($"Ngày: {currentDate:yyyy/MM/dd} chưa có giá");
+                    hasMissingPricing = true; // Flag missing pricing
                     continue; // Skip missing pricing instead of throwing
                 }
 
@@ -386,15 +390,21 @@ namespace FHotel.Services.Services.Implementations
 
             Console.WriteLine($"Total Amount: {totalAmount}");
 
+            // If any date is missing pricing, set totalAmount to 0
+            if (hasMissingPricing)
+            {
+                totalAmount = 0;
+            }
+
             // Return both total amount and price breakdown
-            return new
+            return new PricingResult
             {
                 TotalAmount = totalAmount,
                 PriceBreakdown = priceBreakdown.ToString()
             };
         }
 
-
+       
         private decimal AdjustPriceForWeekend(decimal basePrice, decimal? percentageIncrease, DateTime currentDate)
         {
             if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)

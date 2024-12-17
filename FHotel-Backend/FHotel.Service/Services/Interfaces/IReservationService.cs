@@ -1,5 +1,6 @@
 ﻿using FHotel.Service.DTOs.Reservations;
 using FHotel.Service.DTOs.Reservations;
+using FHotel.Service.DTOs.TypePricings;
 using FHotel.Services.DTOs.Reservations;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -21,7 +22,7 @@ namespace FHotel.Services.Services.Interfaces
         public Task<ReservationResponse> Delete(Guid id);
 
         public Task<ReservationResponse> Update(Guid id, ReservationUpdateRequest request);
-        public Task<object> CalculateTotalAmount(Guid roomTypeId
+        public Task<PricingResult> CalculateTotalAmount(Guid roomTypeId
             , DateTime checkInDate, DateTime checkOutDate, int numberOfRooms);
 
         public Task<List<ReservationResponse>> GetAllByHotelId(Guid id);
